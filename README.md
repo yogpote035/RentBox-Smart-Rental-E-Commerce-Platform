@@ -81,6 +81,8 @@ RentBox/
 └── README.md
 ```
 
+# RentBox-Smart-Rental-E-Commerce-Platform
+
 ---
 
 ## 🔁 Backend Logic Summary
