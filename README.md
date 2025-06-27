@@ -31,7 +31,7 @@
 
 ---
 
-## 🎁 Bonus Features (Optional)
+## 🎁 Bonus Features You Can Try (Optional)
 
 - 🧾 PDF Receipt generation with PDFKit
 - 💳 Razorpay integration for payments
