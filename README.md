@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 🛒 RentBox - Rental E-Commerce Platform
 
 RentBox is a full-stack rental-based e-commerce application where users can rent items like books, tools, and gadgets for short periods (3, 7, or 30 days). It supports user-driven listings, real-time booking logic, rating systems, and optional payments.
@@ -24,7 +23,7 @@ RentBox is a full-stack rental-based e-commerce application where users can rent
 - Multer (Image Upload)
 - date-fns (Date Logic)
 
-### 🧩 Optional Integrations
+### 🧩 Optional Integrations (Try)
 
 - Razorpay (Payments)
 - Cloudinary (Image Hosting)
@@ -81,9 +80,6 @@ RentBox/
 ├── gitignore
 └── README.md
 ```
-=======
-# RentBox-Smart-Rental-E-Commerce-Platform
->>>>>>> 5b2c359dcbb87edb2ef46257946834dcf06a18cc
 
 ---
 
@@ -116,7 +112,7 @@ RentBox/
 
 ---
 
-## 🎁 Bonus Features You Can Try (Optional)
+## 🎁 Bonus Features (Optional) You Can Try
 
 - 🧾 PDF Receipt generation with PDFKit
 - 💳 Razorpay integration for payments
