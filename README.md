@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 🛒 RentBox - Rental E-Commerce Platform
 
 RentBox is a full-stack rental-based e-commerce application where users can rent items like books, tools, and gadgets for short periods (3, 7, or 30 days). It supports user-driven listings, real-time booking logic, rating systems, and optional payments.
@@ -83,7 +82,6 @@ RentBox/
 ```
 =======
 # RentBox-Smart-Rental-E-Commerce-Platform
->>>>>>> 5b2c359dcbb87edb2ef46257946834dcf06a18cc
 
 ---
 
