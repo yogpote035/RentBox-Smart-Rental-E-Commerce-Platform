@@ -14,9 +14,16 @@ app.use(cors("*"));
 connectToDatabase();
 
 // checkup route
-app.head("/health", (req, res) => {
+// Health check for GET (browser & manual)
+app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
+
+// Health check for HEAD (UptimeRobot Free Plan)
+app.head("/health", (req, res) => {
+  res.sendStatus(200);
+});
+
 
 app.use("/api/auth", require("./routes/UserRoutes"));
 app.use("/api/product", require("./routes/ProductRoutes"));
