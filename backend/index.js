@@ -15,5 +15,7 @@ connectToDatabase();
 
 app.use("/api/auth", require("./routes/UserRoutes"));
 app.use("/api/product", require("./routes/ProductRoutes"));
+app.use("/api/cart", require("./routes/CartRoutes"));
+app.use("/api/order", require("./routes/OrderRoutes"));
 
 app.listen(port, () => console.log(`App Started On ${port} Port`));

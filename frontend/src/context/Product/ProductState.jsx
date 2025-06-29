@@ -30,7 +30,6 @@ const ProductState = ({ children }) => {
       return res.data.id;
     } catch (err) {
       toast.error("Product creation failed");
-      console.error(err.response?.data || err.message);
     }
   };
 
@@ -43,7 +42,6 @@ const ProductState = ({ children }) => {
       );
       setProducts(res.data);
     } catch (err) {
-      console.error("Failed to fetch products", err.message);
     } finally {
       setLoading(false);
     }
@@ -58,7 +56,6 @@ const ProductState = ({ children }) => {
       );
       setSingleProduct(res.data);
     } catch (error) {
-      console.error("Failed to fetch product:", error);
     } finally {
       setLoading(false);
     }
@@ -87,7 +84,6 @@ const ProductState = ({ children }) => {
       toast.success("Product updated successfully");
       return true;
     } catch (err) {
-      console.error(err.response?.data || err.message);
       toast.error("Failed to update product");
       return false;
     }
@@ -107,7 +103,6 @@ const ProductState = ({ children }) => {
       return true;
     } catch (error) {
       toast.error("Failed to delete product");
-      console.error(error);
       return false;
     }
   };
@@ -125,7 +120,6 @@ const ProductState = ({ children }) => {
       );
       return res.data; // return list of user's products
     } catch (err) {
-      console.error("Failed to fetch your products", err.message);
       return [];
     }
   };

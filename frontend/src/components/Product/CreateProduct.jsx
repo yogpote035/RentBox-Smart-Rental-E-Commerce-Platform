@@ -43,7 +43,7 @@ function CreateProduct() {
           placeholder="Product Name"
           value={product.name}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
+          className="outline-none w-full p-2 border rounded"
           required
         />
         <textarea
@@ -51,7 +51,7 @@ function CreateProduct() {
           placeholder="Product Description"
           value={product.description}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
+          className="outline-none w-full p-2 border rounded"
           required
         />
         <input
@@ -60,14 +60,14 @@ function CreateProduct() {
           placeholder="Price"
           value={product.price}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
+          className="outline-none w-full p-2 border rounded"
           required
         />
         <input
           type="file"
           accept="image/*"
           onChange={handleImageChange}
-          className="w-full p-2 border rounded"
+          className="outline-none w-full p-2 border rounded"
           required
         />
         <button

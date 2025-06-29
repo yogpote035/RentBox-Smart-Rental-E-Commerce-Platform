@@ -1,12 +1,18 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ProductContext from "../../context/Product/ProductContext";
+import CartContext from "../../context/cart/CartContext"; // NEW
+import { toast } from "react-toastify";
+import axios from "axios";
 
 function GetOneProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getProductById, singleProduct, deleteProduct } = useContext(ProductContext);
+  const { getProductById, singleProduct, deleteProduct } =
+    useContext(ProductContext);
+  const { addToCart } = useContext(CartContext); // NEW
   const [gifOne, setGifOne] = useState(true);
+  const [quantity, setQuantity] = useState(1); // NEW
 
   useEffect(() => {
     getProductById(id);
@@ -15,11 +21,39 @@ function GetOneProduct() {
   }, [id]);
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
     if (!confirmDelete) return;
 
     const success = await deleteProduct(id);
     if (success) navigate("/");
+  };
+
+  const handleRentNow = async () => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/order`,
+        {
+          productId: singleProduct._id,
+          quantity,
+        },
+        {
+          headers: {
+            userId: localStorage.getItem("userId"),
+            token: localStorage.getItem("token"),
+          },
+        }
+      );
+      toast.success("Product rented successfully!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to rent");
+    }
+  };
+
+  const handleAddToFavorite = async () => {
+    if (quantity < 1) return toast.warning("Minimum quantity is 1");
+    await addToCart(singleProduct._id, quantity);
   };
 
   const isOwner = singleProduct?.owner?._id === localStorage.getItem("userId");
@@ -28,9 +62,21 @@ function GetOneProduct() {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black w-screen h-screen overflow-hidden">
         {gifOne ? (
-          <video src="/utils/newLoading.mp4" autoPlay loop muted className="w-full h-full object-cover" />
+          <video
+            src="/utils/newLoading.mp4"
+            autoPlay
+            loop
+            muted
+            className="w-full h-full object-cover"
+          />
         ) : (
-          <video src="/utils/404.mp4" autoPlay loop muted className="w-full h-full object-cover" />
+          <video
+            src="/utils/404.mp4"
+            autoPlay
+            loop
+            muted
+            className="w-full h-full object-cover"
+          />
         )}
       </div>
     );
@@ -61,12 +107,35 @@ function GetOneProduct() {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-4">
-            <button className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition">
-              Rent Now
-            </button>
-            <button className="border border-indigo-600 text-indigo-600 px-6 py-2 rounded hover:bg-indigo-100 transition">
-              Wishlist
-            </button>
+            {!isOwner && (
+              <>
+                {" "}
+                <button
+                  onClick={handleRentNow}
+                  className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition"
+                >
+                  Rent Now
+                </button>
+                {/* <button className="border border-indigo-600 text-indigo-600 px-6 py-2 rounded hover:bg-indigo-100 transition">
+                  Add To Cart
+                </button> */}
+                <button
+                  onClick={handleAddToFavorite}
+                  className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
+                >
+                  Add To Favorite
+                </button>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    value={quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    min="1"
+                    className="w-20 border rounded px-2 py-1 outline-none"
+                  />
+                </div>
+              </>
+            )}
 
             {isOwner && (
               <>

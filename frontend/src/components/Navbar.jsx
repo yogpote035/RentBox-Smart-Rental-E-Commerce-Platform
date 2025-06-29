@@ -49,12 +49,12 @@ function Navbar() {
         </Link>
 
         {/* Favorite Icon */}
-        <Link to="/favorite" className="text-indigo-700 hover:text-red-600">
+        <Link to="/my-favorite" className="text-indigo-700 hover:text-red-600">
           <FaHeart size={20} />
         </Link>
 
         {/* Cart Icon */}
-        <Link to="/cart" className="text-indigo-700 hover:text-green-600">
+        <Link to="/my-orders" className="text-indigo-700 hover:text-green-600">
           <FaShoppingCart size={20} />
         </Link>
 
