@@ -14,7 +14,7 @@ app.use(cors("*"));
 connectToDatabase();
 
 // checkup route
-app.get("/health", (req, res) => {
+app.head("/health", (req, res) => {
   res.status(200).send("OK");
 });
 
