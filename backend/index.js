@@ -13,6 +13,11 @@ app.use(cors("*"));
 
 connectToDatabase();
 
+// checkup route
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 app.use("/api/auth", require("./routes/UserRoutes"));
 app.use("/api/product", require("./routes/ProductRoutes"));
 app.use("/api/cart", require("./routes/CartRoutes"));
