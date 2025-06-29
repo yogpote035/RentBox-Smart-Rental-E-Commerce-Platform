@@ -13,6 +13,8 @@ import GetAllProduct from "./components/Product/GetAllProduct";
 import GetOneProduct from "./components/Product/GetOneProduct";
 import UpdateProduct from "./components/Product/UpdateProduct";
 import Navbar from "./components/Navbar";
+import MyProducts from "./components/Product/MyProducts";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 
 function App() {
   return (
@@ -23,13 +25,35 @@ function App() {
           <Routes>
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/signup" element={<Signup />} />
-            <Route exact path="/create-product" element={<CreateProduct />} />
             <Route exact path="/" element={<GetAllProduct />} />
             <Route exact path="/product/:id" element={<GetOneProduct />} />
+            {/* Protected Rote With token */}
+            <Route
+              exact
+              path="/create-product"
+              element={
+                <ProtectedRoutes>
+                  <CreateProduct />
+                </ProtectedRoutes>
+              }
+            />
             <Route
               exact
               path="/update-product/:id"
-              element={<UpdateProduct />}
+              element={
+                <ProtectedRoutes>
+                  <UpdateProduct />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              exact
+              path="/my-products"
+              element={
+                <ProtectedRoutes>
+                  <MyProducts />
+                </ProtectedRoutes>
+              }
             />
           </Routes>
           <ToastContainer position="bottom-left" autoClose={3000} />

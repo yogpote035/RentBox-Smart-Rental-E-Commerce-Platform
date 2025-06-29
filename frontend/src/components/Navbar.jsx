@@ -41,6 +41,12 @@ function Navbar() {
             Add Item
           </Link>
         )}
+        <Link
+          to="/my-products"
+          className="text-indigo-700 font-medium hover:underline transition"
+        >
+          My Products
+        </Link>
 
         {/* Favorite Icon */}
         <Link to="/favorite" className="text-indigo-700 hover:text-red-600">

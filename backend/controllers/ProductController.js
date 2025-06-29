@@ -111,3 +111,16 @@ module.exports.deleteProduct = async (req, res) => {
     res.status(500).json({ message: "Delete failed", error: err.message });
   }
 };
+
+module.exports.getMyProducts = async (req, res) => {
+  try {
+    const userId = req.headers.userid;
+    const products = await ProductModel.find({ owner: userId });
+    if (!products) {
+      return res.status(404).json({ message: "Nothing Added By You" });
+    }
+    res.json(products);
+  } catch (err) {
+    return res.status(500).json({ message: "Error fetching user products" });
+  }
+};

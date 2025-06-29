@@ -38,7 +38,9 @@ const ProductState = ({ children }) => {
   const getAllProducts = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/product`);
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/product`
+      );
       setProducts(res.data);
     } catch (err) {
       console.error("Failed to fetch products", err.message);
@@ -51,7 +53,9 @@ const ProductState = ({ children }) => {
   const getProductById = async (id) => {
     setLoading(true);
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/product/${id}`);
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/product/${id}`
+      );
       setSingleProduct(res.data);
     } catch (error) {
       console.error("Failed to fetch product:", error);
@@ -108,7 +112,24 @@ const ProductState = ({ children }) => {
     }
   };
 
-  
+  const getMyProducts = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/product/my-products`,
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+            userId: localStorage.getItem("userId"),
+          },
+        }
+      );
+      return res.data; // return list of user's products
+    } catch (err) {
+      console.error("Failed to fetch your products", err.message);
+      return [];
+    }
+  };
+
   return (
     <ProductContext.Provider
       value={{
@@ -119,6 +140,7 @@ const ProductState = ({ children }) => {
         updateProduct,
         createProduct,
         deleteProduct,
+        getMyProducts,
       }}
     >
       {children}
