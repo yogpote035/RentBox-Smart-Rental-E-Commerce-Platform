@@ -31,6 +31,7 @@ exports.getCart = async (req, res) => {
   const userId = req.headers.userid;
   try {
     const cart = await CartModel.findOne({ owner: userId }).populate("items.product");
+    
     res.status(200).json(cart || { items: [] });
   } catch (err) {
     res.status(500).json({ message: "Error fetching cart" });
