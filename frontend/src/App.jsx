@@ -1,19 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Login from "./components/Authentication/Login";
+import "./App.css";
+
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import Signup from "./components/Authentication/Signup";
+import CreateProduct from "./components/Product/CreateProduct";
+import UserState from "./context/Authentication/UserState";
+import ProductState from "./context/Product/ProductState";
+import GetAllProduct from "./components/Product/GetAllProduct";
+import GetOneProduct from "./components/Product/GetOneProduct";
+import UpdateProduct from "./components/Product/UpdateProduct";
+import Navbar from "./components/Navbar";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      
-      <p className="underline text-rose-500">
-        Yogesh
-      </p>
-    </>
-  )
+    <ProductState>
+      <UserState>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route exact path="/login" element={<Login />} />
+            <Route exact path="/signup" element={<Signup />} />
+            <Route exact path="/create-product" element={<CreateProduct />} />
+            <Route exact path="/" element={<GetAllProduct />} />
+            <Route exact path="/product/:id" element={<GetOneProduct />} />
+            <Route
+              exact
+              path="/update-product/:id"
+              element={<UpdateProduct />}
+            />
+          </Routes>
+          <ToastContainer position="bottom-left" autoClose={3000} />
+        </Router>
+      </UserState>
+    </ProductState>
+  );
 }
 
-export default App
+export default App;
