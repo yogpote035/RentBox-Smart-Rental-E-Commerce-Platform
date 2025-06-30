@@ -1,146 +1,125 @@
-# 🛒 RentBox - Rental E-Commerce Platform
+# 🛒 RentBox – Smart Rental E-Commerce Platform
 
-RentBox is a full-stack rental-based e-commerce application where users can rent items like books, tools, and gadgets for short periods (3, 7, or 30 days). It supports user-driven listings, real-time booking logic, rating systems, and optional payments.
+**RentBox** is a full-stack rental-based e-commerce application where users can rent items like books, tools, and gadgets for fixed periods (3, 7, or 30 days). Users can list their own products, book items, leave reviews, and manage rentals in a seamless interface.
 
 ---
 
 ## 🚀 Tech Stack
 
 ### 🔧 Frontend
-
-- React.js
+- React.js (with Hooks & Router)
 - Tailwind CSS
 - Axios
-- React Router
-- react-datepicker
-- react-stars
+- `react-datepicker`
+- `react-stars` (Rating UI)
 
 ### 🔩 Backend
-
 - Node.js + Express.js
 - MongoDB + Mongoose
-- JWT + bcrypt
-- Multer (Image Upload)
-- date-fns (Date Logic)
+- JWT Auth + bcrypt
+- Multer (image uploads)
+- `date-fns` (date logic)
 
-### 🧩 Optional Integrations (Try)
-
+### 🧩 Optional Integrations
 - Razorpay (Payments)
 - Cloudinary (Image Hosting)
 - PDFKit (Receipt Generation)
 
 ---
 
-## ✨ Features
+## ✨ Core Features
 
-- 🔐 **User Authentication** (JWT-based login/register)
-- ➕ **Add/Edit/Delete** user-owned product listings
-- 🖼️ **Image Upload** (Multer middleware)
-- 📆 **Date-based Rental Bookings** with price auto-calculation
-- ❌ **Booking Conflict Prevention** (overlap check via `date-fns`)
-- 🧾 **My Listings & My Rentals** pages
-- ⭐ **Review System** (1 review per user, editable)
-- 📊 **Average Rating Display**
-- 🔍 **Filtering** (by category, date, or rating)
+- 🔐 **Authentication**: JWT-based Login/Register with protected routes  
+- ➕ **Product Management**: Add / Edit / Delete own listings  
+- 🖼️ **Image Uploads** using Multer middleware  
+- 📆 **Date-based Rentals**: Book products with rental duration  
+- ❌ **Conflict Prevention**: Block overlapping bookings via `date-fns`  
+- ⭐ **Review System**: 1 editable review per user  
+- 📊 **Auto-calculated Ratings**  
+- 🗂️ **My Listings** & **My Rentals** dashboards  
+- 🔍 **Search + Filter**: Category, Rating, Availability  
 
 ---
 
-## 🗂️ Project Structure
+## 🗂️ Folder Structure
 
 ```
 RentBox/
-├── client/ Frontend - React
-│    ├── public/....
-│    │      │   
-│    │      ├─── utils/ (images)   
-│    │      │   
-│    │      └─── styles/(Different file for different pages or components)....
-│    │
-│    └── src/
-│    │   ├── components/....
-│    │   │     ├── Product/(CRUD)
-│    │   │     ├── User/(AUTH,Token)
-│    │   │     ├── Order/[Create , Cancel ,View ]
-│    │   │     └── Rating And Comment/[ Rating(Number), Comment]
-│    │   ├── pages/(Combine Components)....
-│    │   └── context/(Redux Store)....
-│    ├── App.jsx
-│    ├── App.css
-│    ├── index.css
-│    └── Main.jsx
+├── client/                  # Frontend - React
+│   ├── public/             
+│   │   └── utils/           # Static files (e.g., logo, video)
+│   └── src/
+│       ├── components/
+│       │   ├── Product/     # Product pages (CRUD)
+│       │   ├── User/        # Auth handling
+│       │   ├── Order/       # Booking logic
+│       │   └── Rating/      # Stars + Comments
+│       ├── pages/           # Page-level UI composition
+│       └── context/         # Global state mgmt (auth, cart, product)
 │
-└── server/ Backend - Node.js
-│    ├── controllers/....
-│    ├── middleware/....
-│    ├── models/....
-│    ├── routes/....
-│    ├── package.json
-│    ├── package-lock.json
-│    └── index.js
-├── gitignore
-└── README.md
+└── server/                  # Backend - Node.js
+    ├── controllers/
+    ├── middleware/
+    ├── models/
+    ├── routes/
+    └── index.js
 ```
-
-# RentBox-Smart-Rental-E-Commerce-Platform
 
 ---
 
 ## 🔁 Backend Logic Summary
 
-- **Authentication:** JWT with middleware to protect routes
-- **Product CRUD:** Only owner can add/edit/delete their listings
-- **Booking Logic:** Prevent overlapping rentals, auto-calculate price
-- **Review System:** One review per user per product (editable), avg rating updates
-- **User Dashboard:** My Listings and My Rentals views
+- ✅ **JWT Middleware** to protect routes
+- ✅ **Role-restricted Product CRUD** (only owner)
+- ✅ **Booking Conflict Logic** with `date-fns`
+- ✅ **Price Calculation** based on rental duration
+- ✅ **Review Enforcement**: One review/user per product
+- ✅ **MongoDB Aggregations** for average ratings
+- ✅ **My Orders / My Listings** APIs
 
 ---
 
-## 📅 14-Day Development Timeline
+## 📅 14-Day Development Plan
 
-| Day | Task                            |
-| --- | ------------------------------- |
-| 1   | Setup React, Express, MongoDB   |
-| 2   | Implement authentication        |
-| 3-4 | Product CRUD with image upload  |
-| 5   | My Listings page                |
-| 6-7 | Rent logic + overlap prevention |
-| 8   | Price calculation               |
-| 9   | Review system                   |
-| 10  | Average rating logic            |
-| 11  | Filter implementation           |
-| 12  | UI polish + responsive design   |
-| 13  | Backend deployment (Render)     |
-| 14  | Frontend deployment (Vercel)    |
-
----
-
-## 🎁 Bonus Features (Optional) You Can Try
-
-- 🧾 PDF Receipt generation with PDFKit
-- 💳 Razorpay integration for payments
-- 📧 Email reminders for item return
-- ☁️ Cloudinary for better image hosting
-- 💬 Real-time chat with Socket.io
-- 🛠 Admin dashboard (analytics, moderation)
+| Day | Task |
+|-----|------|
+| 1   | React + Express Setup |
+| 2   | Authentication |
+| 3–4 | Product CRUD + Multer |
+| 5   | My Listings Page |
+| 6–7 | Rental Logic + Conflict Check |
+| 8   | Auto Price Calculation |
+| 9   | Rating + Comment System |
+| 10  | Average Ratings |
+| 11  | Filtering + Search |
+| 12  | UI Polish + Responsiveness |
+| 13  | Backend Deployment (Render) |
+| 14  | Frontend Deployment (Vercel) |
 
 ---
 
-## 🌐 Deployment
+## 🎁 Bonus Features (Try Later)
 
-- **Frontend:** [Vercel](https://vercel.com/)
-- **Backend:** [Render](https://render.com/)
-
----
-
-## 🙌 Contributions
-
-Want to contribute or enhance this project? Fork it, make your changes, and create a pull request!
+- 🧾 PDF receipts with PDFKit  
+- 💳 Razorpay payment gateway  
+- 📧 Return reminder emails  
+- ☁️ Cloudinary image optimization  
+- 💬 Real-time chat (Socket.io)  
+- 🛠 Admin panel with analytics  
 
 ---
 
-## 📬 Contact
+## 🌐 Live Deployment
 
-Visit My Portfolio Website [https://yogpote035.github.io/Portfolio-Website/](https://yogpote035.github.io/Portfolio-Website/)
+| Layer     | URL |
+|-----------|-----|
+| Frontend  | [rent-box-smart-rental-e-commerce-pl.vercel.app](https://rent-box-smart-rental-e-commerce-pl.vercel.app) |
+| Backend   | [rentbox-sdvm.onrender.com](https://rentbox-sdvm.onrender.com) |
 
-Created with ❤️ by [Yogesh Pote](mailto:yogpote035@gmail.com)  
-📞 +91 89993 90368
+---
+
+## 👨‍💻 Created By
+
+**Yogesh Pote**  
+📬 [yogpote035@gmail.com](mailto:yogpote035@gmail.com)  
+🌐 [Portfolio](https://yogpote035.github.io/Portfolio-Website/)  
