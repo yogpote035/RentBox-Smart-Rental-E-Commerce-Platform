@@ -1,18 +1,20 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ProductContext from "../../context/Product/ProductContext";
-import CartContext from "../../context/cart/CartContext"; // NEW
+import CartContext from "../../context/cart/CartContext";
+import OrderContext from "../../context/orders/OrderContext";
 import { toast } from "react-toastify";
-import axios from "axios";
 
 function GetOneProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getProductById, singleProduct, deleteProduct } =
     useContext(ProductContext);
-  const { addToCart } = useContext(CartContext); // NEW
+  const { addToCart } = useContext(CartContext);
+  const { RentNow } = useContext(OrderContext);
+
   const [gifOne, setGifOne] = useState(true);
-  const [quantity, setQuantity] = useState(1); // NEW
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     getProductById(id);
@@ -20,34 +22,15 @@ function GetOneProduct() {
     return () => clearTimeout(timer);
   }, [id]);
 
-  const handleDelete = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this product?"
-    );
-    if (!confirmDelete) return;
-
-    const success = await deleteProduct(id);
-    if (success) navigate("/");
+  const handleRentNow = async () => {
+    if (quantity < 1) return toast.warning("Minimum quantity is 1");
+    await RentNow(singleProduct._id, quantity);
   };
 
-  const handleRentNow = async () => {
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/order`,
-        {
-          productId: singleProduct._id,
-          quantity,
-        },
-        {
-          headers: {
-            userId: localStorage.getItem("userId"),
-            token: localStorage.getItem("token"),
-          },
-        }
-      );
-      toast.success("Product rented successfully!");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to rent");
+  const handleDelete = async () => {
+    const res = await deleteProduct(singleProduct._id);
+    if (res) {
+      navigate("/my-products");
     }
   };
 

@@ -18,72 +18,75 @@ import ProtectedRoutes from "./components/ProtectedRoutes";
 import MyCart from "./components/Cart/MyCart";
 import CartState from "./context/cart/CartState";
 import MyOrder from "./components/Cart/MyOrder";
+import OrderState from "./context/orders/OrderState";
 
 function App() {
   return (
-    <CartState>
-      <ProductState>
-        <UserState>
-          <Router>
-            <Navbar />
-            <Routes>
-              <Route exact path="/login" element={<Login />} />
-              <Route exact path="/signup" element={<Signup />} />
-              <Route exact path="/" element={<GetAllProduct />} />
-              <Route exact path="/product/:id" element={<GetOneProduct />} />
-              {/* Protected Rote With token */}
-              <Route
-                exact
-                path="/create-product"
-                element={
-                  <ProtectedRoutes>
-                    <CreateProduct />
-                  </ProtectedRoutes>
-                }
-              />
-              <Route
-                exact
-                path="/update-product/:id"
-                element={
-                  <ProtectedRoutes>
-                    <UpdateProduct />
-                  </ProtectedRoutes>
-                }
-              />
-              <Route
-                exact
-                path="/my-products"
-                element={
-                  <ProtectedRoutes>
-                    <MyProducts />
-                  </ProtectedRoutes>
-                }
-              />
-              {/* cart */}
-              <Route
-                exact
-                path="/my-favorite"
-                element={
-                  <ProtectedRoutes>
-                    <MyCart />
-                  </ProtectedRoutes>
-                }
-              />
+    <OrderState>
+      <CartState>
+        <ProductState>
+          <UserState>
+            <Router>
+              <Navbar />
+              <Routes>
+                <Route exact path="/login" element={<Login />} />
+                <Route exact path="/signup" element={<Signup />} />
+                <Route exact path="/" element={<GetAllProduct />} />
+                <Route exact path="/product/:id" element={<GetOneProduct />} />
+                {/* Protected Rote With token */}
+                <Route
+                  exact
+                  path="/create-product"
+                  element={
+                    <ProtectedRoutes>
+                      <CreateProduct />
+                    </ProtectedRoutes>
+                  }
+                />
+                <Route
+                  exact
+                  path="/update-product/:id"
+                  element={
+                    <ProtectedRoutes>
+                      <UpdateProduct />
+                    </ProtectedRoutes>
+                  }
+                />
+                <Route
+                  exact
+                  path="/my-products"
+                  element={
+                    <ProtectedRoutes>
+                      <MyProducts />
+                    </ProtectedRoutes>
+                  }
+                />
+                {/* cart */}
+                <Route
+                  exact
+                  path="/my-favorite"
+                  element={
+                    <ProtectedRoutes>
+                      <MyCart />
+                    </ProtectedRoutes>
+                  }
+                />
 
-              <Route
-                path="/my-orders"
-                element={
-                  <ProtectedRoutes>
-                    <MyOrder />
-                  </ProtectedRoutes>
-                }
-              />
-            </Routes>
-            <ToastContainer position="bottom-left" autoClose={3000} />
-          </Router>
-        </UserState>
-      </ProductState>
-    </CartState>
+                <Route
+                  path="/my-orders"
+                  element={
+                    <ProtectedRoutes>
+                      <MyOrder />
+                    </ProtectedRoutes>
+                  }
+                />
+              </Routes>
+              <ToastContainer position="bottom-left" autoClose={3000} />
+            </Router>
+          </UserState>
+        </ProductState>
+      </CartState>
+    </OrderState>
   );
 }
 

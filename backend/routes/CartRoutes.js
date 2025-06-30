@@ -5,9 +5,10 @@ const {
   getCart,
   removeFromCart,
 } = require("../controllers/CartController");
+const { getUser } = require("../middleware/getUser");
 
-router.post("/add", addToCart);
-router.get("/", getCart);
-router.post("/remove", removeFromCart);
+router.post("/add", getUser, addToCart);
+router.post("/remove", getUser, removeFromCart);
+router.get("/", getUser, getCart);
 
 module.exports = router;

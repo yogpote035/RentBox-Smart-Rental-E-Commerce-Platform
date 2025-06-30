@@ -9,7 +9,10 @@ const CartState = ({ children }) => {
   const fetchCart = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/cart`, {
-        headers: { userId: localStorage.getItem("userId") },
+        headers: {
+          userId: localStorage.getItem("userId"),
+          token: localStorage.getItem("token"),
+        },
       });
       setCartItems(res.data.items);
     } catch (err) {
@@ -22,12 +25,18 @@ const CartState = ({ children }) => {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/cart/add`,
         { productId, quantity },
-        { headers: { userId: localStorage.getItem("userId") } }
+        {
+          headers: {
+            userId: localStorage.getItem("userId"),
+            token: localStorage.getItem("token"),
+          },
+        }
       );
       setCartItems(res.data.items);
       toast.success("Added to cart");
-    } catch {
-      toast.error("Failed to add");
+      return res.data;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to add");
     }
   };
 
@@ -36,7 +45,12 @@ const CartState = ({ children }) => {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/cart/remove`,
         { productId },
-        { headers: { userId: localStorage.getItem("userId") } }
+        {
+          headers: {
+            userId: localStorage.getItem("userId"),
+            token: localStorage.getItem("token"),
+          },
+        }
       );
       setCartItems(res.data.items);
       toast.success("Removed from cart");
@@ -46,7 +60,9 @@ const CartState = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, fetchCart, addToCart, removeFromCart }}>
+    <CartContext.Provider
+      value={{ cartItems, fetchCart, addToCart, removeFromCart }}
+    >
       {children}
     </CartContext.Provider>
   );

@@ -1,6 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaHeart } from "react-icons/fa";
 import ProductContext from "../../context/Product/ProductContext";
 
 function GetAllProducts() {
@@ -32,9 +31,6 @@ function GetAllProducts() {
                   alt={product.name}
                   className="w-full h-64 object-cover group-hover:scale-105 transition duration-300"
                 />
-                {/* <button className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:scale-110 transition duration-200">
-                  <FaHeart className="text-gray-500 hover:text-red-500" />
-                </button> */}
               </div>
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-gray-900 truncate">

@@ -1,54 +1,13 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import OrderContext from "../../context/orders/OrderContext";
 
 function MyOrder() {
-  const [orders, setOrders] = useState([]);
+  const { fetchMyOrders, cancelOrder, orders } = useContext(OrderContext);
 
   useEffect(() => {
-    fetchOrders();
+    fetchMyOrders();
   }, []);
-
-  const fetchOrders = async () => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/order/my-orders`,
-        {
-          headers: {
-            userId: localStorage.getItem("userId"),
-            token: localStorage.getItem("token"),
-          },
-        }
-      );
-      setOrders(res.data);
-    } catch (err) {
-      console.error("Failed to fetch orders", err);
-    }
-  };
-
-  const handleRemoveOrder = async (orderId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to cancel this rental?"
-    );
-    if (!confirmDelete) return;
-
-    try {
-      await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/order/${orderId}`,
-        {
-          headers: {
-            userId: localStorage.getItem("userId"),
-            token: localStorage.getItem("token"),
-          },
-        }
-      );
-      toast.success("Order removed successfully!");
-      setOrders((prev) => prev.filter((order) => order._id !== orderId));
-    } catch (err) {
-      toast.error("Failed to remove order");
-    }
-  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
@@ -95,7 +54,7 @@ function MyOrder() {
                 </div>
 
                 <button
-                  onClick={() => handleRemoveOrder(order._id)}
+                  onClick={() => cancelOrder(order._id)}
                   className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition w-full"
                 >
                   Cancel Order
