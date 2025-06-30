@@ -7,6 +7,7 @@ function Login() {
   const navigate = useNavigate();
   const { login } = context;
   const [usePhone, setUsePhone] = useState(false); // toggle state
+  const [isDisable, setIsDisable] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     phone: "",
@@ -21,14 +22,21 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
+    setIsDisable(true);
     e.preventDefault();
     const payload = {
       password: formData.password,
       ...(usePhone ? { phone: formData.phone } : { email: formData.email }),
     };
 
-    login(payload);
-    navigate("/");
+    const res = await login(payload);
+
+    setTimeout(() => {
+      setIsDisable(false);
+    }, 3000);
+    if (res === true) {
+      navigate("/");
+    }
   };
 
   return (
@@ -90,10 +98,13 @@ function Login() {
           </div>
 
           <button
+            disabled={isDisable}
             type="submit"
-            className="w-full bg-indigo-600 text-white font-semibold py-2 rounded-md hover:bg-indigo-700"
+            className={`w-full ${
+              isDisable ? " bg-indigo-300" : "bg-indigo-600"
+            } text-white font-semibold py-2 rounded-md hover:bg-rose-800`}
           >
-            Login
+            {isDisable ? "Validating Credentials..." : "Login"}
           </button>
 
           <p className="text-sm text-center text-gray-500">

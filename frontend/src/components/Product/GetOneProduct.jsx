@@ -8,13 +8,14 @@ import { toast } from "react-toastify";
 function GetOneProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getProductById, singleProduct, deleteProduct } =
-    useContext(ProductContext);
+  const { getProductById, singleProduct, deleteProduct } = useContext(ProductContext);
   const { addToCart } = useContext(CartContext);
   const { RentNow } = useContext(OrderContext);
 
   const [gifOne, setGifOne] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [isRenting, setIsRenting] = useState(false);
+  const [isAddingToFavorite, setIsAddingToFavorite] = useState(false);
 
   useEffect(() => {
     getProductById(id);
@@ -27,14 +28,12 @@ function GetOneProduct() {
       return navigate("/login");
     }
     if (quantity < 1) return toast.warning("Minimum quantity is 1");
-    await RentNow(singleProduct._id, quantity);
-  };
 
-  const handleDelete = async () => {
-    const res = await deleteProduct(singleProduct._id);
-    if (res) {
-      navigate("/my-products");
-    }
+    setIsRenting(true);
+    await RentNow(singleProduct._id, quantity);
+
+    // Disable for 3 seconds
+    setTimeout(() => setIsRenting(false), 3000);
   };
 
   const handleAddToFavorite = async () => {
@@ -42,7 +41,19 @@ function GetOneProduct() {
       return navigate("/login");
     }
     if (quantity < 1) return toast.warning("Minimum quantity is 1");
+
+    setIsAddingToFavorite(true);
     await addToCart(singleProduct._id, quantity);
+
+    // Disable for 3 seconds
+    setTimeout(() => setIsAddingToFavorite(false), 3000);
+  };
+
+  const handleDelete = async () => {
+    const res = await deleteProduct(singleProduct._id);
+    if (res) {
+      navigate("/my-products");
+    }
   };
 
   const isOwner = singleProduct?.owner?._id === localStorage.getItem("userId");
@@ -95,34 +106,40 @@ function GetOneProduct() {
             </div>
           </div>
 
-          <div className="mt-6 flex flex-wrap gap-4">
+          <div className="mt-6 flex flex-wrap gap-4 items-center">
             {!isOwner && (
               <>
-                {" "}
                 <button
                   onClick={handleRentNow}
-                  className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition"
+                  disabled={isRenting}
+                  className={`px-6 py-2 rounded transition text-white ${
+                    isRenting
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-indigo-600 hover:bg-indigo-700"
+                  }`}
                 >
-                  Rent Now
+                  {isRenting ? "Processing..." : "Rent Now"}
                 </button>
-                {/* <button className="border border-indigo-600 text-indigo-600 px-6 py-2 rounded hover:bg-indigo-100 transition">
-                  Add To Cart
-                </button> */}
+
                 <button
                   onClick={handleAddToFavorite}
-                  className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
+                  disabled={isAddingToFavorite}
+                  className={`px-6 py-2 rounded transition text-white ${
+                    isAddingToFavorite
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-green-600 hover:bg-green-700"
+                  }`}
                 >
-                  Add To Favorite
+                  {isAddingToFavorite ? "Adding..." : "Add To Favorite"}
                 </button>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                    min="1"
-                    className="w-20 border rounded px-2 py-1 outline-none"
-                  />
-                </div>
+
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  min="1"
+                  className="w-20 border rounded px-2 py-1 outline-none"
+                />
               </>
             )}
 

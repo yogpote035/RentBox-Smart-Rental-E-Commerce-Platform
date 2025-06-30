@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 function Signup() {
   const navigate = useNavigate();
   const context = useContext(UserContext);
+
   const { signup } = context;
   const [formData, setFormData] = useState({
     name: "",
@@ -21,6 +22,7 @@ function Signup() {
       pincode: "",
     },
   });
+  const [isDisable, setIsDisable] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,13 +40,22 @@ function Signup() {
   };
 
   const handleSubmit = async (e) => {
+    setIsDisable(true);
     e.preventDefault();
     const payload = {
       ...formData,
       address: [formData.address],
     };
-    signup(payload);
-    navigate("/");
+
+    const res = await signup(payload);
+
+    setTimeout(() => {
+      setIsDisable(false);
+    }, 4000);
+
+    if (res === true) {
+      navigate("/");
+    }
   };
 
   return (
@@ -205,10 +216,13 @@ function Signup() {
         </div>
 
         <button
+          disabled={isDisable}
           type="submit"
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded shadow"
+          className={`w-full ${
+            isDisable ? "bg-rose-600" : "bg-indigo-500"
+          }  text-white font-semibold py-2 rounded shadow`}
         >
-          Register
+          {isDisable ? "Validating Credentials..." : "Signup"}
         </button>
       </form>
     </div>

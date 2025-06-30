@@ -72,7 +72,7 @@ module.exports.Login = async (request, response) => {
       existingUser = await UserModel.findOne({ phone });
       if (!existingUser) {
         return response
-          .status(404)
+          .status(204)
           .json({ message: "User of This Phone Number Is Not Found" });
       }
     }
@@ -81,7 +81,7 @@ module.exports.Login = async (request, response) => {
       existingUser = await UserModel.findOne({ email });
       if (!existingUser) {
         return response
-          .status(404)
+          .status(204)
           .json({ message: "User  of This Email Is Not Found" });
       }
     }
@@ -90,7 +90,7 @@ module.exports.Login = async (request, response) => {
 
     if (!passwordCompare) {
       return response
-        .status(401)
+        .status(208)
         .json({ message: "Wrong password , check your credentials" });
     }
     const data = {

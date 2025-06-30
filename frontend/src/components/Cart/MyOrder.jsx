@@ -1,13 +1,19 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import OrderContext from "../../context/orders/OrderContext";
 
 function MyOrder() {
   const { fetchMyOrders, cancelOrder, orders } = useContext(OrderContext);
+  const [disabledButtons, setDisabledButtons] = useState({}); // Track disabled buttons by order ID
 
   useEffect(() => {
     fetchMyOrders();
   }, []);
+
+  const handleCancel = (orderId) => {
+    setDisabledButtons((prev) => ({ ...prev, [orderId]: true }));
+    cancelOrder(orderId);
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
@@ -54,10 +60,16 @@ function MyOrder() {
                 </div>
 
                 <button
-                  onClick={() => cancelOrder(order._id)}
-                  className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition w-full"
+                  onClick={() => handleCancel(order._id)}
+                  disabled={!!disabledButtons[order._id]} // Check if this order's button is disabled
+                  className={`mt-4 px-4 py-2 rounded transition w-full ${
+                    disabledButtons[order._id]
+                      ? "bg-gray-400 cursor-not-allowed text-white"
+                      : "bg-red-500 hover:bg-red-600 text-white"
+                  }`}
+                  type="button"
                 >
-                  Cancel Order
+                  {disabledButtons[order._id] ? "Cancelling..." : "Cancel Order"}
                 </button>
               </div>
             </div>
