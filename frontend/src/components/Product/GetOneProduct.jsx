@@ -8,7 +8,8 @@ import { toast } from "react-toastify";
 function GetOneProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getProductById, singleProduct, deleteProduct } = useContext(ProductContext);
+  const { getProductById, singleProduct, deleteProduct } =
+    useContext(ProductContext);
   const { addToCart } = useContext(CartContext);
   const { RentNow } = useContext(OrderContext);
 
@@ -16,6 +17,7 @@ function GetOneProduct() {
   const [quantity, setQuantity] = useState(1);
   const [isRenting, setIsRenting] = useState(false);
   const [isAddingToFavorite, setIsAddingToFavorite] = useState(false);
+  const [isDisable, setIsDisable] = useState(false);
 
   useEffect(() => {
     getProductById(id);
@@ -50,7 +52,12 @@ function GetOneProduct() {
   };
 
   const handleDelete = async () => {
+    setIsDisable(true);
     const res = await deleteProduct(singleProduct._id);
+
+    // Disable for 3 seconds
+    setTimeout(() => setIsAddingToFavorite(false), 2000);
+
     if (res) {
       navigate("/my-products");
     }
@@ -154,6 +161,7 @@ function GetOneProduct() {
                 <button
                   onClick={handleDelete}
                   className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition"
+                  disabled={isDisable}
                 >
                   Delete Product
                 </button>

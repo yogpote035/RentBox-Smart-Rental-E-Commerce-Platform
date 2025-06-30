@@ -13,6 +13,7 @@ function CreateProduct() {
   });
 
   const [image, setImage] = useState(null);
+  const [isDisable, setIsDisable] = useState(false);
 
   const handleChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
@@ -23,8 +24,12 @@ function CreateProduct() {
   };
 
   const handleSubmit = async (e) => {
+    setIsDisable(true);
     e.preventDefault();
     const id = await createProduct(product, image);
+    setTimeout(() => {
+      setIsDisable(false);
+    }, 2000);
     if (id) {
       navigate(`/product/${id}`);
     }
@@ -73,8 +78,9 @@ function CreateProduct() {
         <button
           type="submit"
           className="w-full bg-indigo-600 text-white font-semibold py-2 rounded hover:bg-indigo-700"
+          disabled={isDisable}
         >
-          Add Product
+          {isDisable ? "Creating Product" : "Create Product"}
         </button>
       </form>
     </div>

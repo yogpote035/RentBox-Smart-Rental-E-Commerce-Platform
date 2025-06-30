@@ -6,11 +6,8 @@ function UpdateProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const {
-    getProductById,
-    singleProduct,
-    updateProduct,
-  } = useContext(ProductContext);
+  const { getProductById, singleProduct, updateProduct } =
+    useContext(ProductContext);
 
   const [product, setProduct] = useState({
     name: "",
@@ -18,6 +15,7 @@ function UpdateProduct() {
     price: "",
   });
   const [image, setImage] = useState(null);
+  const [isDisable, setIsDisable] = useState(false);
 
   useEffect(() => {
     getProductById(id);
@@ -42,8 +40,12 @@ function UpdateProduct() {
   };
 
   const handleSubmit = async (e) => {
+    setIsDisable(true);
     e.preventDefault();
     const success = await updateProduct(id, product, image);
+    setTimeout(() => {
+      setIsDisable(false);
+    }, 2000);
     if (success) navigate(`/product/${id}`);
   };
 
@@ -89,8 +91,9 @@ function UpdateProduct() {
         <button
           type="submit"
           className="w-full bg-indigo-600 text-white font-semibold py-2 rounded hover:bg-indigo-700"
+          disabled={isDisable}
         >
-          Update Product
+          {isDisable ? "Updating Product" : "Update Product"}
         </button>
       </form>
     </div>
