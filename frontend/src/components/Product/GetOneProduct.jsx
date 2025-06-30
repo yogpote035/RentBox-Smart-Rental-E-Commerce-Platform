@@ -23,6 +23,9 @@ function GetOneProduct() {
   }, [id]);
 
   const handleRentNow = async () => {
+    if (!localStorage.getItem("token")) {
+      return navigate("/login");
+    }
     if (quantity < 1) return toast.warning("Minimum quantity is 1");
     await RentNow(singleProduct._id, quantity);
   };
@@ -35,6 +38,9 @@ function GetOneProduct() {
   };
 
   const handleAddToFavorite = async () => {
+    if (!localStorage.getItem("token")) {
+      return navigate("/login");
+    }
     if (quantity < 1) return toast.warning("Minimum quantity is 1");
     await addToCart(singleProduct._id, quantity);
   };
