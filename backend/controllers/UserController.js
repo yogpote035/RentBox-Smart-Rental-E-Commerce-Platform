@@ -15,7 +15,7 @@ module.exports.Signup = async (request, response) => {
 
   if (existingPhoneUser) {
     return response
-      .status(208)
+      .status(403)
       .json({ message: "This Phone Number User Already Exists" });
   }
 
@@ -23,7 +23,7 @@ module.exports.Signup = async (request, response) => {
 
   if (existingEmailUser) {
     return response
-      .status(208)
+      .status(403)
       .json({ message: "This Mail User Already Exists" });
   }
   try {
@@ -44,7 +44,7 @@ module.exports.Signup = async (request, response) => {
         id: newUser.id,
       },
     };
-    const token = jwt.sign(data, process.env.secret, { expiresIn: "7d" });
+    const token = jwt.sign(data, process.env.secret);
     console.log("Token is generated and sending response to frontend");
     return response.status(200).json({
       message: "Registration Successfully Completed",
@@ -99,9 +99,7 @@ module.exports.Login = async (request, response) => {
       },
     };
 
-    const token = jwt.sign(data, process.env.secret, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(data, process.env.secret);
 
     return response
       .status(200)

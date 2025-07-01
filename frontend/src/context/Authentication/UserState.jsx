@@ -48,19 +48,6 @@ const UserState = ({ children }) => {
         setIsAuthenticated(true); //  update state
         return true;
       }
-      // user found but password not match
-      if (res.status === 208) {
-        toast.error("You Enter Wrong Password");
-        setIsAuthenticated(false); //  update state
-        return false;
-      }
-
-      // user Not found
-      if (res.status === 204) {
-        toast.error("User Not Found, Please Check Your Credentials");
-        setIsAuthenticated(false); //  update state
-        return false;
-      }
     } catch (err) {
       setIsAuthenticated(false);
       toast.error(err.response?.data?.message || "Login failed");

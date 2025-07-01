@@ -9,7 +9,8 @@ const app = express();
 const port = process.env.port || 5000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors("*"));
+
+app.use(cors("*", { Credential: true }));
 
 connectToDatabase();
 
@@ -23,7 +24,6 @@ app.get("/health", (req, res) => {
 app.head("/health", (req, res) => {
   res.sendStatus(200);
 });
-
 
 app.use("/api/auth", require("./routes/UserRoutes"));
 app.use("/api/product", require("./routes/ProductRoutes"));
