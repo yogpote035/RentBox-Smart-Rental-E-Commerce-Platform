@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 const ProductState = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [singleProduct, setSingleProduct] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   // Create a new product
   const createProduct = async (product, image) => {
@@ -35,7 +34,6 @@ const ProductState = ({ children }) => {
 
   // Fetch all products
   const getAllProducts = async () => {
-    setLoading(true);
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/product`
@@ -43,13 +41,12 @@ const ProductState = ({ children }) => {
       setProducts(res.data);
     } catch (err) {
     } finally {
-      setLoading(false);
+      
     }
   };
 
   // Get one product by ID
   const getProductById = async (id) => {
-    setLoading(true);
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/product/${id}`
@@ -57,7 +54,7 @@ const ProductState = ({ children }) => {
       setSingleProduct(res.data);
     } catch (error) {
     } finally {
-      setLoading(false);
+      
     }
   };
 

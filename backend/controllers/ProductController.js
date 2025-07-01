@@ -17,10 +17,10 @@ module.exports.createProduct = async (request, response) => {
       owner: userId,
     });
 
-    await newProduct.save();
+    const savedProduct = await newProduct.save();
     return response
       .status(201)
-      .json({ message: "Product Created Successfully", id: newProduct._id });
+      .json({ message: "Product Created Successfully", id: savedProduct._id });
   } catch (error) {
     return response
       .status(500)
