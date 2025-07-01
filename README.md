@@ -113,7 +113,7 @@ RentBox/
 
 | Layer     | URL |
 |-----------|-----|
-| Frontend  | [rent-box-smart-rental-e-commerce-pl.vercel.app](https://rent-box-smart-rental-e-commerce-pl.vercel.app) |
+| Frontend  | [https://rent-box-rentals.vercel.app/](https://rent-box-rentals.vercel.app/) |
 | Backend   | [rentbox-sdvm.onrender.com](https://rentbox-sdvm.onrender.com) |
 
 ---
