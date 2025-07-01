@@ -27,11 +27,12 @@ function MyCart() {
     <div className="max-w-5xl mx-auto px-4 py-10">
       <h2 className="text-3xl font-bold mb-6 text-indigo-700">My Favorites</h2>
 
-      {!cartItems || cartItems.length === 0 ? (
+      {cartItems.length === 0 ? (
         <p className="text-gray-500 text-center">Nothing in Your Wishlist.</p>
       ) : (
         <div className="space-y-6">
           {cartItems.map(({ product, quantity }) => {
+            // ✅ Guard against null or incomplete product
             if (!product || !product._id) return null;
 
             return (
@@ -66,9 +67,7 @@ function MyCart() {
                       : "bg-red-600 hover:bg-red-700"
                   }`}
                 >
-                  {removingItems[product._id]
-                    ? "Removing..."
-                    : "Remove Product"}
+                  {removingItems[product._id] ? "Removing..." : "Remove Product"}
                 </button>
               </div>
             );
