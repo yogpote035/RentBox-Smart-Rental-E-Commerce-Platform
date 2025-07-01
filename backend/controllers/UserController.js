@@ -15,7 +15,7 @@ module.exports.Signup = async (request, response) => {
 
   if (existingPhoneUser) {
     return response
-      .status(403)
+      .status(208)
       .json({ message: "This Phone Number User Already Exists" });
   }
 
@@ -23,7 +23,7 @@ module.exports.Signup = async (request, response) => {
 
   if (existingEmailUser) {
     return response
-      .status(403)
+      .status(208)
       .json({ message: "This Mail User Already Exists" });
   }
   try {

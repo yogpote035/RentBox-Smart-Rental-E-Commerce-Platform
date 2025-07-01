@@ -46,10 +46,7 @@ const OrderState = ({ children }) => {
 
   // ❌ Cancel an Order
   const cancelOrder = async (orderId) => {
-    const confirm = window.confirm("Are you sure you want to cancel this rental?");
-    if (!confirm) return;
-
-    try {
+       try {
       await axios.delete(
         `${import.meta.env.VITE_BACKEND_URL}/order/${orderId}`,
         {

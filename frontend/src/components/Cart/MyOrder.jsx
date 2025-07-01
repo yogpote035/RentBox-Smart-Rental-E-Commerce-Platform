@@ -1,6 +1,7 @@
 import { useEffect, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import OrderContext from "../../context/orders/OrderContext";
+import { toast } from "react-toastify";
 
 function MyOrder() {
   const { fetchMyOrders, cancelOrder, orders } = useContext(OrderContext);
@@ -11,6 +12,11 @@ function MyOrder() {
   }, []);
 
   const handleCancel = (orderId) => {
+    const confirm = window.confirm(
+      "Are you sure you want to cancel this rental?"
+    );
+    if (!confirm) return toast.info("You Cancel Order Deletion");
+
     setDisabledButtons((prev) => ({ ...prev, [orderId]: true }));
     cancelOrder(orderId);
   };
@@ -69,7 +75,9 @@ function MyOrder() {
                   }`}
                   type="button"
                 >
-                  {disabledButtons[order._id] ? "Cancelling..." : "Cancel Order"}
+                  {disabledButtons[order._id]
+                    ? "Cancelling..."
+                    : "Cancel Order"}
                 </button>
               </div>
             </div>

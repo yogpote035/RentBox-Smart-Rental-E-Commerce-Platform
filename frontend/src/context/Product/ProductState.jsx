@@ -6,9 +6,7 @@ import { toast } from "react-toastify";
 const ProductState = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [singleProduct, setSingleProduct] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  // Create a new product
   const createProduct = async (product, image) => {
     const formData = new FormData();
     for (let key in product) formData.append(key, product[key]);
@@ -33,40 +31,27 @@ const ProductState = ({ children }) => {
     }
   };
 
-  // Fetch all products
   const getAllProducts = async () => {
-    setLoading(true);
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/product`
-      );
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/product`);
       setProducts(res.data);
     } catch (err) {
-    } finally {
-      setLoading(false);
+      setProducts([]);
     }
   };
 
-  // Get one product by ID
   const getProductById = async (id) => {
-    setLoading(true);
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/product/${id}`
-      );
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/product/${id}`);
       setSingleProduct(res.data);
     } catch (error) {
-    } finally {
-      setLoading(false);
+      setSingleProduct(null);
     }
   };
 
-  // Update product
   const updateProduct = async (id, product, image) => {
     const formData = new FormData();
-    for (let key in product) {
-      formData.append(key, product[key]);
-    }
+    for (let key in product) formData.append(key, product[key]);
     if (image) formData.append("image", image);
 
     try {
@@ -89,7 +74,6 @@ const ProductState = ({ children }) => {
     }
   };
 
-  // Delete product
   const deleteProduct = async (id) => {
     try {
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/product/${id}`, {
@@ -109,16 +93,13 @@ const ProductState = ({ children }) => {
 
   const getMyProducts = async () => {
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/product/my-products`,
-        {
-          headers: {
-            token: localStorage.getItem("token"),
-            userId: localStorage.getItem("userId"),
-          },
-        }
-      );
-      return res.data; // return list of user's products
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/product/my-products`, {
+        headers: {
+          token: localStorage.getItem("token"),
+          userId: localStorage.getItem("userId"),
+        },
+      });
+      return res.data;
     } catch (err) {
       return [];
     }
