@@ -13,7 +13,7 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import { format, isBefore } from "date-fns";
+import { format, isBefore, startOfDay } from "date-fns";
 import axios from "axios";
 import ConfirmDialog from "../ConfirmDialog";
 
@@ -57,6 +57,16 @@ function GetOneProduct() {
       setIsAvailable(null);
       return;
     }
+
+    const today = startOfDay(new Date());
+    const fromDate = startOfDay(new Date(from));
+
+    if (isBefore(fromDate, today)) {
+      setAvailabilityMessage("Start date must be today or in the future.");
+      toast.error("Start date can't be in the past.");
+      return;
+    }
+
     const validDate = isBefore(new Date(from), new Date(to));
     if (!validDate) {
       setAvailabilityMessage("Please select Valid Date.");
@@ -156,7 +166,7 @@ function GetOneProduct() {
                     </li>
                   ))}
                   <p className="text-sm text-red-700">
-                   * Check Next Date For Rent
+                    * Check Next Date For Rent
                   </p>
                 </ul>
               )}
@@ -213,7 +223,7 @@ function GetOneProduct() {
       {/* Rent dialog */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Choose Rent Period</DialogTitle>
-        <DialogContent className="flex flex-col gap-3 mt-2">
+        <DialogContent className="flex flex-col gap-4 mt-2 overflow-auto">
           <DatePicker
             label="From Date"
             value={from}

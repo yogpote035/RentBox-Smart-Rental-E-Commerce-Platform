@@ -39,7 +39,9 @@ function App() {
                   path="/product/:id"
                   element={
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <GetOneProduct />
+                      <ProtectedRoutes>
+                        <GetOneProduct />
+                      </ProtectedRoutes>
                     </LocalizationProvider>
                   }
                 />
