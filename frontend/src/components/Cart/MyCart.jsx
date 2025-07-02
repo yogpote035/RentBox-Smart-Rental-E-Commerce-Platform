@@ -55,7 +55,7 @@ function MyCart() {
               >
                 <Link to={`/product/${product._id}`} className="block">
                   <img
-                    src={product.image || "/fallback.jpg"}
+                    src={product.image || "/utils/fallback.png"}
                     alt={product.name}
                     className="w-full h-48 object-cover rounded-md mb-4"
                   />

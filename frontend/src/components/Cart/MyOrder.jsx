@@ -46,7 +46,7 @@ function MyOrder() {
             >
               <Link to={`/product/${order.product?._id}`}>
                 <img
-                  src={order.product?.image || "/fallback.jpg"}
+                  src={order.product?.image || "/utils/fallback.png"}
                   alt={order.product?.name}
                   className="w-full h-48 object-cover"
                 />

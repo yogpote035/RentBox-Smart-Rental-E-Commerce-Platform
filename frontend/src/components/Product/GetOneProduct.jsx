@@ -121,7 +121,7 @@ function GetOneProduct() {
     <div className="max-w-6xl mx-auto px-6 py-10">
       <div className="bg-white shadow-xl rounded-xl overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-6">
         <img
-          src={singleProduct?.image || "/fallback.jpg"}
+          src={singleProduct?.image || "/utils/fallback.png"}
           alt={singleProduct?.name}
           className="w-full h-96 object-cover rounded-l-xl"
         />
