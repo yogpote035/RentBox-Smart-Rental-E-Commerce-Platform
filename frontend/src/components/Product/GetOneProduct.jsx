@@ -155,6 +155,9 @@ function GetOneProduct() {
                       {format(new Date(order.to), "dd MMM yyyy")}
                     </li>
                   ))}
+                  <p className="text-sm text-red-700">
+                   * Check Next Date For Rent
+                  </p>
                 </ul>
               )}
             </div>
