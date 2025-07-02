@@ -2,7 +2,7 @@ const OrderModel = require("../model/orderModel");
 
 module.exports.placeOrder = async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
+    const { productId, quantity, from, to } = req.body;
     const userId = req.headers.userid;
 
     if (!productId || !quantity) {
@@ -10,10 +10,15 @@ module.exports.placeOrder = async (req, res) => {
         .status(400)
         .json({ message: "Product and quantity are required." });
     }
-
+    if (!from || !to) {
+      return res.status(400).json({ message: "Renting Period is required." });
+    }
+    
     const newOrder = new OrderModel({
       product: productId,
       quantity,
+      from: new Date(from),
+      to: new Date(to),
       owner: userId,
     });
 
@@ -46,7 +51,6 @@ exports.deleteOrder = async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
-
 
     if (order.owner.toString() !== userId) {
       return res

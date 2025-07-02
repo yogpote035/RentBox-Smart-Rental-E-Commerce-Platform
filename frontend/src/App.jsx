@@ -19,6 +19,8 @@ import MyCart from "./components/Cart/MyCart";
 import CartState from "./context/cart/CartState";
 import MyOrder from "./components/Cart/MyOrder";
 import OrderState from "./context/orders/OrderState";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 function App() {
   return (
@@ -32,7 +34,15 @@ function App() {
                 <Route exact path="/login" element={<Login />} />
                 <Route exact path="/signup" element={<Signup />} />
                 <Route exact path="/" element={<GetAllProduct />} />
-                <Route exact path="/product/:id" element={<GetOneProduct />} />
+                <Route
+                  exact
+                  path="/product/:id"
+                  element={
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <GetOneProduct />
+                    </LocalizationProvider>
+                  }
+                />
                 {/* Protected Rote With token */}
                 <Route
                   exact

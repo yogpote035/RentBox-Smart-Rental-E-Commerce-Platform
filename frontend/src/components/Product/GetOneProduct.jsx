@@ -4,6 +4,9 @@ import ProductContext from "../../context/Product/ProductContext";
 import CartContext from "../../context/cart/CartContext";
 import OrderContext from "../../context/orders/OrderContext";
 import { toast } from "react-toastify";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TextField } from "@mui/material";
+import { format } from "date-fns";
 
 function GetOneProduct() {
   const { id } = useParams();
@@ -18,6 +21,8 @@ function GetOneProduct() {
   const [isRenting, setIsRenting] = useState(false);
   const [isAddingToFavorite, setIsAddingToFavorite] = useState(false);
   const [isDisable, setIsDisable] = useState(false);
+  const [from, setFrom] = useState(null); // store as Date object
+  const [to, setTo] = useState(null);
 
   useEffect(() => {
     getProductById(id);
@@ -29,11 +34,16 @@ function GetOneProduct() {
     if (!localStorage.getItem("token")) {
       return navigate("/login");
     }
+    if (!from || !to) return toast.warning("Please select rent period");
     if (quantity < 1) return toast.warning("Minimum quantity is 1");
 
     setIsRenting(true);
-    await RentNow(singleProduct._id, quantity);
-
+    await RentNow(
+      singleProduct._id,
+      quantity,
+      format(from, "yyyy-MM-dd"),
+      format(to, "yyyy-MM-dd")
+    );
     // Disable for 3 seconds
     setTimeout(() => setIsRenting(false), 3000);
   };
@@ -98,7 +108,7 @@ function GetOneProduct() {
           className="w-full h-96 object-cover rounded-l-xl"
         />
         <div className="p-6 flex flex-col justify-between">
-          <div>
+          <div className="">
             <h1 className="text-4xl font-bold text-indigo-700 mb-4">
               {singleProduct.name}
             </h1>
@@ -108,14 +118,51 @@ function GetOneProduct() {
             <div className="text-xl text-indigo-600 font-semibold mb-4">
               ₹ {singleProduct.price}
             </div>
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-gray-400 mb-4">
               Product ID: {singleProduct._id}
             </div>
           </div>
 
-          <div className="mt-6 flex flex-wrap gap-4 items-center">
+          {(!from || !to) && (
+            <p className="text-rose-700 mt-1 text-base leading-relaxed mb-2">
+              *Please Select your renting period for renting
+            </p>
+          )}
+          <div className="mt- flex flex-wrap gap-4 items-center">
             {!isOwner && (
               <>
+                <DatePicker
+                  label="From Date"
+                  value={from}
+                  format="dd/MM/yyyy"
+                  onChange={(newValue) => setFrom(newValue)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      size="small"
+                      required={true}
+                      className="bg-white rounded"
+                    />
+                  )}
+                />
+
+                <DatePicker
+                  label="To Date"
+                  value={to}
+                  onChange={(newValue) => setTo(newValue)}
+                  format="dd/MM/yyyy"
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      size="small"
+                      required={true}
+                      className="bg-white rounded"
+                    />
+                  )}
+                />
+
                 <button
                   onClick={handleRentNow}
                   disabled={isRenting}
@@ -131,7 +178,7 @@ function GetOneProduct() {
                 <button
                   onClick={handleAddToFavorite}
                   disabled={isAddingToFavorite}
-                  className={`px-6 py-2 rounded transition text-white ${
+                  className={`px-6 py-2 rounded  transition text-white ${
                     isAddingToFavorite
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-green-600 hover:bg-green-700"

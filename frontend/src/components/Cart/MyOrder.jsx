@@ -2,6 +2,7 @@ import { useEffect, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import OrderContext from "../../context/orders/OrderContext";
 import { toast } from "react-toastify";
+import { format } from "date-fns";
 
 function MyOrder() {
   const { fetchMyOrders, cancelOrder, orders } = useContext(OrderContext);
@@ -64,6 +65,14 @@ function MyOrder() {
                 <div className="text-xs text-gray-400 mt-3">
                   Rented on: {new Date(order.createdAt).toLocaleString()}
                 </div>
+
+                <p>
+                  Rent Period:{" "}
+                  <span className="text-indigo-600 font-medium">
+                    {format(new Date(order.from), "dd MMM yyyy")} ➜{" "}
+                    {format(new Date(order.to), "dd MMM yyyy")}
+                  </span>
+                </p>
 
                 <button
                   onClick={() => handleCancel(order._id)}

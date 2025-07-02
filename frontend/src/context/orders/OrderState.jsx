@@ -6,12 +6,13 @@ import OrderContext from "./OrderContext";
 const OrderState = ({ children }) => {
   const [orders, setOrders] = useState([]);
 
-  // 🔄 Rent Now
-  const RentNow = async (productId, quantity) => {
+  //  Rent Now
+  const RentNow = async (productId, quantity, from, to) => {
+
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/order`,
-        { productId, quantity },
+        { productId, quantity, from, to },
         {
           headers: {
             userId: localStorage.getItem("userId"),
@@ -26,7 +27,7 @@ const OrderState = ({ children }) => {
     }
   };
 
-  // 📦 Fetch My Orders
+  //  Fetch My Orders
   const fetchMyOrders = async () => {
     try {
       const res = await axios.get(
@@ -44,9 +45,9 @@ const OrderState = ({ children }) => {
     }
   };
 
-  // ❌ Cancel an Order
+  //  Cancel an Order
   const cancelOrder = async (orderId) => {
-       try {
+    try {
       await axios.delete(
         `${import.meta.env.VITE_BACKEND_URL}/order/${orderId}`,
         {
@@ -64,7 +65,9 @@ const OrderState = ({ children }) => {
   };
 
   return (
-    <OrderContext.Provider value={{ RentNow, fetchMyOrders, cancelOrder, orders }}>
+    <OrderContext.Provider
+      value={{ RentNow, fetchMyOrders, cancelOrder, orders }}
+    >
       {children}
     </OrderContext.Provider>
   );

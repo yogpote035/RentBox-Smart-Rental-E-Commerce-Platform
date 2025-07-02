@@ -14,6 +14,8 @@ const orderSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "ProductModel",
   },
+  from: { type: Date },
+  to: { type: Date },
   createdAt: {
     type: Date,
     default: Date.now,
