@@ -1,5 +1,6 @@
 const OrderModel = require("../model/orderModel");
 const ProductModel = require("../model/productModel");
+const { isBefore, startOfDay } = require("date-fns");
 
 module.exports.createProduct = async (request, response) => {
   const userId = request.header("userId");
@@ -29,17 +30,51 @@ module.exports.createProduct = async (request, response) => {
   }
 };
 
+const cleanOldBookingsFromProducts = async () => {
+  try {
+    const today = startOfDay(new Date());
+    const allProducts = await ProductModel.find().populate("orders");
+
+    for (const product of allProducts) {
+      const validOrderIds = [];
+
+      if (Array.isArray(product.orders)) {
+        for (const order of product.orders) {
+          if (!order || !order.to) continue;
+
+          const toDate = startOfDay(new Date(order.to));
+          if (!isBefore(toDate, today)) {
+            validOrderIds.push(order._id);
+          }
+        }
+      }
+
+      await ProductModel.findByIdAndUpdate(product._id, {
+        orders: validOrderIds,
+      });
+    }
+
+    console.log("✅ Old bookings cleaned from all products.");
+  } catch (error) {
+    console.error("❌ Error cleaning old bookings:", error.message);
+  }
+};
+
+// Get all products
 module.exports.getAllProducts = async (req, res) => {
   try {
+    await cleanOldBookingsFromProducts();
+
     const allProducts = await ProductModel.find({}).populate(
       "owner",
       "name email"
     );
     res.status(200).json(allProducts);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching products", error: error.message });
+    res.status(500).json({
+      message: "Error fetching products",
+      error: error.message,
+    });
   }
 };
 
