@@ -83,7 +83,7 @@ function App() {
                 />
 
                 <Route
-                  path="/my-orders"
+                  path="/my-rentals"
                   element={
                     <ProtectedRoutes>
                       <MyOrder />

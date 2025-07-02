@@ -1,3 +1,4 @@
+const OrderModel = require("../model/orderModel");
 const ProductModel = require("../model/productModel");
 
 module.exports.createProduct = async (request, response) => {
@@ -46,12 +47,13 @@ module.exports.getAllProducts = async (req, res) => {
 module.exports.getOneProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    const product = await ProductModel.findById(productId).populate("owner");
+    const product = await ProductModel.findById(productId)
+      .populate("owner")
+      .populate("orders");
 
     if (!product) {
       return res.status(404).json({ message: "Product Not Found" });
     }
-
     return res.status(200).json(product);
   } catch (error) {
     return res

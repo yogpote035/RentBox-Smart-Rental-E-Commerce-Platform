@@ -59,7 +59,7 @@ function Navbar() {
             <FaHeart size={20} />
           </Link>
 
-          <Link to="/my-orders" className="text-indigo-700 hover:text-green-600">
+          <Link to="/my-rentals" className="text-indigo-700 hover:text-green-600">
             <FaShoppingCart size={20} />
           </Link>
 
@@ -136,7 +136,7 @@ function Navbar() {
           </Link>
 
           <Link
-            to="/my-orders"
+            to="/my-rentals"
             onClick={closeMenu}
             className="block text-indigo-700 flex items-center gap-2"
           >

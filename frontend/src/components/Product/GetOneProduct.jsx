@@ -5,8 +5,17 @@ import CartContext from "../../context/cart/CartContext";
 import OrderContext from "../../context/orders/OrderContext";
 import { toast } from "react-toastify";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { TextField } from "@mui/material";
-import { format } from "date-fns";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+} from "@mui/material";
+import { format, isBefore } from "date-fns";
+import axios from "axios";
+import ConfirmDialog from "../ConfirmDialog";
 
 function GetOneProduct() {
   const { id } = useParams();
@@ -14,209 +23,245 @@ function GetOneProduct() {
   const { getProductById, singleProduct, deleteProduct } =
     useContext(ProductContext);
   const { addToCart } = useContext(CartContext);
-  const { RentNow } = useContext(OrderContext);
+  const { RentNow, fetchMyOrders } = useContext(OrderContext);
 
   const [gifOne, setGifOne] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [isRenting, setIsRenting] = useState(false);
   const [isAddingToFavorite, setIsAddingToFavorite] = useState(false);
   const [isDisable, setIsDisable] = useState(false);
-  const [from, setFrom] = useState(null); // store as Date object
+  const [from, setFrom] = useState(null);
   const [to, setTo] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [availabilityMessage, setAvailabilityMessage] = useState("");
+  const [isAvailable, setIsAvailable] = useState(null);
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
   useEffect(() => {
     getProductById(id);
-    const timer = setTimeout(() => setGifOne(false), 6100);
+    fetchMyOrders();
+    const timer = setTimeout(() => setGifOne(false), 1500);
     return () => clearTimeout(timer);
   }, [id]);
 
-  const handleRentNow = async () => {
-    if (!localStorage.getItem("token")) {
-      return navigate("/login");
+  useEffect(() => {
+    if (singleProduct?.orders) {
+      setOrders(singleProduct.orders);
     }
-    if (!from || !to) return toast.warning("Please select rent period");
-    if (quantity < 1) return toast.warning("Minimum quantity is 1");
+  }, [singleProduct]);
+
+  const handleCheckAvailability = async () => {
+    if (!from || !to) {
+      setAvailabilityMessage("Please select both dates.");
+      setIsAvailable(null);
+      return;
+    }
+    const validDate = isBefore(new Date(from), new Date(to));
+    if (!validDate) {
+      setAvailabilityMessage("Please select Valid Date.");
+      return toast.error("Select Valid Date");
+    }
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/order/check-availability`,
+        {
+          productId: id,
+          from,
+          to,
+        }
+      );
+
+      setAvailabilityMessage("✔ Product is available for selected dates.");
+      setIsAvailable(true);
+      toast.success("Available to rent");
+    } catch (err) {
+      const nextDate = format(
+        new Date(err.response?.data?.nextAvailable),
+        "dd/MM/yyyy"
+      );
+      setAvailabilityMessage(
+        `❌ Already booked for selected dates. Available on : ${nextDate}`
+      );
+
+      setIsAvailable(false);
+      toast.error(err.response?.data?.message || "Not available");
+    }
+  };
+
+  const handleRentNow = async () => {
+    if (!isAvailable || !from || !to) {
+      toast.warning("Check availability first");
+      return;
+    }
 
     setIsRenting(true);
     await RentNow(
-      singleProduct._id,
+      id,
       quantity,
       format(from, "yyyy-MM-dd"),
       format(to, "yyyy-MM-dd")
     );
-    // Disable for 3 seconds
-    setTimeout(() => setIsRenting(false), 3000);
-  };
-
-  const handleAddToFavorite = async () => {
-    if (!localStorage.getItem("token")) {
-      return navigate("/login");
-    }
-    if (quantity < 1) return toast.warning("Minimum quantity is 1");
-
-    setIsAddingToFavorite(true);
-    await addToCart(singleProduct._id, quantity);
-
-    // Disable for 3 seconds
-    setTimeout(() => setIsAddingToFavorite(false), 3000);
+    toast.success("Rent confirmed");
+    setIsRenting(false);
+    setOpenDialog(false);
+    fetchMyOrders(); // update UI
   };
 
   const handleDelete = async () => {
     setIsDisable(true);
-    const res = await deleteProduct(singleProduct._id);
-
-    // Disable for 3 seconds
+    const res = await deleteProduct(id);
     setTimeout(() => setIsAddingToFavorite(false), 2000);
-
-    if (res) {
-      navigate("/my-products");
-    }
+    if (res) navigate("/my-products");
   };
 
   const isOwner = singleProduct?.owner?._id === localStorage.getItem("userId");
-
-  if (!singleProduct) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black w-screen h-screen overflow-hidden">
-        {gifOne ? (
-          <video
-            src="/utils/newLoading.mp4"
-            autoPlay
-            loop
-            muted
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <video
-            src="/utils/404.mp4"
-            autoPlay
-            loop
-            muted
-            className="w-full h-full object-cover"
-          />
-        )}
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
       <div className="bg-white shadow-xl rounded-xl overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-6">
         <img
-          src={singleProduct.image || "/fallback.jpg"}
-          alt={singleProduct.name}
+          src={singleProduct?.image || "/fallback.jpg"}
+          alt={singleProduct?.name}
           className="w-full h-96 object-cover rounded-l-xl"
         />
         <div className="p-6 flex flex-col justify-between">
-          <div className="">
+          <div>
             <h1 className="text-4xl font-bold text-indigo-700 mb-4">
-              {singleProduct.name}
+              {singleProduct?.name}
             </h1>
             <p className="text-gray-700 text-base leading-relaxed mb-4">
-              {singleProduct.description}
+              {singleProduct?.description}
             </p>
             <div className="text-xl text-indigo-600 font-semibold mb-4">
-              ₹ {singleProduct.price}
+              ₹ {singleProduct?.price}
             </div>
             <div className="text-sm text-gray-400 mb-4">
-              Product ID: {singleProduct._id}
+              Product ID: {singleProduct?._id}
+            </div>
+
+            {/* Booked dates */}
+            <div className="mb-3">
+              <h3 className="text-sm font-semibold text-red-600">
+                Booking Status:
+              </h3>
+              {orders.length === 0 ? (
+                <span className="text-green-600">No bookings yet</span>
+              ) : (
+                <ul className="text-sm text-gray-700">
+                  {orders.map((order) => (
+                    <li key={order._id}>
+                      {format(new Date(order.from), "dd MMM yyyy")} ➜{" "}
+                      {format(new Date(order.to), "dd MMM yyyy")}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
 
-          {(!from || !to) && (
-            <p className="text-rose-700 mt-1 text-base leading-relaxed mb-2">
-              *Please Select your renting period for renting
-            </p>
+          {!isOwner && (
+            <div className="mt-4 flex flex-wrap gap-4 items-center">
+              <button
+                onClick={() => setOpenDialog(true)}
+                className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition"
+              >
+                Rent Now
+              </button>
+
+              <button
+                onClick={() => addToCart(singleProduct._id, quantity)}
+                disabled={isAddingToFavorite}
+                className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
+              >
+                Add To Favorite
+              </button>
+
+              <input
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+                min="1"
+                className="w-20 border rounded px-2 py-1 outline-none"
+              />
+            </div>
           )}
-          <div className="mt- flex flex-wrap gap-4 items-center">
-            {!isOwner && (
-              <>
-                <DatePicker
-                  label="From Date"
-                  value={from}
-                  format="dd/MM/yyyy"
-                  onChange={(newValue) => setFrom(newValue)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      size="small"
-                      required={true}
-                      className="bg-white rounded"
-                    />
-                  )}
-                />
 
-                <DatePicker
-                  label="To Date"
-                  value={to}
-                  onChange={(newValue) => setTo(newValue)}
-                  format="dd/MM/yyyy"
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      size="small"
-                      required={true}
-                      className="bg-white rounded"
-                    />
-                  )}
-                />
-
-                <button
-                  onClick={handleRentNow}
-                  disabled={isRenting}
-                  className={`px-6 py-2 rounded transition text-white ${
-                    isRenting
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-indigo-600 hover:bg-indigo-700"
-                  }`}
-                >
-                  {isRenting ? "Processing..." : "Rent Now"}
-                </button>
-
-                <button
-                  onClick={handleAddToFavorite}
-                  disabled={isAddingToFavorite}
-                  className={`px-6 py-2 rounded  transition text-white ${
-                    isAddingToFavorite
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-green-600 hover:bg-green-700"
-                  }`}
-                >
-                  {isAddingToFavorite ? "Adding..." : "Add To Favorite"}
-                </button>
-
-                <input
-                  type="number"
-                  value={quantity}
-                  onChange={(e) => setQuantity(Number(e.target.value))}
-                  min="1"
-                  className="w-20 border rounded px-2 py-1 outline-none"
-                />
-              </>
-            )}
-
-            {isOwner && (
-              <>
-                <button
-                  onClick={() => navigate(`/update-product/${id}`)}
-                  className="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600 transition"
-                >
-                  Update Product
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition"
-                  disabled={isDisable}
-                >
-                  Delete Product
-                </button>
-              </>
-            )}
-          </div>
+          {isOwner && (
+            <div className="mt-4 flex gap-4">
+              <button
+                onClick={() => navigate(`/update-product/${id}`)}
+                className="bg-yellow-500 text-white px-6 py-2 rounded cursor-pointer hover:bg-yellow-600 transition"
+              >
+                Update Product
+              </button>
+              <Button
+                onClick={() => setIsConfirmDialogOpen(true)}
+                className="!bg-red-600 !text-white px-6 py-2 rounded hover:!bg-red-700 !transition"
+                disabled={isDisable}
+              >
+                Delete
+              </Button>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Rent dialog */}
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Choose Rent Period</DialogTitle>
+        <DialogContent className="flex flex-col gap-3 mt-2">
+          <DatePicker
+            label="From Date"
+            value={from}
+            onChange={(newValue) => setFrom(newValue)}
+            format="dd/MM/yyyy"
+            slotProps={{ textField: { fullWidth: true } }}
+          />
+          <DatePicker
+            label="To Date"
+            value={to}
+            onChange={(newValue) => setTo(newValue)}
+            format="dd/MM/yyyy"
+            slotProps={{ textField: { fullWidth: true } }}
+          />
+          {availabilityMessage && (
+            <Typography
+              variant="body2"
+              color={isAvailable ? "green" : "error"}
+              className="pl-1 pt-1"
+            >
+              {availabilityMessage}
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="error">
+            Cancel
+          </Button>
+          <Button onClick={handleCheckAvailability}>Check Availability</Button>
+          <Button
+            onClick={handleRentNow}
+            variant="contained"
+            disabled={!isAvailable}
+            color="primary"
+          >
+            Confirm Rent
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Confirm delete dialog */}
+      <ConfirmDialog
+        open={isConfirmDialogOpen}
+        onClose={() => setIsConfirmDialogOpen(false)}
+        onConfirm={async () => {
+          setIsConfirmDialogOpen(false);
+          await handleDelete();
+        }}
+        title="Confirm Deletion"
+        content="Are you sure you want to delete this product? This action cannot be undone."
+      />
     </div>
   );
 }

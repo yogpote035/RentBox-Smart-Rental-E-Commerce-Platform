@@ -3,23 +3,28 @@ import { Link } from "react-router-dom";
 import OrderContext from "../../context/orders/OrderContext";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
+import ConfirmDialog from "../ConfirmDialog";
 
 function MyOrder() {
   const { fetchMyOrders, cancelOrder, orders } = useContext(OrderContext);
-  const [disabledButtons, setDisabledButtons] = useState({}); // Track disabled buttons by order ID
+  const [disabledButtons, setDisabledButtons] = useState({});
+  const [selectedOrderId, setSelectedOrderId] = useState(null); // For dialog
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchMyOrders();
   }, []);
 
-  const handleCancel = (orderId) => {
-    const confirm = window.confirm(
-      "Are you sure you want to cancel this rental?"
-    );
-    if (!confirm) return toast.info("You Cancel Order Deletion");
+  const handleOpenConfirm = (orderId) => {
+    setSelectedOrderId(orderId);
+    setIsDialogOpen(true);
+  };
 
-    setDisabledButtons((prev) => ({ ...prev, [orderId]: true }));
-    cancelOrder(orderId);
+  const handleConfirmCancel = async () => {
+    setDisabledButtons((prev) => ({ ...prev, [selectedOrderId]: true }));
+    setIsDialogOpen(false);
+    await cancelOrder(selectedOrderId);
+    toast.success("Order cancelled");
   };
 
   return (
@@ -75,8 +80,8 @@ function MyOrder() {
                 </p>
 
                 <button
-                  onClick={() => handleCancel(order._id)}
-                  disabled={!!disabledButtons[order._id]} // Check if this order's button is disabled
+                  onClick={() => handleOpenConfirm(order._id)}
+                  disabled={!!disabledButtons[order._id]}
                   className={`mt-4 px-4 py-2 rounded transition w-full ${
                     disabledButtons[order._id]
                       ? "bg-gray-400 cursor-not-allowed text-white"
@@ -93,6 +98,15 @@ function MyOrder() {
           ))}
         </div>
       )}
+
+      {/* Confirmation Dialog */}
+      <ConfirmDialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onConfirm={handleConfirmCancel}
+        title="Confirm Cancellation"
+        content="Are you sure you want to cancel this rental order?"
+      />
     </div>
   );
 }
