@@ -21,7 +21,9 @@ import MyOrder from "./components/Cart/MyOrder";
 import OrderState from "./context/orders/OrderState";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-
+import SearchProduct from "./components/Product/SearchProduct";
+import AboutPage from "./pages/AboutPage";
+import Footer from "./pages/Footer";
 function App() {
   return (
     <OrderState>
@@ -29,71 +31,78 @@ function App() {
         <ProductState>
           <UserState>
             <Router>
-              <Navbar />
-              <Routes>
-                <Route exact path="/login" element={<Login />} />
-                <Route exact path="/signup" element={<Signup />} />
-                <Route exact path="/" element={<GetAllProduct />} />
-                <Route
-                  exact
-                  path="/product/:id"
-                  element={
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <ProtectedRoutes>
-                        <GetOneProduct />
-                      </ProtectedRoutes>
-                    </LocalizationProvider>
-                  }
-                />
-                {/* Protected Rote With token */}
-                <Route
-                  exact
-                  path="/create-product"
-                  element={
-                    <ProtectedRoutes>
-                      <CreateProduct />
-                    </ProtectedRoutes>
-                  }
-                />
-                <Route
-                  exact
-                  path="/update-product/:id"
-                  element={
-                    <ProtectedRoutes>
-                      <UpdateProduct />
-                    </ProtectedRoutes>
-                  }
-                />
-                <Route
-                  exact
-                  path="/my-products"
-                  element={
-                    <ProtectedRoutes>
-                      <MyProducts />
-                    </ProtectedRoutes>
-                  }
-                />
-                {/* cart */}
-                <Route
-                  exact
-                  path="/my-favorite"
-                  element={
-                    <ProtectedRoutes>
-                      <MyCart />
-                    </ProtectedRoutes>
-                  }
-                />
+              <div className="min-h-screen flex flex-col">
+                <Navbar />
 
-                <Route
-                  path="/my-rentals"
-                  element={
-                    <ProtectedRoutes>
-                      <MyOrder />
-                    </ProtectedRoutes>
-                  }
-                />
-              </Routes>
-              <ToastContainer position="bottom-left" autoClose={3000} />
+                {/* Main Content */}
+                <div className="flex-grow">
+                  <Routes>
+                    <Route exact path="/login" element={<Login />} />
+                    <Route exact path="/signup" element={<Signup />} />
+                    <Route exact path="/" element={<GetAllProduct />} />
+                    <Route
+                      exact
+                      path="/product/:id"
+                      element={
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                          <ProtectedRoutes>
+                            <GetOneProduct />
+                          </ProtectedRoutes>
+                        </LocalizationProvider>
+                      }
+                    />
+                    <Route
+                      exact
+                      path="/create-product"
+                      element={
+                        <ProtectedRoutes>
+                          <CreateProduct />
+                        </ProtectedRoutes>
+                      }
+                    />
+                    <Route
+                      exact
+                      path="/update-product/:id"
+                      element={
+                        <ProtectedRoutes>
+                          <UpdateProduct />
+                        </ProtectedRoutes>
+                      }
+                    />
+                    <Route
+                      exact
+                      path="/my-products"
+                      element={
+                        <ProtectedRoutes>
+                          <MyProducts />
+                        </ProtectedRoutes>
+                      }
+                    />
+                    <Route
+                      exact
+                      path="/my-favorite"
+                      element={
+                        <ProtectedRoutes>
+                          <MyCart />
+                        </ProtectedRoutes>
+                      }
+                    />
+                    <Route
+                      path="/my-rentals"
+                      element={
+                        <ProtectedRoutes>
+                          <MyOrder />
+                        </ProtectedRoutes>
+                      }
+                    />
+                    <Route path="/search" element={<SearchProduct />} />
+                    <Route path="/about-dev" element={<AboutPage />} />
+                  </Routes>
+                </div>
+
+                <Footer />
+                <ToastContainer position="bottom-left" autoClose={3000} />
+              </div>
             </Router>
           </UserState>
         </ProductState>

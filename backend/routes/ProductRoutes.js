@@ -9,8 +9,10 @@ const {
   updateProduct,
   deleteProduct,
   getMyProducts,
+  searchProducts,
 } = require("../controllers/ProductController");
 
+router.get("/search", searchProducts);
 router.post("/create-product", getUser, upload.single("image"), createProduct);
 router.get("/my-products", getUser, getMyProducts);
 router.get("/:id", getUser, getOneProduct);

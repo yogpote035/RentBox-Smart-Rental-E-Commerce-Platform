@@ -3,16 +3,26 @@ import { useContext, useState } from "react";
 import UserContext from "../context/Authentication/UserContext";
 import { FaShoppingCart, FaHeart, FaBars, FaTimes } from "react-icons/fa";
 import logo from "/utils/Logo.png";
+import logo2 from "/utils/RENTBOX.png";
 
 function Navbar() {
   const { logout, isAuthenticated } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleLogout = () => {
     logout();
     navigate("/login");
+    setMenuOpen(false);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!searchTerm.trim()) return;
+    navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
+    setSearchTerm("");
     setMenuOpen(false);
   };
 
@@ -25,11 +35,39 @@ function Navbar() {
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         {/* Logo */}
         <Link to="/" onClick={closeMenu} className="flex items-center gap-2">
-          <img src={logo} alt="Logo" className="h-10 w-auto" />
+          <img
+            src={logo}
+            alt="Logo"
+            className="h-10 w-auto  md:hidden lg:block sm:block space-x-0.5"
+          />{" "}
+          <img
+            src={logo2}
+            alt="Logo"
+            className="h-7 w-25 hidden md:block lg:hidden sm:hidden"
+          />{" "}
         </Link>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-6">
+          <form
+            onSubmit={handleSearch}
+            className="hidden md:flex items-center gap-2"
+          >
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search products..."
+              className="border border-gray-300 px-3 py-1.5 rounded-md outline-none"
+            />
+            <button
+              type="submit"
+              className="bg-indigo-500 text-white px-3 py-1.5 rounded hover:bg-indigo-600 transition"
+            >
+              Search
+            </button>
+          </form>
+
           {location.pathname !== "/" && (
             <Link
               to="/"
@@ -46,7 +84,7 @@ function Navbar() {
                   to="/create-product"
                   className="text-indigo-700 font-medium hover:underline"
                 >
-                  Add Rental(Any thing)
+                  Add Rental
                 </Link>
               )}
 
@@ -105,6 +143,25 @@ function Navbar() {
       {/* Mobile Dropdown */}
       {menuOpen && (
         <div className="md:hidden mt-4 px-2 space-y-3">
+          <form
+            onSubmit={handleSearch}
+            className="md:hidden flex gap-2 px-2 pb-3 items-center"
+          >
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search products..."
+              className="w-full border border-gray-300 px-3 py-1.5 rounded-md outline-none"
+            />
+            <button
+              type="submit"
+              className="bg-indigo-500 text-white px-3 py-1.5 rounded hover:bg-indigo-600 transition"
+            >
+              Go
+            </button>
+          </form>
+
           {location.pathname !== "/" && (
             <Link
               to="/"
@@ -137,7 +194,7 @@ function Navbar() {
               <Link
                 to="/my-favorite"
                 onClick={closeMenu}
-                className="block text-indigo-700 flex items-center gap-2"
+                className="text-indigo-700 flex items-center gap-2"
               >
                 <FaHeart /> Favorites
               </Link>
@@ -145,7 +202,7 @@ function Navbar() {
               <Link
                 to="/my-rentals"
                 onClick={closeMenu}
-                className="block text-indigo-700 flex items-center gap-2"
+                className="text-indigo-700 flex items-center gap-2"
               >
                 <FaShoppingCart /> Rentals
               </Link>

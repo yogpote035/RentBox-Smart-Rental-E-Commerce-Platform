@@ -161,3 +161,16 @@ module.exports.getMyProducts = async (req, res) => {
     return res.status(500).json({ message: "Error fetching user products" });
   }
 };
+
+module.exports.searchProducts = async (req, res) => {
+  const { query } = req.query;
+  try {
+    const products = await ProductModel.find({
+      name: { $regex: query, $options: "i" },
+    }).populate("owner", "name email");
+
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Search failed", error: error.message });
+  }
+};
