@@ -34,7 +34,7 @@
 - 🖼️ **Image Uploads** using Multer middleware  
 - 📆 **Date-based Rentals**: Book products with rental duration  
 - ❌ **Conflict Prevention**: Block overlapping bookings via `date-fns`  
-- ⭐ **Review System**: 1 editable review per user  
+- ⭐ **Review System**: 1 review per user  
 - 📊 **Auto-calculated Ratings**  
 - 🗂️ **My Listings** & **My Rentals** dashboards  
 - 🔍 **Search + Filter**: Category, Rating, Availability  
