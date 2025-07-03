@@ -2,19 +2,43 @@ import { useEffect, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import OrderContext from "../../context/orders/OrderContext";
 import { toast } from "react-toastify";
-import { format } from "date-fns";
+import { format, isBefore, isAfter } from "date-fns";
 import ConfirmDialog from "../ConfirmDialog";
+import axios from "axios";
+import Rating from "@mui/material/Rating";
 
 function MyOrder() {
-  const { fetchMyOrders, cancelOrder, orders } = useContext(OrderContext);
+  const {
+    fetchMyOrders,
+    cancelOrder,
+    orders,
+    addReview,
+    setShowReviewForm,
+    setReviewRating,
+    setReviewMessage,
+    setReviewOrderId,
+    showReviewForm,
+    reviewRating,
+    reviewMessage,
+    reviewOrderId,
+    checkReviewedByUser,
+    reviewedOrders,
+  } = useContext(OrderContext);
   const [disabledButtons, setDisabledButtons] = useState({});
-  const [selectedOrderId, setSelectedOrderId] = useState(null); // For dialog
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Review Modal State
 
   useEffect(() => {
     fetchMyOrders();
   }, []);
 
+  useEffect(() => {
+    if (orders.length > 0) {
+      checkReviewedByUser();
+    }
+  }, [orders]);
   const handleOpenConfirm = (orderId) => {
     setSelectedOrderId(orderId);
     setIsDialogOpen(true);
@@ -25,6 +49,13 @@ function MyOrder() {
     setIsDialogOpen(false);
     await cancelOrder(selectedOrderId);
     toast.success("Order cancelled");
+  };
+
+  const handleLeaveReview = async () => {
+    if (!reviewMessage || reviewRating === 0) {
+      return toast.error("Please fill out all review fields.");
+    }
+    await addReview(reviewOrderId, reviewMessage, reviewRating);
   };
 
   return (
@@ -79,27 +110,52 @@ function MyOrder() {
                   </span>
                 </p>
 
-                <button
-                  onClick={() => handleOpenConfirm(order._id)}
-                  disabled={!!disabledButtons[order._id]}
-                  className={`mt-4 px-4 py-2 rounded transition w-full ${
-                    disabledButtons[order._id]
-                      ? "bg-gray-400 cursor-not-allowed text-white"
-                      : "bg-red-500 hover:bg-red-600 text-white"
-                  }`}
-                  type="button"
-                >
-                  {disabledButtons[order._id]
-                    ? "Cancelling..."
-                    : "Cancel Order"}
-                </button>
+                {/* Cancel Button (if rental not expired) */}
+                {isAfter(order?.to, new Date()) && (
+                  <button
+                    onClick={() => handleOpenConfirm(order._id)}
+                    disabled={!!disabledButtons[order._id]}
+                    className={`mt-4 px-4 py-2 rounded transition w-full ${
+                      disabledButtons[order._id]
+                        ? "bg-gray-400 cursor-not-allowed text-white"
+                        : "bg-red-500 hover:bg-red-600 text-white"
+                    }`}
+                    type="button"
+                  >
+                    {disabledButtons[order._id]
+                      ? "Cancelling..."
+                      : "Cancel Order"}
+                  </button>
+                )}
+
+                {/* Review Button (if rental is in past) */}
+                {isBefore(order?.to, new Date()) &&
+                  (reviewedOrders[order._id] ? (
+                    <button
+                      disabled
+                      className="mt-4 px-4 py-2 rounded w-full bg-green-600 text-white cursor-not-allowed"
+                    >
+                      ✅ You Reviewed
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setReviewOrderId(order._id);
+                        setShowReviewForm(true);
+                      }}
+                      className="mt-4 px-4 py-2 rounded transition w-full bg-sky-700 hover:bg-sky-900 text-white"
+                      type="button"
+                    >
+                      Leave A Review
+                    </button>
+                  ))}
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Confirmation Dialog */}
+      {/* Confirm Cancel Dialog */}
       <ConfirmDialog
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
@@ -107,6 +163,52 @@ function MyOrder() {
         title="Confirm Cancellation"
         content="Are you sure you want to cancel this rental order?"
       />
+
+      {/* Review Modal */}
+      {showReviewForm && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-lg relative">
+            <h3 className="text-xl font-semibold mb-4">Write a Review</h3>
+
+            <div className="flex flex-col items-center justify-center text-center">
+              <label className="text-lg font-medium mb-2">Rating</label>
+              <Rating
+                name="review-rating"
+                value={reviewRating}
+                onChange={(event, newValue) => setReviewRating(newValue)}
+                precision={1}
+                style={{ fontSize: "40px" }}
+              />
+            </div>
+
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Message:
+            </label>
+            <textarea
+              rows="4"
+              value={reviewMessage}
+              onChange={(e) => setReviewMessage(e.target.value)}
+              className="w-full border px-3 py-2 mb-4 outline-0 rounded"
+              placeholder="Write your review..."
+            ></textarea>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowReviewForm(false)}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLeaveReview}
+                className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

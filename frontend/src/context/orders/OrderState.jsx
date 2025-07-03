@@ -8,6 +8,14 @@ const OrderState = ({ children }) => {
   const [orders, setOrders] = useState([]);
   const [availabilityMessage, setAvailabilityMessage] = useState("");
   const [isAvailable, setIsAvailable] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [reviewedOrders, setReviewedOrders] = useState({});
+
+  // add review
+  const [reviewOrderId, setReviewOrderId] = useState(null);
+  const [reviewMessage, setReviewMessage] = useState("");
+  const [reviewRating, setReviewRating] = useState(0);
+  const [showReviewForm, setShowReviewForm] = useState(false);
   //  Rent Now
   const RentNow = async (productId, quantity, from, to) => {
     try {
@@ -123,6 +131,84 @@ const OrderState = ({ children }) => {
     }
   };
 
+  const fetchReviews = async (id) => {
+    if (!id) {
+      return toast.warning("Product Id Not Found");
+    }
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/review/${id}`,
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+            userid: localStorage.getItem("userId"),
+          },
+        }
+      );
+      setReviews(res.data);
+    } catch (err) {
+      console.error("Error fetching reviews:", err.message);
+    }
+  };
+
+  const addReview = async (reviewOrderId, reviewMessage, reviewRating) => {
+    try {
+      const order = orders.find((o) => o._id === reviewOrderId);
+      if (!order) {
+        return toast.warning("Something Went Wrong Wait Some Time");
+      }
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/review/add`,
+        {
+          product: order?.product?._id,
+          order: reviewOrderId,
+          message: reviewMessage,
+          rating: reviewRating,
+        },
+        {
+          headers: {
+            userid: localStorage.getItem("userId"),
+            token: localStorage.getItem("token"),
+          },
+        }
+      );
+      toast.success("Review submitted!");
+      setShowReviewForm(false);
+      setReviewOrderId(null);
+      setReviewMessage("");
+      setReviewRating(0);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to submit review.");
+    }
+  };
+
+  const checkReviewedByUser = async () => {
+    const userId = localStorage.getItem("userId");
+    const reviewStatusMap = {};
+
+    for (const order of orders) {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/review/check-reviewed/${
+            order._id
+          }`,
+          {
+            headers: {
+              userid: userId,
+              token: localStorage.getItem("token"),
+            },
+          }
+        );
+        reviewStatusMap[order._id] = res.data.reviewed; // `true` or `false`
+      } catch (error) {
+        console.error(`Error checking review for order ${order._id}:`, error);
+        reviewStatusMap[order._id] = false; // Fallback if request fails
+      }
+    }
+
+    setReviewedOrders(reviewStatusMap);
+  };
+
   return (
     <OrderContext.Provider
       value={{
@@ -133,6 +219,19 @@ const OrderState = ({ children }) => {
         isAvailable,
         availabilityMessage,
         CheckAvailability,
+        fetchReviews,
+        reviews,
+        addReview,
+        setShowReviewForm,
+        setReviewRating,
+        setReviewMessage,
+        setReviewOrderId,
+        showReviewForm,
+        reviewRating,
+        reviewMessage,
+        reviewOrderId,
+        checkReviewedByUser,
+        reviewedOrders,
       }}
     >
       {children}

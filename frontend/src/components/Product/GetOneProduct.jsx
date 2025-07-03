@@ -29,6 +29,8 @@ function GetOneProduct() {
     isAvailable,
     availabilityMessage,
     CheckAvailability,
+    fetchReviews,
+    reviews,
   } = useContext(OrderContext);
 
   const [gifOne, setGifOne] = useState(true);
@@ -46,6 +48,7 @@ function GetOneProduct() {
   useEffect(() => {
     getProductById(id);
     fetchMyOrders();
+    fetchReviews(id);
     const timer = setTimeout(() => setGifOne(false), 1500);
     return () => clearTimeout(timer);
   }, [id]);
@@ -180,6 +183,39 @@ function GetOneProduct() {
             </div>
           )}
         </div>
+      </div>
+
+      <div className="mt-10">
+        <h2 className="text-2xl font-bold text-indigo-700 mb-4">
+          Customer Reviews
+        </h2>
+
+        {reviews.length === 0 ? (
+          <p className="text-gray-500">No reviews yet.</p>
+        ) : (
+          <div className="space-y-4">
+            {reviews.map((review) => (
+              <div key={review._id} className="bg-gray-100 p-4 rounded-md">
+                <div className="flex justify-between items-center mb-1">
+                  <p className="font-semibold text-gray-700">
+                    {review.owner?.name || "User"}
+                  </p>
+                  <div className="text-yellow-500 text-sm">
+                    {Array.from({ length: review.rating }, (_, i) => (
+                      <span key={i}>⭐</span>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-gray-800">{review.message}</p>
+                <p className="text-blue-800">
+                  Rent Period: &nbsp;
+                  {format(new Date(review?.order?.from), "dd,MMM,yyyy")}&nbsp; ➜ &nbsp;
+                  {format(new Date(review?.order?.to), "dd,MMM,yyyy")}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Rent dialog */}
