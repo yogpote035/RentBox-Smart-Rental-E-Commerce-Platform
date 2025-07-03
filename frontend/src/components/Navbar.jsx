@@ -49,24 +49,26 @@ function Navbar() {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-6">
-          <form
-            onSubmit={handleSearch}
-            className="hidden md:flex items-center gap-2"
-          >
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search products..."
-              className="border border-gray-300 px-3 py-1.5 rounded-md outline-none"
-            />
-            <button
-              type="submit"
-              className="bg-indigo-500 text-white px-3 py-1.5 rounded hover:bg-indigo-600 transition"
+          {!["/login", "/signup"].includes(location.pathname) && (
+            <form
+              onSubmit={handleSearch}
+              className="hidden md:flex items-center gap-2"
             >
-              Search
-            </button>
-          </form>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search products..."
+                className="border border-gray-300 px-3 py-1.5 rounded-md outline-none"
+              />
+              <button
+                type="submit"
+                className="bg-indigo-500 text-white px-3 py-1.5 rounded hover:bg-indigo-600 transition"
+              >
+                Search
+              </button>
+            </form>
+          )}
 
           {location.pathname !== "/" && (
             <Link
@@ -118,13 +120,13 @@ function Navbar() {
             <>
               <Link
                 to="/login"
-                className="bg-indigo-500 text-white px-4 py-1.5 rounded hover:bg-indigo-600 transition"
+                className="bg-gray-200 text-indigo-700 px-4 py-1.5 rounded hover:bg-gray-100 transition"
               >
                 Login
               </Link>
               <Link
                 to="/signup"
-                className="bg-gray-200 text-indigo-700 px-4 py-1.5 rounded hover:bg-gray-300 transition"
+                className="bg-gray-200 text-indigo-700 px-4 py-1.5 rounded hover:bg-gray-100 transition"
               >
                 Signup
               </Link>
