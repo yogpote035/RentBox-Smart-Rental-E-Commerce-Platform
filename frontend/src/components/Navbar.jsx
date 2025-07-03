@@ -39,20 +39,6 @@ function Navbar() {
             </Link>
           )}
 
-          <Link
-            to="/my-favorite"
-            className="text-indigo-700 hover:text-red-600"
-          >
-            <FaHeart size={20} />
-          </Link>
-
-          <Link
-            to="/my-rentals"
-            className="text-indigo-700 hover:text-green-600"
-          >
-            <FaShoppingCart size={20} />
-          </Link>
-
           {isAuthenticated ? (
             <>
               {location.pathname !== "/" && (
@@ -69,6 +55,19 @@ function Navbar() {
                 className="text-indigo-700 font-medium hover:underline"
               >
                 My Rentals
+              </Link>
+              <Link
+                to="/my-favorite"
+                className="text-indigo-700 hover:text-red-600"
+              >
+                <FaHeart size={20} />
+              </Link>
+
+              <Link
+                to="/my-rentals"
+                className="text-indigo-700 hover:text-green-600"
+              >
+                <FaShoppingCart size={20} />
               </Link>
               <button
                 onClick={handleLogout}
