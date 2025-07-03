@@ -13,7 +13,7 @@ const {
 
 router.post("/create-product", getUser, upload.single("image"), createProduct);
 router.get("/my-products", getUser, getMyProducts);
-router.get("/:id", getOneProduct);
+router.get("/:id", getUser, getOneProduct);
 router.get("/", getAllProducts);
 router.put("/:id", getUser, upload.single("image"), updateProduct);
 router.delete("/:id", getUser, deleteProduct);

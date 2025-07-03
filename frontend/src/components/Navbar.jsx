@@ -39,37 +39,44 @@ function Navbar() {
             </Link>
           )}
 
-          {location.pathname !== "/" && (
-            <Link
-              to="/create-product"
-              className="text-indigo-700 font-medium hover:underline"
-            >
-              Add Item
-            </Link>
-          )}
-
           <Link
-            to="/my-products"
-            className="text-indigo-700 font-medium hover:underline"
+            to="/my-favorite"
+            className="text-indigo-700 hover:text-red-600"
           >
-            My Products
-          </Link>
-
-          <Link to="/my-favorite" className="text-indigo-700 hover:text-red-600">
             <FaHeart size={20} />
           </Link>
 
-          <Link to="/my-rentals" className="text-indigo-700 hover:text-green-600">
+          <Link
+            to="/my-rentals"
+            className="text-indigo-700 hover:text-green-600"
+          >
             <FaShoppingCart size={20} />
           </Link>
 
           {isAuthenticated ? (
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 text-white px-4 py-1.5 rounded hover:bg-red-600 transition"
-            >
-              Logout
-            </button>
+            <>
+              {location.pathname !== "/" && (
+                <Link
+                  to="/create-product"
+                  className="text-indigo-700 font-medium hover:underline"
+                >
+                  Add Rental(Any thing)
+                </Link>
+              )}
+
+              <Link
+                to="/my-products"
+                className="text-indigo-700 font-medium hover:underline"
+              >
+                My Rentals
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-1.5 rounded hover:bg-red-600 transition"
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <>
               <Link
@@ -108,41 +115,43 @@ function Navbar() {
               Home
             </Link>
           )}
+          {isAuthenticated && (
+            <>
+              {location.pathname !== "/" && (
+                <Link
+                  to="/create-product"
+                  onClick={closeMenu}
+                  className="block text-indigo-700 font-medium"
+                >
+                  Add Rental(Any thing)
+                </Link>
+              )}
 
-          {location.pathname !== "/" && (
-            <Link
-              to="/create-product"
-              onClick={closeMenu}
-              className="block text-indigo-700 font-medium"
-            >
-              Add Item
-            </Link>
+              <Link
+                to="/my-products"
+                onClick={closeMenu}
+                className="block text-indigo-700 font-medium"
+              >
+                My Rentals
+              </Link>
+
+              <Link
+                to="/my-favorite"
+                onClick={closeMenu}
+                className="block text-indigo-700 flex items-center gap-2"
+              >
+                <FaHeart /> Favorites
+              </Link>
+
+              <Link
+                to="/my-rentals"
+                onClick={closeMenu}
+                className="block text-indigo-700 flex items-center gap-2"
+              >
+                <FaShoppingCart /> Rentals
+              </Link>
+            </>
           )}
-
-          <Link
-            to="/my-products"
-            onClick={closeMenu}
-            className="block text-indigo-700 font-medium"
-          >
-            My Products
-          </Link>
-
-          <Link
-            to="/my-favorite"
-            onClick={closeMenu}
-            className="block text-indigo-700 flex items-center gap-2"
-          >
-            <FaHeart /> Favorites
-          </Link>
-
-          <Link
-            to="/my-rentals"
-            onClick={closeMenu}
-            className="block text-indigo-700 flex items-center gap-2"
-          >
-            <FaShoppingCart /> Orders
-          </Link>
-
           {isAuthenticated ? (
             <button
               onClick={handleLogout}

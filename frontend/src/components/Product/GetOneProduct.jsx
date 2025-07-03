@@ -23,7 +23,13 @@ function GetOneProduct() {
   const { getProductById, singleProduct, deleteProduct } =
     useContext(ProductContext);
   const { addToCart } = useContext(CartContext);
-  const { RentNow, fetchMyOrders } = useContext(OrderContext);
+  const {
+    RentNow,
+    fetchMyOrders,
+    isAvailable,
+    availabilityMessage,
+    CheckAvailability,
+  } = useContext(OrderContext);
 
   const [gifOne, setGifOne] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -34,8 +40,7 @@ function GetOneProduct() {
   const [to, setTo] = useState(null);
   const [orders, setOrders] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [availabilityMessage, setAvailabilityMessage] = useState("");
-  const [isAvailable, setIsAvailable] = useState(null);
+
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -52,53 +57,8 @@ function GetOneProduct() {
   }, [singleProduct]);
 
   const handleCheckAvailability = async () => {
-    if (!from || !to) {
-      setAvailabilityMessage("Please select both dates.");
-      setIsAvailable(null);
-      return;
-    }
-
-    const today = startOfDay(new Date());
-    const fromDate = startOfDay(new Date(from));
-
-    if (isBefore(fromDate, today)) {
-      setAvailabilityMessage("Start date must be today or in the future.");
-      toast.error("Start date can't be in the past.");
-      return;
-    }
-
-    const validDate = isBefore(new Date(from), new Date(to));
-    if (!validDate) {
-      setAvailabilityMessage("Please select Valid Date.");
-      return toast.error("Select Valid Date");
-    }
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/order/check-availability`,
-        {
-          productId: id,
-          from,
-          to,
-        }
-      );
-
-      setAvailabilityMessage("✔ Product is available for selected dates.");
-      setIsAvailable(true);
-      toast.success("Available to rent");
-    } catch (err) {
-      const nextDate = format(
-        new Date(err.response?.data?.nextAvailable),
-        "dd/MM/yyyy"
-      );
-      setAvailabilityMessage(
-        `❌ Already booked for selected dates. Available on : ${nextDate}`
-      );
-
-      setIsAvailable(false);
-      toast.error(err.response?.data?.message || "Not available");
-    }
+    await CheckAvailability(singleProduct._id, from, to);
   };
-
   const handleRentNow = async () => {
     if (!isAvailable || !from || !to) {
       toast.warning("Check availability first");
@@ -165,9 +125,11 @@ function GetOneProduct() {
                       {format(new Date(order.to), "dd MMM yyyy")}
                     </li>
                   ))}
-                  <p className="text-sm text-red-700">
-                    * Check Next Date For Rent
-                  </p>
+                  {!isOwner && (
+                    <p className="text-sm text-red-700">
+                      * Check Next Date For Rent (Click on Rent Now)
+                    </p>
+                  )}
                 </ul>
               )}
             </div>
@@ -206,7 +168,7 @@ function GetOneProduct() {
                 onClick={() => navigate(`/update-product/${id}`)}
                 className="bg-yellow-500 text-white px-6 py-2 rounded cursor-pointer hover:bg-yellow-600 transition"
               >
-                Update Product
+                Update Rentals
               </button>
               <Button
                 onClick={() => setIsConfirmDialogOpen(true)}

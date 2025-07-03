@@ -33,7 +33,9 @@ const ProductState = ({ children }) => {
 
   const getAllProducts = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/product`);
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/product`
+      );
       setProducts(res.data);
     } catch (err) {
       setProducts([]);
@@ -42,7 +44,15 @@ const ProductState = ({ children }) => {
 
   const getProductById = async (id) => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/product/${id}`);
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/product/${id}`,
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+            userId: localStorage.getItem("userId"),
+          },
+        }
+      );
       setSingleProduct(res.data);
     } catch (error) {
       setSingleProduct(null);
@@ -93,12 +103,15 @@ const ProductState = ({ children }) => {
 
   const getMyProducts = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/product/my-products`, {
-        headers: {
-          token: localStorage.getItem("token"),
-          userId: localStorage.getItem("userId"),
-        },
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/product/my-products`,
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+            userId: localStorage.getItem("userId"),
+          },
+        }
+      );
       return res.data;
     } catch (err) {
       return [];

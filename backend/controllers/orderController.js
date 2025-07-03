@@ -97,7 +97,7 @@ module.exports.checkProductAvailability = async (req, res) => {
       const nextAvailable = new Date(latestToDate);
       nextAvailable.setDate(nextAvailable.getDate() + 1);
 
-      return res.status(409).json({
+      return res.status(208).json({
         message: "Product already rented during selected period",
         nextAvailable,
       });
