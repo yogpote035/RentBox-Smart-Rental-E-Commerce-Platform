@@ -2,29 +2,20 @@ import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ProductContext from "../../context/Product/ProductContext";
 import {
-  FaBolt,
-  FaBicycle,
-  FaCar,
-  FaCouch,
-  FaBook,
-  FaTools,
-  FaTshirt,
-  FaMobileAlt,
-  FaFootballBall,
-  FaQuestionCircle,
-  FaHouseDamage,
+  FaBolt, FaBicycle, FaCar, FaCouch, FaBook, FaTools,
+  FaTshirt, FaMobileAlt, FaFootballBall, FaQuestionCircle, FaHouseDamage
 } from "react-icons/fa";
 
 function UpdateProduct() {
-  const { id } = useParams(); // 👈 This is your product ID from URL
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { getProductById, singleProduct, updateProduct } =
-    useContext(ProductContext);
+  const { getProductById, singleProduct, updateProduct } = useContext(ProductContext);
 
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     price: "",
+    priceUnit: "",
     categories: [],
     address: {
       buildingName: "",
@@ -47,10 +38,13 @@ function UpdateProduct() {
 
   useEffect(() => {
     if (singleProduct) {
+      const [priceValue, priceUnitValue] = (singleProduct.price || "").split("/");
+
       setFormData({
         name: singleProduct.name || "",
         description: singleProduct.description || "",
-        price: singleProduct.price || "",
+        price: priceValue || "",
+        priceUnit: priceUnitValue || "",
         categories: singleProduct.categories || [],
         address: singleProduct.address?.[0] || {
           buildingName: "",
@@ -68,18 +62,7 @@ function UpdateProduct() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (
-      [
-        "buildingName",
-        "laneNo",
-        "landmark",
-        "city",
-        "state",
-        "country",
-        "pincode",
-        "phone",
-      ].includes(name)
-    ) {
+    if (["buildingName", "laneNo", "landmark", "city", "state", "country", "pincode", "phone"].includes(name)) {
       setFormData((prev) => ({
         ...prev,
         address: {
@@ -111,7 +94,11 @@ function UpdateProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsDisable(true);
-    const success = await updateProduct(id, formData, image); // 👈 ID passed here
+    const finalFormData = {
+      ...formData,
+      price: `${formData.price}/${formData.priceUnit}`, 
+    };
+    const success = await updateProduct(id, finalFormData, image);
     setTimeout(() => setIsDisable(false), 2000);
     if (success) navigate(`/product/${id}`);
   };
@@ -136,64 +123,28 @@ function UpdateProduct() {
         Update Product
       </h2>
       <form onSubmit={handleSubmit} className="space-y-5">
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          className="w-full p-3 border rounded"
-        />
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          required
-          className="w-full p-3 border rounded"
-        />
-        <input
-          type="text"
-          name="price"
-          value={formData.price}
-          onChange={handleChange}
-          required
-          className="w-full p-3 border rounded"
-        />
+        <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full p-3 border rounded" />
+        <textarea name="description" value={formData.description} onChange={handleChange} required className="w-full p-3 border rounded" />
+        <input type="number" name="price" value={formData.price} onChange={handleChange} required className="w-full p-3 border rounded" />
+
         <select
           name="priceUnit"
-          value={formData.priceUnit || ""}
+          value={formData.priceUnit}
           onChange={handleChange}
           className="w-full p-2 border rounded mt-4"
           required
         >
-          <option value="" disabled>
-            Select Price Unit
-          </option>
+          <option value="" disabled>Select Price Unit</option>
           <option value="per hour">Per Hour</option>
           <option value="per day">Per Day</option>
           <option value="per week">Per Week</option>
           <option value="per month">Per Month</option>
           <option value="per year">Per Year</option>
         </select>
-        {/* Categories */}
-        
-        <h3 className="text-lg font-semibold text-gray-800">
-          🏷️ Select Categories
-        </h3>
+
+        <h3 className="text-lg font-semibold text-gray-800">🏷️ Select Categories</h3>
         <div className="flex flex-wrap gap-2 mb-4">
-          {[
-            { name: "electric", icon: <FaBolt /> },
-            { name: "bike", icon: <FaBicycle /> },
-            { name: "vehicle", icon: <FaCar /> },
-            { name: "furniture", icon: <FaCouch /> },
-            { name: "books", icon: <FaBook /> },
-            { name: "tools", icon: <FaTools /> },
-            { name: "clothing", icon: <FaTshirt /> },
-            { name: "gadgets", icon: <FaMobileAlt /> },
-            { name: "sports", icon: <FaFootballBall /> },
-            { name: "property", icon: <FaHouseDamage /> },
-            { name: "other", icon: <FaQuestionCircle /> },
-          ].map(({ name, icon }) => (
+          {categoryOptions.map(({ name, icon }) => (
             <button
               key={name}
               type="button"
@@ -209,34 +160,16 @@ function UpdateProduct() {
             </button>
           ))}
         </div>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          className="w-full p-3 border rounded"
-        />
 
-        {/* Address */}
+        <input type="file" accept="image/*" onChange={handleImageChange} className="w-full p-3 border rounded" />
+
         <hr className="my-4" />
-        <h3 className="text-xl font-semibold text-gray-800 border-b pb-1">
-          📍 Address Details
-        </h3>
+        <h3 className="text-xl font-semibold text-gray-800 border-b pb-1">📍 Address Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-          {[
-            "buildingName",
-            "laneNo",
-            "landmark",
-            "city",
-            "state",
-            "country",
-            "pincode",
-            "phone",
-          ].map((field) => (
+          {["buildingName", "laneNo", "landmark", "city", "state", "country", "pincode", "phone"].map((field) => (
             <input
               key={field}
-              type={
-                field === "pincode" || field === "phone" ? "number" : "text"
-              }
+              type={field === "pincode" || field === "phone" ? "number" : "text"}
               name={field}
               placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
               value={formData.address[field]}
