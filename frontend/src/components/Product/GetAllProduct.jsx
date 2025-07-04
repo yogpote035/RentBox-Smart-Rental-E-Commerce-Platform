@@ -1,25 +1,39 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ProductContext from "../../context/Product/ProductContext";
+import CategoryNavbar from "../CategoryNavbar"; // 👈 Make sure this is imported correctly
 
 function GetAllProducts() {
   const { products, getAllProducts } = useContext(ProductContext);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
     getAllProducts();
   }, []);
 
+  // Filtered products based on selected category
+  const filteredProducts = selectedCategory
+    ? products.filter((p) => p.categories.includes(selectedCategory))
+    : products;
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
-      <h2 className="text-4xl font-bold text-center text-indigo-700 mb-10">
+      <h2 className="text-4xl font-bold text-center text-indigo-700 mb-6">
         Explore Rental's
       </h2>
 
-      {products.length === 0 ? (
-        <p className="text-center text-gray-500">No products found.</p>
+      {/* 🔹 Category Filter Navigation */}
+      <CategoryNavbar
+        selected={selectedCategory}
+        onSelect={setSelectedCategory}
+      />
+
+      {/* 🔹 Filtered Product List */}
+      {filteredProducts?.length === 0 ? (
+        <p className="text-center text-gray-500 mt-8">No products found.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {products.map((product) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-8">
+          {filteredProducts?.map((product) => (
             <Link
               to={`/product/${product._id}`}
               key={product._id}

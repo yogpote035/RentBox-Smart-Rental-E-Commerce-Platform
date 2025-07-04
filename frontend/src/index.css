@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+input{
+    outline: var(--outline);
+}
+
+/* Hide scrollbar while allowing scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

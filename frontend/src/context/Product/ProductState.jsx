@@ -9,7 +9,12 @@ const ProductState = ({ children }) => {
 
   const createProduct = async (product, image) => {
     const formData = new FormData();
-    for (let key in product) formData.append(key, product[key]);
+
+    formData.append("name", product.name);
+    formData.append("description", product.description);
+    formData.append("price", product.price);
+    formData.append("categories", JSON.stringify(product.categories));
+    formData.append("address", JSON.stringify(product.address));
     formData.append("image", image);
 
     try {
@@ -27,6 +32,7 @@ const ProductState = ({ children }) => {
       toast.success("New Product Is Added");
       return res.data.id;
     } catch (err) {
+      console.error(err);
       toast.error("Product creation failed");
     }
   };
@@ -61,7 +67,15 @@ const ProductState = ({ children }) => {
 
   const updateProduct = async (id, product, image) => {
     const formData = new FormData();
-    for (let key in product) formData.append(key, product[key]);
+
+    for (let key in product) {
+      if (key === "categories" || key === "address") {
+        formData.append(key, JSON.stringify(product[key]));
+      } else {
+        formData.append(key, product[key]);
+      }
+    }
+
     if (image) formData.append("image", image);
 
     try {
@@ -79,6 +93,7 @@ const ProductState = ({ children }) => {
       toast.success("Product updated successfully");
       return true;
     } catch (err) {
+      console.error(err);
       toast.error("Failed to update product");
       return false;
     }

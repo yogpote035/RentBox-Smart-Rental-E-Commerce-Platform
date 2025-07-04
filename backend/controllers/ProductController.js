@@ -5,9 +5,13 @@ const { isBefore, startOfDay } = require("date-fns");
 module.exports.createProduct = async (request, response) => {
   const userId = request.header("userId");
 
-  const { name, description, price } = request.body;
   try {
-    if (!name || !description || !price) {
+    // Parse nested JSON fields sent as strings from FormData
+    const address = JSON.parse(request.body.address);
+    const categories = JSON.parse(request.body.categories);
+    const { name, description, price } = request.body;
+
+    if (!name || !description || !price || !address || !categories) {
       return response.status(406).json({ message: "All Fields Are Required" });
     }
 
@@ -17,9 +21,12 @@ module.exports.createProduct = async (request, response) => {
       price,
       image: request.file?.path,
       owner: userId,
+      address: [address],
+      categories,
     });
 
     await newProduct.save();
+
     return response
       .status(201)
       .json({ message: "Product Created Successfully", id: newProduct._id });
@@ -100,10 +107,20 @@ module.exports.getOneProduct = async (req, res) => {
 module.exports.updateProduct = async (req, res) => {
   try {
     const { name, description, price } = req.body;
-    if (!name || !description || !price) {
-      return response.status(406).json({ message: "All Fields Are Required" });
+    const address = JSON.parse(req.body.address || "null");
+    const categories = JSON.parse(req.body.categories || "null");
+
+    if (!name || !description || !price || !address || !categories) {
+      return res.status(406).json({ message: "All Fields Are Required" });
     }
-    const updateData = { name, description, price };
+
+    const updateData = {
+      name,
+      description,
+      price,
+      address: [address], // stored as array
+      categories,
+    };
 
     if (req.file) {
       updateData.image = req.file?.path;
@@ -121,7 +138,6 @@ module.exports.updateProduct = async (req, res) => {
 
     return res.status(200).json({
       message: "Product updated successfully",
-      product: updated,
     });
   } catch (err) {
     return res

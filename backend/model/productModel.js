@@ -1,5 +1,40 @@
 const { Schema, default: mongoose } = require("mongoose");
 
+const addressSchema = new Schema({
+  buildingName: {
+    type: String,
+    required: true,
+  },
+  laneNo: {
+    type: String,
+    required: true,
+  },
+  landmark: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  country: {
+    type: String,
+    required: true,
+  },
+  pincode: {
+    type: Number,
+    required: true,
+  },
+  phone: {
+    type: Number,
+    required: true,
+  },
+});
+
 const productSchema = new Schema({
   name: {
     type: String,
@@ -10,7 +45,7 @@ const productSchema = new Schema({
     required: true,
   },
   price: {
-    type: Number,
+    type: String,
     required: true,
   },
   image: {
@@ -27,6 +62,26 @@ const productSchema = new Schema({
       ref: "OrderModel",
     },
   ],
+  categories: [
+    {
+      type: String,
+      enum: [
+        "electric",
+        "furniture",
+        "books",
+        "bike",
+        "vehicle",
+        "tools",
+        "clothing",
+        "gadgets",
+        "other",
+        "sports",
+        "property",
+      ],
+      required: true,
+    },
+  ],
+  address: [addressSchema],
 });
 
 const ProductModel = mongoose.model("ProductModel", productSchema);

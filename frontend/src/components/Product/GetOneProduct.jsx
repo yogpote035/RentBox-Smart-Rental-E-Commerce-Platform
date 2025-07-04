@@ -136,6 +136,19 @@ function GetOneProduct() {
                 </ul>
               )}
             </div>
+            {singleProduct?.categories?.length !== 0 && (
+              <div className="mt-4 flex flex-wrap gap-4 items-center">
+                {singleProduct?.categories?.map((categories) => (
+                  <button
+                    key={categories}
+                    disabled={true}
+                    className="bg-gray-200 text-indigo-400 px-6 py-2 rounded hover:text-rose-500 transition"
+                  >
+                    {categories}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {!isOwner && (
@@ -175,7 +188,7 @@ function GetOneProduct() {
               </button>
               <Button
                 onClick={() => setIsConfirmDialogOpen(true)}
-                className="!bg-red-600 !text-white px-6 py-2 rounded hover:!bg-red-700 !transition"
+                className="!bg-red-600 font-serif !text-white px-6 py-2 rounded hover:!bg-red-700 !transition"
                 disabled={isDisable}
               >
                 Delete
@@ -209,7 +222,8 @@ function GetOneProduct() {
                 <p className="text-gray-800">{review.message}</p>
                 <p className="text-blue-800">
                   Rent Period: &nbsp;
-                  {format(new Date(review?.order?.from), "dd,MMM,yyyy")}&nbsp; ➜ &nbsp;
+                  {format(new Date(review?.order?.from), "dd,MMM,yyyy")}&nbsp; ➜
+                  &nbsp;
                   {format(new Date(review?.order?.to), "dd,MMM,yyyy")}
                 </p>
               </div>

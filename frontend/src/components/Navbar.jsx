@@ -2,8 +2,6 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useContext, useState } from "react";
 import UserContext from "../context/Authentication/UserContext";
 import { FaShoppingCart, FaHeart, FaBars, FaTimes } from "react-icons/fa";
-import logo from "/utils/Logo.png";
-import logo2 from "/utils/RENTBOX.png";
 
 function Navbar() {
   const { logout, isAuthenticated } = useContext(UserContext);
@@ -27,7 +25,6 @@ function Navbar() {
   };
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
-
   const closeMenu = () => setMenuOpen(false);
 
   return (
@@ -35,24 +32,22 @@ function Navbar() {
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         {/* Logo */}
         <Link to="/" onClick={closeMenu} className="flex items-center gap-2">
-          <img
-            src={logo}
-            alt="Logo"
-            className="h-10 w-auto  md:hidden lg:block sm:block space-x-0.5"
-          />{" "}
-          <img
-            src={logo2}
-            alt="Logo"
-            className="h-7 w-25 hidden md:block lg:hidden sm:hidden"
-          />{" "}
+          {/* Show R icon only on small screens (hide on md & above) */}
+          <i className="fa-solid fa-registered text-indigo-600 text-3xl md:hidden block"></i>
+
+          {/* RENTBOX text on medium and larger screens */}
+          <span className="hidden md:inline text-indigo-700 text-2xl font-bold tracking-wide">
+            RENTBOX
+          </span>
         </Link>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-6">
+          {/* Search */}
           {!["/login", "/signup"].includes(location.pathname) && (
             <form
               onSubmit={handleSearch}
-              className="hidden md:flex items-center gap-2"
+              className="flex items-center gap-2"
             >
               <input
                 type="text"
@@ -70,44 +65,20 @@ function Navbar() {
             </form>
           )}
 
-          {location.pathname !== "/" && (
-            <Link
-              to="/"
-              className="text-indigo-700 font-medium hover:underline"
-            >
-              Home
-            </Link>
-          )}
-
+          {/* Navigation Links */}
           {isAuthenticated ? (
             <>
-              {location.pathname !== "/" && (
-                <Link
-                  to="/create-product"
-                  className="text-indigo-700 font-medium hover:underline"
-                >
-                  Add Rental
-                </Link>
-              )}
-
-              <Link
-                to="/my-products"
-                className="text-indigo-700 font-medium hover:underline"
-              >
+              <Link to="/create-product" className="text-indigo-700 hover:underline">
+                Add Rental
+              </Link>
+              <Link to="/my-products" className="text-indigo-700 hover:underline">
                 My Rentals
               </Link>
-              <Link
-                to="/my-favorite"
-                className="text-indigo-700 hover:text-red-600"
-              >
-                <FaHeart size={20} />
+              <Link to="/my-favorite" className="text-indigo-700 hover:text-red-600">
+                <FaHeart size={18} />
               </Link>
-
-              <Link
-                to="/my-rentals"
-                className="text-indigo-700 hover:text-green-600"
-              >
-                <FaShoppingCart size={20} />
+              <Link to="/my-rentals" className="text-indigo-700 hover:text-green-600">
+                <FaShoppingCart size={18} />
               </Link>
               <button
                 onClick={handleLogout}
@@ -120,13 +91,13 @@ function Navbar() {
             <>
               <Link
                 to="/login"
-                className="bg-gray-200 text-indigo-700 px-4 py-1.5 rounded hover:bg-gray-100 transition"
+                className="bg-gray-100 text-indigo-700 px-4 py-1.5 rounded hover:bg-gray-200"
               >
                 Login
               </Link>
               <Link
                 to="/signup"
-                className="bg-gray-200 text-indigo-700 px-4 py-1.5 rounded hover:bg-gray-100 transition"
+                className="bg-gray-100 text-indigo-700 px-4 py-1.5 rounded hover:bg-gray-200"
               >
                 Signup
               </Link>
@@ -134,7 +105,7 @@ function Navbar() {
           )}
         </div>
 
-        {/* Mobile Menu Toggle */}
+        {/* Mobile Menu Icon */}
         <div className="md:hidden">
           <button onClick={toggleMenu} className="text-indigo-700">
             {menuOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
@@ -142,49 +113,49 @@ function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Dropdown */}
+      {/* Mobile Menu Content */}
       {menuOpen && (
         <div className="md:hidden mt-4 px-2 space-y-3">
-          <form
-            onSubmit={handleSearch}
-            className="md:hidden flex gap-2 px-2 pb-3 items-center"
-          >
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search products..."
-              className="w-full border border-gray-300 px-3 py-1.5 rounded-md outline-none"
-            />
-            <button
-              type="submit"
-              className="bg-indigo-500 text-white px-3 py-1.5 rounded hover:bg-indigo-600 transition"
+          {/* Search */}
+          {!["/login", "/signup"].includes(location.pathname) && (
+            <form
+              onSubmit={handleSearch}
+              className="flex gap-2 px-2 pb-3 items-center"
             >
-              Go
-            </button>
-          </form>
-
-          {location.pathname !== "/" && (
-            <Link
-              to="/"
-              onClick={closeMenu}
-              className="block text-indigo-700 font-medium"
-            >
-              Home
-            </Link>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search products..."
+                className="w-full border border-gray-300 px-3 py-1.5 rounded-md outline-none"
+              />
+              <button
+                type="submit"
+                className="bg-indigo-500 text-white px-3 py-1.5 rounded hover:bg-indigo-600 transition"
+              >
+                Go
+              </button>
+            </form>
           )}
-          {isAuthenticated && (
-            <>
-              {location.pathname !== "/" && (
-                <Link
-                  to="/create-product"
-                  onClick={closeMenu}
-                  className="block text-indigo-700 font-medium"
-                >
-                  Add Rental(Any thing)
-                </Link>
-              )}
 
+          {/* Links */}
+          <Link
+            to="/"
+            onClick={closeMenu}
+            className="block text-indigo-700 font-medium"
+          >
+            Home
+          </Link>
+
+          {isAuthenticated ? (
+            <>
+              <Link
+                to="/create-product"
+                onClick={closeMenu}
+                className="block text-indigo-700 font-medium"
+              >
+                Add Rental
+              </Link>
               <Link
                 to="/my-products"
                 onClick={closeMenu}
@@ -192,44 +163,40 @@ function Navbar() {
               >
                 My Rentals
               </Link>
-
               <Link
                 to="/my-favorite"
                 onClick={closeMenu}
-                className="text-indigo-700 flex items-center gap-2"
+                className="flex items-center gap-2 text-indigo-700"
               >
                 <FaHeart /> Favorites
               </Link>
-
               <Link
                 to="/my-rentals"
                 onClick={closeMenu}
-                className="text-indigo-700 flex items-center gap-2"
+                className="flex items-center gap-2 text-indigo-700"
               >
                 <FaShoppingCart /> Rentals
               </Link>
+              <button
+                onClick={handleLogout}
+                className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+              >
+                Logout
+              </button>
             </>
-          )}
-          {isAuthenticated ? (
-            <button
-              onClick={handleLogout}
-              className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
-            >
-              Logout
-            </button>
           ) : (
             <>
               <Link
                 to="/login"
                 onClick={closeMenu}
-                className="block w-full bg-indigo-500 text-white text-center px-4 py-2 rounded hover:bg-indigo-600 transition"
+                className="block w-full bg-indigo-500 text-white text-center px-4 py-2 rounded hover:bg-indigo-600"
               >
                 Login
               </Link>
               <Link
                 to="/signup"
                 onClick={closeMenu}
-                className="block w-full bg-gray-200 text-indigo-700 text-center px-4 py-2 rounded hover:bg-gray-300 transition"
+                className="block w-full bg-gray-100 text-indigo-700 text-center px-4 py-2 rounded hover:bg-gray-200"
               >
                 Signup
               </Link>
