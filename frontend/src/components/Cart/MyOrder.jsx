@@ -99,7 +99,7 @@ function MyOrder() {
                 </div>
 
                 <div className="text-xs text-gray-400 mt-3">
-                  Rented on: {new Date(order.createdAt).toLocaleString()}
+                  Rented on: {format(new Date(order.createdAt), "dd-MM-yyyy HH:mm:ss")}
                 </div>
 
                 <p>
@@ -197,7 +197,7 @@ function MyOrder() {
                 onClick={() => {
                   setShowReviewForm(false);
                   setReviewMessage("");
-                  setReviewRating(0)
+                  setReviewRating(0);
                 }}
                 className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
               >
