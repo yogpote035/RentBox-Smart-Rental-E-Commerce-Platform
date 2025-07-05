@@ -32,9 +32,7 @@ function GetOneProduct() {
     reviews,
   } = useContext(OrderContext);
 
-  const [gifOne, setGifOne] = useState(true);
   const [quantity, setQuantity] = useState(1);
-  const [isRenting, setIsRenting] = useState(false);
   const [isAddingToFavorite, setIsAddingToFavorite] = useState(false);
   const [isDisable, setIsDisable] = useState(false);
   const [from, setFrom] = useState(null);
@@ -48,8 +46,6 @@ function GetOneProduct() {
     getProductById(id);
     fetchMyOrders();
     fetchReviews(id);
-    const timer = setTimeout(() => setGifOne(false), 1500);
-    return () => clearTimeout(timer);
   }, [id]);
 
   useEffect(() => {
@@ -58,7 +54,7 @@ function GetOneProduct() {
     }
   }, [singleProduct]);
 
-  // for option only when user ordered product
+  // only when user ordered product
   const [hasOrdered, setHasOrdered] = useState(false);
   const currentUserId = localStorage.getItem("userId");
 
