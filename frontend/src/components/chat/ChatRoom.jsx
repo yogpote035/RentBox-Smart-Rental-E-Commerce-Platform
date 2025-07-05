@@ -61,7 +61,7 @@ const ChatRoom = () => {
   return (
     <div className="h-screen w-screen flex flex-col bg-white relative overflow-hidden">
       {/* Header - Fixed */}
-      <div className="bg-indigo-600 text-white text-lg font-semibold text-center py-4 fixed top-15 w-full z-10 shadow-md">
+      <div className="bg-indigo-600 text-white text-lg font-semibold text-center py-4 fixed top-0 w-full z-10 shadow-md">
         {currentUserRole === "owner"
           ? `Chat with Renter: ${chatWithUserName}`
           : `Chat with Owner: ${chatWithUserName}`}

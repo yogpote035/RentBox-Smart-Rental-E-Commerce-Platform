@@ -33,8 +33,7 @@ function App() {
           <UserState>
             <Router>
               <div className="min-h-screen flex flex-col">
-                <Navbar />
-
+                {window.location.pathname !== "/chat" && <Navbar />}
                 {/* Main Content */}
                 <div className="flex-grow">
                   <Routes>
