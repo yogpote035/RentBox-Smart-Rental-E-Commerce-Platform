@@ -58,6 +58,19 @@ function GetOneProduct() {
     }
   }, [singleProduct]);
 
+  // for option only when user ordered product
+  const [hasOrdered, setHasOrdered] = useState(false);
+  const currentUserId = localStorage.getItem("userId");
+
+  useEffect(() => {
+    if (singleProduct?.orders?.length > 0 && currentUserId) {
+      const orderedByUser = singleProduct.orders.some(
+        (order) => order.owner?._id === currentUserId
+      );
+      setHasOrdered(orderedByUser);
+    }
+  }, [singleProduct, currentUserId]);
+
   const handleCheckAvailability = async () => {
     await CheckAvailability(singleProduct._id, from, to);
   };
@@ -110,7 +123,8 @@ function GetOneProduct() {
             </div>
             <div className="text-sm text-gray-400 mb-4">
               Product ID: {singleProduct?._id}
-            </div><div className="text-sm text-gray-400 mb-4">
+            </div>
+            <div className="text-sm text-gray-400 mb-4">
               Owner: {singleProduct?.owner?.name}
             </div>
 
@@ -207,23 +221,21 @@ function GetOneProduct() {
                 >
                   Add To Favorite
                 </button>
-                {localStorage.getItem("userId") && (
+                {!isOwner && hasOrdered && (
                   <button
-                    onClick={() => {
+                    onClick={() =>
                       navigate("/chat", {
                         state: {
-                          currentUserId: localStorage.getItem("userId"),
+                          currentUserId: currentUserId,
                           chatWithUserId: singleProduct?.owner?._id,
                           chatWithUserName: singleProduct?.owner?.name,
                           currentUserRole: "renter",
                         },
-                      });
-                      console.log("Current:", localStorage.getItem("userId"));
-                      console.log("Owner:", singleProduct?.owner?._id);
-                    }}
-                    className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-900 transition"
+                      })
+                    }
+                    className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition"
                   >
-                    Chat With Owner
+                    Chat with Owner
                   </button>
                 )}
               </div>
