@@ -232,6 +232,7 @@ const OrderState = ({ children }) => {
         reviewOrderId,
         checkReviewedByUser,
         reviewedOrders,
+        setAvailabilityMessage
       }}
     >
       {children}

@@ -30,6 +30,7 @@ function GetOneProduct() {
     CheckAvailability,
     fetchReviews,
     reviews,
+    setAvailabilityMessage,
   } = useContext(OrderContext);
 
   const [quantity, setQuantity] = useState(1);
@@ -54,9 +55,10 @@ function GetOneProduct() {
     }
   }, [singleProduct]);
 
-  // only when user ordered product
+  // for option only when user ordered product
   const [hasOrdered, setHasOrdered] = useState(false);
   const currentUserId = localStorage.getItem("userId");
+  const [, forceRender] = useState(0);
 
   useEffect(() => {
     if (singleProduct?.orders?.length > 0 && currentUserId) {
@@ -64,6 +66,8 @@ function GetOneProduct() {
         (order) => order.owner?._id === currentUserId
       );
       setHasOrdered(orderedByUser);
+    } else {
+      setHasOrdered(false);
     }
   }, [singleProduct, currentUserId]);
 
@@ -76,17 +80,20 @@ function GetOneProduct() {
       return;
     }
 
-    setIsRenting(true);
-    await RentNow(
+    const res = await RentNow(
       id,
       quantity,
       format(from, "yyyy-MM-dd"),
       format(to, "yyyy-MM-dd")
     );
-    toast.success("Rent confirmed");
-    setIsRenting(false);
-    setOpenDialog(false);
-    fetchMyOrders(); // update UI
+    if (res) {
+      toast.success("Rent confirmed");
+      setOpenDialog(false);
+      await fetchMyOrders();
+      await getProductById(id);
+    } else {
+      toast.error("Rent failed");
+    }
   };
 
   const handleDelete = async () => {
@@ -321,7 +328,12 @@ function GetOneProduct() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="error">
+          <Button
+            onClick={() => {
+              setOpenDialog(false), setAvailabilityMessage("");
+            }}
+            color="error"
+          >
             Cancel
           </Button>
           <Button onClick={handleCheckAvailability}>Check Availability</Button>

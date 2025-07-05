@@ -47,9 +47,10 @@ module.exports.Signup = async (request, response) => {
     const token = jwt.sign(data, process.env.secret, { expiresIn: "7d" });
     console.log("Token is generated and sending response to frontend");
     return response.status(200).json({
-      message: "Registration Successfully Completed",
+      message: "Registration is Successfully Completed",
       token: token,
       userId: newUser._id,
+      username: newUser.name,
     });
   } catch (error) {
     return response
@@ -107,6 +108,7 @@ module.exports.Login = async (request, response) => {
       message: "User Logged In successfully",
       token,
       userId: existingUser._id,
+      username: existingUser.name,
     });
   } catch (error) {
     return response

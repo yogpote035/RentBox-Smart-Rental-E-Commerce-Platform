@@ -22,7 +22,8 @@ const UserState = ({ children }) => {
         toast.success(res.data.message);
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("userId", res.data.userId);
-        setIsAuthenticated(true); // ✅ update state
+        localStorage.setItem("username", res.data.username);
+        setIsAuthenticated(true); //  update state
         return true;
       }
       if (res.status === 208) {
@@ -45,20 +46,21 @@ const UserState = ({ children }) => {
         toast.success(res.data.message);
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("userId", res.data.userId);
-        setIsAuthenticated(true); //  update state
+        localStorage.setItem("username", res.data.username);
+        setIsAuthenticated(true); // update state
         return true;
       }
       // user found but password not match
       if (res.status === 208) {
         toast.error("You Enter Wrong Password");
-        setIsAuthenticated(false); //  update state
+        setIsAuthenticated(false); // update state
         return false;
       }
 
       // user Not found
       if (res.status === 204) {
         toast.error("User Not Found, Please Check Your Credentials");
-        setIsAuthenticated(false); //  update state
+        setIsAuthenticated(false); // update state
         return false;
       }
     } catch (err) {
@@ -71,7 +73,8 @@ const UserState = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
-    setIsAuthenticated(false); //  update state
+    localStorage.removeItem("username");
+    setIsAuthenticated(false); // update state
     toast.warning("You Logged Out Successfully");
   };
 
