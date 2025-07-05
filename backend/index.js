@@ -24,7 +24,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 connectToDatabase();
-
+app.get("/health", (request, response) => {
+  response.status(200).send("ok");
+});
+app.head("/health", (request, response) => {
+  response.status(200).send("ok");
+});
 // Routes
 app.use("/api/auth", require("./routes/UserRoutes"));
 app.use("/api/product", require("./routes/ProductRoutes"));
