@@ -84,12 +84,14 @@ const OrderState = ({ children }) => {
 
     if (isBefore(fromDate, today)) {
       setAvailabilityMessage("Start date must be today or in the future.");
+      setIsAvailable(false);
       return toast.error("Start date can't be in the past.");
     }
 
     const validDate = isBefore(new Date(from), new Date(to));
     if (!validDate) {
       setAvailabilityMessage("Please select Valid Date.");
+      setIsAvailable(false);
       return toast.error("Select Valid Date");
     }
     try {
