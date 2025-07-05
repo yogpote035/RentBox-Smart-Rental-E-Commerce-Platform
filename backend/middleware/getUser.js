@@ -5,7 +5,7 @@ module.exports.getUser = (request, response, next) => {
 
   if (!token) {
     return response.status(401).json({
-      message: "Token Is Expired, Please Authenticate using Valid Token",
+      message: "Token Is Missing, Please Authenticate using Valid Token",
     });
   }
 

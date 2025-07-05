@@ -23,7 +23,7 @@ function GetAllProducts() {
         selected={selectedCategory}
         onSelect={setSelectedCategory}
       />
-      <h2 className="text-4xl font-bold text-center text-indigo-700 mb-6">
+      <h2 className="text-4xl font-bold text-center text-indigo-700 mt-4 mb-6">
         Explore Rental's
       </h2>
 

@@ -24,6 +24,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import SearchProduct from "./components/Product/SearchProduct";
 import AboutPage from "./pages/AboutPage";
 import Footer from "./pages/Footer";
+import ChatRoom from "./components/chat/ChatRoom";
 function App() {
   return (
     <OrderState>
@@ -92,6 +93,14 @@ function App() {
                       element={
                         <ProtectedRoutes>
                           <MyOrder />
+                        </ProtectedRoutes>
+                      }
+                    />
+                    <Route
+                      path="/chat"
+                      element={
+                        <ProtectedRoutes>
+                          <ChatRoom />
                         </ProtectedRoutes>
                       }
                     />

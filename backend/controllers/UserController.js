@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 module.exports.Signup = async (request, response) => {
   const { name, email, phone, address, password } = request.body;
-  console.log("request body", name, email, phone, address, password);
+  console.log("signup request body", name, email, password, phone, address);
   if (!name || !email || !phone || !address || !password) {
     return response.status(406).json({ message: "All Fields Are Required" });
   }
@@ -61,7 +61,7 @@ module.exports.Signup = async (request, response) => {
 module.exports.Login = async (request, response) => {
   const { email, phone, password } = request.body;
 
-  console.log("request body", email ? email : phone, password);
+  console.log("Login request body", email ? email : phone, password);
 
   if ((!email && !phone) || !password) {
     return response.status(406).json({ message: "All Fields Are Required" });
@@ -103,13 +103,11 @@ module.exports.Login = async (request, response) => {
       expiresIn: "7d",
     });
 
-    return response
-      .status(200)
-      .json({
-        message: "User Logged In successfully",
-        token,
-        userId: existingUser._id,
-      });
+    return response.status(200).json({
+      message: "User Logged In successfully",
+      token,
+      userId: existingUser._id,
+    });
   } catch (error) {
     return response
       .status(500)

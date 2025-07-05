@@ -91,11 +91,18 @@ module.exports.getOneProduct = async (req, res) => {
     const productId = req.params.id;
     const product = await ProductModel.findById(productId)
       .populate("owner")
-      .populate("orders");
+      .populate({
+        path: "orders",
+        populate: {
+          path: "owner",
+          select: "name _id",
+        },
+      });
 
     if (!product) {
       return res.status(404).json({ message: "Product Not Found" });
     }
+
     return res.status(200).json(product);
   } catch (error) {
     return res

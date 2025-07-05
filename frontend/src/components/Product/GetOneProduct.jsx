@@ -13,8 +13,7 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import { format, isBefore, startOfDay } from "date-fns";
-import axios from "axios";
+import { format } from "date-fns";
 import ConfirmDialog from "../ConfirmDialog";
 
 function GetOneProduct() {
@@ -115,7 +114,7 @@ function GetOneProduct() {
 
             {/* Booked dates */}
             <div className="mb-3">
-              <h3 className="text-sm font-semibold text-red-600">
+              <h3 className="text-sm font-semibold text-sky-600">
                 Booking Status:
               </h3>
               {orders.length === 0 ? (
@@ -123,11 +122,36 @@ function GetOneProduct() {
               ) : (
                 <ul className="text-sm text-gray-700">
                   {orders.map((order) => (
-                    <li key={order._id}>
-                      {format(new Date(order.from), "dd MMM yyyy")} ➜{" "}
-                      {format(new Date(order.to), "dd MMM yyyy")}
+                    <li
+                      key={order._id}
+                      className="flex items-center justify-between text-red-600"
+                    >
+                      <span>
+                        {format(new Date(order.from), "dd MMM yyyy")} ➜{" "}
+                        {format(new Date(order.to), "dd MMM yyyy")}
+                      </span>
+
+                      {/* Only show Chat With Renter button for owner */}
+                      {isOwner && order?.owner?._id && (
+                        <button
+                          onClick={() =>
+                            navigate("/chat", {
+                              state: {
+                                currentUserId: localStorage.getItem("userId"),
+                                chatWithUserId: order.owner._id,
+                                chatWithUserName: order.owner?.name,
+                                currentUserRole: "owner",
+                              },
+                            })
+                          }
+                          className="bg-indigo-600 text-white px-6 py-2 my-1 rounded hover:bg-indigo-700 transition"
+                        >
+                          Chat with Renter
+                        </button>
+                      )}
                     </li>
                   ))}
+
                   {!isOwner && (
                     <p className="text-sm text-red-700">
                       * Check Next Date For Rent (Click on Rent Now)
@@ -152,30 +176,56 @@ function GetOneProduct() {
           </div>
 
           {!isOwner && (
-            <div className="mt-4 flex flex-wrap gap-4 items-center">
-              <button
-                onClick={() => setOpenDialog(true)}
-                className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition"
-              >
-                Rent Now
-              </button>
+            <>
+              <label htmlFor="quantity" className="text-sm mt-3 text-sky-600">
+                Select Quantity
+              </label>
+              <div className="flex flex-wrap gap-4 items-center">
+                <div>
+                  <input
+                    type="number"
+                    value={quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    min="1"
+                    id="quantity"
+                    className="w-20 border rounded px-2 py-1 outline-none"
+                  />
+                </div>
+                <button
+                  onClick={() => setOpenDialog(true)}
+                  className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition"
+                >
+                  Rent Now
+                </button>
 
-              <button
-                onClick={() => addToCart(singleProduct._id, quantity)}
-                disabled={isAddingToFavorite}
-                className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
-              >
-                Add To Favorite
-              </button>
-
-              <input
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-                min="1"
-                className="w-20 border rounded px-2 py-1 outline-none"
-              />
-            </div>
+                <button
+                  onClick={() => addToCart(singleProduct._id, quantity)}
+                  disabled={isAddingToFavorite}
+                  className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
+                >
+                  Add To Favorite
+                </button>
+                {localStorage.getItem("userId") && (
+                  <button
+                    onClick={() => {
+                      navigate("/chat", {
+                        state: {
+                          currentUserId: localStorage.getItem("userId"),
+                          chatWithUserId: singleProduct?.owner?._id,
+                          chatWithUserName: singleProduct?.owner?.name,
+                          currentUserRole: "renter",
+                        },
+                      });
+                      console.log("Current:", localStorage.getItem("userId"));
+                      console.log("Owner:", singleProduct?.owner?._id);
+                    }}
+                    className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-900 transition"
+                  >
+                    Chat With Owner
+                  </button>
+                )}
+              </div>
+            </>
           )}
 
           {isOwner && (

@@ -14,6 +14,7 @@ const reviewSchema = new Schema({
   owner: {
     type: Schema.Types.ObjectId,
     ref: "UserModel",
+    required: true,
   },
   message: {
     type: String,
