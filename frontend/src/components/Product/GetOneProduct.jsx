@@ -110,6 +110,8 @@ function GetOneProduct() {
             </div>
             <div className="text-sm text-gray-400 mb-4">
               Product ID: {singleProduct?._id}
+            </div><div className="text-sm text-gray-400 mb-4">
+              Owner: {singleProduct?.owner?.name}
             </div>
 
             {/* Booked dates */}
