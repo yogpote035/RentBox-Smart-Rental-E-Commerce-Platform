@@ -76,8 +76,7 @@ const OrderState = ({ children }) => {
   const CheckAvailability = async (productId, from, to) => {
     if (!from || !to) {
       setAvailabilityMessage("Please select both dates.");
-      setIsAvailable(null);
-      return;
+      return setIsAvailable(null);
     }
 
     const today = startOfDay(new Date());
@@ -85,8 +84,7 @@ const OrderState = ({ children }) => {
 
     if (isBefore(fromDate, today)) {
       setAvailabilityMessage("Start date must be today or in the future.");
-      toast.error("Start date can't be in the past.");
-      return;
+      return toast.error("Start date can't be in the past.");
     }
 
     const validDate = isBefore(new Date(from), new Date(to));
@@ -232,7 +230,7 @@ const OrderState = ({ children }) => {
         reviewOrderId,
         checkReviewedByUser,
         reviewedOrders,
-        setAvailabilityMessage
+        setAvailabilityMessage,
       }}
     >
       {children}
