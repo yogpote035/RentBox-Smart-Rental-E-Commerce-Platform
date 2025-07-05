@@ -91,7 +91,7 @@ function GetOneProduct() {
       setOpenDialog(false);
       await fetchMyOrders();
       await getProductById(id);
-      setTimeout(() => setAvailabilityMessage(""), 2000);
+      setAvailabilityMessage("");
     } else {
       toast.error("Rent failed");
     }
