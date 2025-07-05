@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import OrderContext from "./OrderContext";
 import { format, isBefore, startOfDay } from "date-fns";
+import { FaLessThanEqual } from "react-icons/fa";
 
 const OrderState = ({ children }) => {
   const [orders, setOrders] = useState([]);
@@ -74,9 +75,10 @@ const OrderState = ({ children }) => {
   };
 
   const CheckAvailability = async (productId, from, to) => {
+    setIsAvailable(FaLessThanEqual);
     if (!from || !to) {
       setAvailabilityMessage("Please select both dates.");
-      return setIsAvailable(null);
+      return setIsAvailable(false);
     }
 
     const today = startOfDay(new Date());
