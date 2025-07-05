@@ -96,6 +96,8 @@ function App() {
                         </ProtectedRoutes>
                       }
                     />
+                    <Route path="/search" element={<SearchProduct />} />
+                    <Route path="/about-dev" element={<AboutPage />} />
                     <Route
                       path="/chat"
                       element={
@@ -104,12 +106,10 @@ function App() {
                         </ProtectedRoutes>
                       }
                     />
-                    <Route path="/search" element={<SearchProduct />} />
-                    <Route path="/about-dev" element={<AboutPage />} />
                   </Routes>
                 </div>
 
-                <Footer />
+                {window.location.pathname !== "/chat" && <Footer />}
                 <ToastContainer position="bottom-left" autoClose={3000} />
               </div>
             </Router>

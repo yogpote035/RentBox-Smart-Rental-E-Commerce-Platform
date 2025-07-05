@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import io from "socket.io-client";
 import { toast } from "react-toastify";
 
-// ✅ Backend URL
 const socket = io(import.meta.env.VITE_BACKEND_SOCKET_URL);
 
 const getRoomId = (user1, user2) => {
@@ -21,7 +20,12 @@ const ChatRoom = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
-  // 🚫 Redirect if data is missing
+  useEffect(() => {
+    if (performance.navigation.type !== 1) {
+      window.location.reload();
+    }
+  }, []);
+
   useEffect(() => {
     if (!currentUserId || !chatWithUserId) {
       toast.error("Invalid chat session");
@@ -29,10 +33,8 @@ const ChatRoom = () => {
     }
   }, [currentUserId, chatWithUserId]);
 
-  //  Join room & receive messages
   useEffect(() => {
     socket.emit("joinRoom", roomId);
-    // console.log(`🟢 Joined Room: ${roomId}`);
 
     const handleReceiveMessage = ({ sender, message }) => {
       if (sender !== currentUserId) {
@@ -47,10 +49,7 @@ const ChatRoom = () => {
   const sendMessage = () => {
     if (!message.trim()) return;
     const msgData = { sender: currentUserId, message };
-
     socket.emit("privateMessage", { roomId, ...msgData });
-
-    // Only push message once to sender's side
     setMessages((prev) => [...prev, msgData]);
     setMessage("");
   };
@@ -60,15 +59,16 @@ const ChatRoom = () => {
   }, [messages]);
 
   return (
-    <div className="max-w-2xl mx-auto my-6 border rounded-lg shadow-md h-[500px] flex flex-col bg-white">
-      <div className="bg-indigo-600 text-white p-4 text-lg font-semibold rounded-t-lg text-center">
+    <div className="h-screen w-screen flex flex-col bg-white relative overflow-hidden">
+      {/* Header - Fixed */}
+      <div className="bg-indigo-600 text-white text-lg font-semibold text-center py-4 fixed top-15 w-full z-10 shadow-md">
         {currentUserRole === "owner"
           ? `Chat with Renter: ${chatWithUserName}`
           : `Chat with Owner: ${chatWithUserName}`}
       </div>
 
-      {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
+      {/* Chat Messages - Scrollable */}
+      <div className="flex-1 overflow-y-auto px-4 pt-20 pb-24 bg-gray-50">
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -77,7 +77,7 @@ const ChatRoom = () => {
             }`}
           >
             <div
-              className={`px-4 py-2 rounded-lg max-w-[70%] text-sm shadow-md ${
+              className={`px-4 py-2 rounded-lg max-w-[70%] text-sm shadow-md my-1 ${
                 msg.sender === currentUserId
                   ? "bg-indigo-500 text-white rounded-br-none"
                   : "bg-gray-200 text-gray-800 rounded-bl-none"
@@ -90,8 +90,8 @@ const ChatRoom = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Message Input */}
-      <div className="p-3 border-t flex gap-2">
+      {/* Input - Fixed at bottom */}
+      <div className="fixed bottom-0 w-full bg-white p-3 border-t flex gap-2 z-10">
         <input
           type="text"
           className="flex-1 p-2 border rounded focus:outline-none"
