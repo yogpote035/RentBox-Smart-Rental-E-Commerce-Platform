@@ -1,5 +1,7 @@
+const { default: mongoose } = require("mongoose");
 const OrderModel = require("../model/orderModel");
 const ProductModel = require("../model/productModel");
+const ReviewModel = require("../model/reviewModel");
 const { isBefore, startOfDay } = require("date-fns");
 
 module.exports.createProduct = async (request, response) => {
@@ -87,8 +89,8 @@ module.exports.getAllProducts = async (req, res) => {
 // Get one product by ID
 module.exports.getOneProduct = async (req, res) => {
   try {
-    const productId = req.params.id;
-    const product = await ProductModel.findById(productId)
+    const id = req.params.id;
+    const product = await ProductModel.findById(id)
       .populate("owner")
       .populate({
         path: "orders",
@@ -194,5 +196,43 @@ module.exports.searchProducts = async (req, res) => {
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: "Search failed", error: error.message });
+  }
+};
+
+// check is rating
+module.exports.getAverageRating = async (req, res) => {
+  try {
+    const ObjectId = mongoose.Types.ObjectId;
+
+    const { id } = req.params;
+    if (!id) {
+      return res.status(208).json({ message: "Id Not Found For Rating" });
+    }
+    const result = await ReviewModel.aggregate([
+      {
+        $match: {
+          product: new ObjectId(id),
+        },
+      },
+      {
+        $group: {
+          _id: "$product",
+          averageRating: { $avg: "$rating" },
+          totalReviews: { $sum: 1 },
+        },
+      },
+    ]);
+
+    if (result.length === 0) {
+      return res.json({ averageRating: 0, totalReviews: 0 });
+    }
+
+    res.json({
+      averageRating: result[0].averageRating,
+      totalReviews: result[0].totalReviews,
+    });
+  } catch (error) {
+    console.error("Error getting average rating:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

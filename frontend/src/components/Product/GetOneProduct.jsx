@@ -44,6 +44,8 @@ function GetOneProduct() {
   const [isRenting, setIsRenting] = useState(false);
 
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalReviews, setTotalReviews] = useState(0);
 
   useEffect(() => {
     getProductById(id);
@@ -56,6 +58,19 @@ function GetOneProduct() {
       setOrders(singleProduct.orders);
     }
   }, [singleProduct]);
+
+  // get avg rating
+  useEffect(() => {
+    const fetchRating = async () => {
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/product/average-rating/${id}`
+      );
+      const data = await res.json();
+      setAverageRating(data.averageRating);
+      setTotalReviews(data.totalReviews);
+    };
+    fetchRating();
+  }, [id]);
 
   // for option only when user ordered product
   const [hasOrdered, setHasOrdered] = useState(false);
@@ -128,6 +143,16 @@ function GetOneProduct() {
             <h1 className="text-4xl font-bold text-indigo-700 mb-4">
               {singleProduct?.name}
             </h1>
+            {/* rating An review */}
+            {totalReviews > 0 && (
+              <div className="flex items-center gap-2">
+                <div className="bg-green-600 text-white text-sm font-semibold px-2 py-1 rounded flex items-center">
+                  {averageRating}
+                  <span className="ml-1 text-yellow-300">★</span>
+                </div>
+                <p className="text-sm text-gray-600">{totalReviews} Reviews</p>
+              </div>
+            )}
             <p className="text-gray-700 text-base leading-relaxed mb-4">
               {singleProduct?.description}
             </p>
