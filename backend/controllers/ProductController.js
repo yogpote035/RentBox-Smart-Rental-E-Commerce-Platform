@@ -6,7 +6,6 @@ module.exports.createProduct = async (request, response) => {
   const userId = request.header("userId");
 
   try {
-    // Parse nested JSON fields sent as strings from FormData
     const address = JSON.parse(request.body.address);
     const categories = JSON.parse(request.body.categories);
     const { name, description, price } = request.body;
