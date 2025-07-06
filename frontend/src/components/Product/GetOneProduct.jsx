@@ -32,8 +32,9 @@ function GetOneProduct() {
     reviews,
     setAvailabilityMessage,
   } = useContext(OrderContext);
-  const [hasCheckedAvailability, setHasCheckedAvailability] = useState(false);
 
+  const [hasCheckedAvailability, setHasCheckedAvailability] = useState(false);
+  const [hasOrdered, setHasOrdered] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isAddingToFavorite, setIsAddingToFavorite] = useState(false);
   const [isDisable, setIsDisable] = useState(false);
@@ -42,7 +43,9 @@ function GetOneProduct() {
   const [orders, setOrders] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [isRenting, setIsRenting] = useState(false);
-
+  // for payment
+  const [showFakePayment, setShowFakePayment] = useState(false);
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [averageRating, setAverageRating] = useState(0);
   const [totalReviews, setTotalReviews] = useState(0);
@@ -73,7 +76,6 @@ function GetOneProduct() {
   }, [id]);
 
   // for option only when user ordered product
-  const [hasOrdered, setHasOrdered] = useState(false);
   const currentUserId = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -102,24 +104,36 @@ function GetOneProduct() {
       return;
     }
     setIsRenting(true);
+    setOpenDialog(false);
+    setShowFakePayment(true); //show popup for payment
+
     const res = await RentNow(
       id,
       quantity,
       format(from, "yyyy-MM-dd"),
       format(to, "yyyy-MM-dd")
     );
-    if (res) {
-      toast.success("Rent confirmed");
-      setOpenDialog(false);
-      await fetchMyOrders();
-      await getProductById(id);
-      setAvailabilityMessage("");
-    } else {
-      toast.error("Rent failed");
-    }
-    setTimeout(() => {
+
+    setTimeout(async () => {
+      setShowFakePayment(false); //close popup of payment
+      if (res) {
+        setShowPaymentSuccess(true);
+
+        toast.success("Rent confirmed 🤝");
+        await fetchMyOrders();
+        await getProductById(id);
+        setAvailabilityMessage("");
+
+        // set fake payment false
+        setTimeout(() => {
+          setShowPaymentSuccess(false);
+        }, 3000);
+      } else {
+        toast.error("Rent failed 😢");
+      }
+
       setIsRenting(false);
-    }, 3000);
+    }, 4000);
   };
 
   const handleDelete = async () => {
@@ -400,6 +414,50 @@ function GetOneProduct() {
         title="Confirm Deletion"
         content="Are you sure you want to delete this product? This action cannot be undone."
       />
+      {/* fake payment */}
+      <Dialog open={showFakePayment} onClose={() => {}}>
+        <DialogTitle className="text-green-600 text-center">
+          🔐 Processing Payment
+        </DialogTitle>
+        <DialogContent className="text-center p-6">
+          <p className="text-xl text-center font-medium mb-2">
+            Connecting to FunnyPay™ Gateway...
+          </p>
+          <p className="text-sm text-center text-gray-500">
+            Simulating secure transaction 🔒
+          </p>
+          <img
+            src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif"
+            alt="Processing"
+            className="w-24 h-24 mx-auto mt-4"
+          />
+          <p className="mt-4 text-green-700 text-center font-bold">
+            Please wait...
+          </p>
+        </DialogContent>
+      </Dialog>
+      {/* success order and payment 🤣🤣🤣 */}
+      <Dialog open={showPaymentSuccess} onClose={() => {}} hideBackdrop>
+        <DialogTitle className="text-green-700 text-center">
+          🎉 Payment Successful
+        </DialogTitle>
+        <DialogContent className="text-center p-6">
+          <img
+            src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTd2OWE0MjNzcGc2cTcyMDg5ZTJ6bWlta2JxdHBoMnZia3NyY2ZpdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PijzuUzUhm7hcWinGn/giphy.gif"
+            alt="Success"
+            className="w-60 h-60 mx-auto rounded-md mb-4"
+          />
+          <p className="text-xl font-semibold text-indigo-700">
+            Transaction Complete!
+          </p>
+          <p className="text-sm text-gray-600 mt-2">
+            Your rent is confirmed. You’ll receive your product soon! 🛒
+          </p>
+          <p className="text-sm text-yellow-500 mt-1">
+            See Your Order in Orders Section{" "}
+          </p>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

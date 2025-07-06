@@ -125,7 +125,7 @@ const OrderState = ({ children }) => {
         return;
       }
 
-      setAvailabilityMessage("✔ Product is available for selected dates.");
+      setAvailabilityMessage("✔ Product is available for selected dates. click on Check Availability Again 🔄️");
       setIsAvailable(true);
       toast.success("Available to rent");
     } catch (err) {
