@@ -24,7 +24,7 @@ const reviewSchema = new Schema({
     type: Number,
     required: true,
     min: 1,
-    mx: 5,
+    max: 5,
   },
 });
 
