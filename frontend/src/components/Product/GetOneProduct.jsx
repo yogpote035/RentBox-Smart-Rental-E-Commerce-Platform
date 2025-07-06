@@ -32,6 +32,7 @@ function GetOneProduct() {
     reviews,
     setAvailabilityMessage,
   } = useContext(OrderContext);
+  const [hasCheckedAvailability, setHasCheckedAvailability] = useState(false);
 
   const [quantity, setQuantity] = useState(1);
   const [isAddingToFavorite, setIsAddingToFavorite] = useState(false);
@@ -40,6 +41,7 @@ function GetOneProduct() {
   const [to, setTo] = useState(null);
   const [orders, setOrders] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [isRenting, setIsRenting] = useState(false);
 
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
@@ -58,7 +60,6 @@ function GetOneProduct() {
   // for option only when user ordered product
   const [hasOrdered, setHasOrdered] = useState(false);
   const currentUserId = localStorage.getItem("userId");
-  const [, forceRender] = useState(0);
 
   useEffect(() => {
     if (singleProduct?.orders?.length > 0 && currentUserId) {
@@ -73,13 +74,19 @@ function GetOneProduct() {
 
   const handleCheckAvailability = async () => {
     await CheckAvailability(singleProduct._id, from, to);
+    if (isAvailable) {
+      setHasCheckedAvailability(true);
+    } else {
+      setHasCheckedAvailability(false);
+    }
   };
+
   const handleRentNow = async () => {
     if (!isAvailable || !from || !to) {
       toast.warning("Check availability first");
       return;
     }
-
+    setIsRenting(true);
     const res = await RentNow(
       id,
       quantity,
@@ -95,12 +102,14 @@ function GetOneProduct() {
     } else {
       toast.error("Rent failed");
     }
+    setTimeout(() => {
+      setIsRenting(false);
+    }, 3000);
   };
 
   const handleDelete = async () => {
     setIsDisable(true);
     const res = await deleteProduct(id);
-    setTimeout(() => setIsAddingToFavorite(false), 2000);
     if (res) navigate("/my-products");
   };
 
@@ -181,36 +190,26 @@ function GetOneProduct() {
               )}
             </div>
             {singleProduct?.categories?.length !== 0 && (
-              <div className="mt-4 flex flex-wrap gap-4 items-center">
-                {singleProduct?.categories?.map((categories) => (
-                  <button
-                    key={categories}
-                    disabled={true}
-                    className="bg-gray-200 text-indigo-400 px-6 py-2 rounded hover:text-rose-500 transition"
-                  >
-                    {categories}
-                  </button>
-                ))}
-              </div>
+              <>
+                <p className="text-md text-indigo-700">Product Categories</p>
+                <div className="mt-1 flex flex-wrap gap-4 items-center">
+                  {singleProduct?.categories?.map((categories) => (
+                    <button
+                      key={categories}
+                      disabled={true}
+                      className="bg-gray-200 text-indigo-400 px-6 py-2 rounded hover:text-rose-500 transition"
+                    >
+                      {categories}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
           </div>
 
           {!isOwner && (
             <>
-              <label htmlFor="quantity" className="text-sm mt-3 text-sky-600">
-                Select Quantity
-              </label>
-              <div className="flex flex-wrap gap-4 items-center">
-                <div>
-                  <input
-                    type="number"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                    min="1"
-                    id="quantity"
-                    className="w-20 border rounded px-2 py-1 outline-none"
-                  />
-                </div>
+              <div className="flex flex-wrap gap-4 items-center mt-2">
                 <button
                   onClick={() => setOpenDialog(true)}
                   className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition"
@@ -219,9 +218,19 @@ function GetOneProduct() {
                 </button>
 
                 <button
-                  onClick={() => addToCart(singleProduct._id, quantity)}
+                  onClick={() => {
+                    setIsAddingToFavorite(true);
+                    addToCart(singleProduct._id, quantity);
+                    setTimeout(() => {
+                      setIsAddingToFavorite(false);
+                    }, 3000);
+                  }}
                   disabled={isAddingToFavorite}
-                  className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
+                  className={`${
+                    isAddingToFavorite
+                      ? "bg-gray-400 "
+                      : "bg-green-600 hover:bg-green-700"
+                  } text-white px-6 py-2 rounded  transition`}
                 >
                   Add To Favorite
                 </button>
@@ -307,14 +316,20 @@ function GetOneProduct() {
           <DatePicker
             label="From Date"
             value={from}
-            onChange={(newValue) => setFrom(newValue)}
+            onChange={(newValue) => {
+              setFrom(newValue);
+              setHasCheckedAvailability(false);
+            }}
             format="dd/MM/yyyy"
             slotProps={{ textField: { fullWidth: true } }}
           />
           <DatePicker
             label="To Date"
             value={to}
-            onChange={(newValue) => setTo(newValue)}
+            onChange={(newValue) => {
+              setTo(newValue);
+              setHasCheckedAvailability(false);
+            }}
             format="dd/MM/yyyy"
             slotProps={{ textField: { fullWidth: true } }}
           />
@@ -341,7 +356,7 @@ function GetOneProduct() {
           <Button
             onClick={handleRentNow}
             variant="contained"
-            disabled={!isAvailable}
+            disabled={!isAvailable || !hasCheckedAvailability || isRenting}
             color="primary"
           >
             Confirm Rent
