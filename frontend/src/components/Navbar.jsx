@@ -171,7 +171,7 @@ function Navbar() {
                 <FaHeart /> Favorites
               </Link>
               <Link
-                to="/my-rentals"
+                to="/rentals-cart"
                 onClick={closeMenu}
                 className="flex items-center gap-2 text-indigo-700"
               >
