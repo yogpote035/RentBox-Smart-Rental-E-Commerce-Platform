@@ -68,16 +68,16 @@ function Navbar() {
           {/* Navigation Links */}
           {isAuthenticated ? (
             <>
-              <Link to="/create-product" className="text-indigo-700 hover:underline">
+              <Link to="/create-rental" className="text-indigo-700 hover:underline">
                 Add Rental
               </Link>
-              <Link to="/my-products" className="text-indigo-700 hover:underline">
+              <Link to="/my-rentals" className="text-indigo-700 hover:underline">
                 My Rentals
               </Link>
               <Link to="/my-favorite" className="text-indigo-700 hover:text-red-600">
                 <FaHeart size={18} />
               </Link>
-              <Link to="/my-rentals" className="text-indigo-700 hover:text-green-600">
+              <Link to="/rentals-cart" className="text-indigo-700 hover:text-green-600">
                 <FaShoppingCart size={18} />
               </Link>
               <button
@@ -150,14 +150,14 @@ function Navbar() {
           {isAuthenticated ? (
             <>
               <Link
-                to="/create-product"
+                to="/create-rental"
                 onClick={closeMenu}
                 className="block text-indigo-700 font-medium"
               >
                 Add Rental
               </Link>
               <Link
-                to="/my-products"
+                to="/my-rentals"
                 onClick={closeMenu}
                 className="block text-indigo-700 font-medium"
               >

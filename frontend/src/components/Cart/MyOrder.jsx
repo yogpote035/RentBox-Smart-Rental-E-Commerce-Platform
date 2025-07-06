@@ -75,7 +75,7 @@ function MyOrder() {
               key={order._id}
               className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl border border-gray-200 hover:shadow-2xl transition duration-300 overflow-hidden relative"
             >
-              <Link to={`/product/${order.product?._id}`}>
+              <Link to={`/rental/${order.product?._id}`}>
                 <img
                   src={order.product?.image || "/utils/fallback.png"}
                   alt={order.product?.name}
@@ -85,23 +85,27 @@ function MyOrder() {
 
               <div className="p-5">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                  {order.product?.name}
+                  {order?.product?.name}
                 </h3>
 
                 <div className="flex justify-between text-sm text-gray-600 mb-1">
                   <span>Quantity:</span>
-                  <span className="font-medium">{order.quantity}</span>
+                  <span className="font-medium">{order?.quantity}</span>
                 </div>
 
                 <div className="flex justify-between text-sm text-gray-600 mb-1">
                   <span>Price:</span>
-                  <span className="font-medium">₹{order.product?.price}</span>
+                  <span className="font-medium">₹{order?.product?.price}</span>
                 </div>
-
-                <div className="text-xs text-gray-400 mt-3">
-                  Rented on: {format(new Date(order.createdAt), "dd-MM-yyyy HH:mm:ss")}
+                <div className="flex justify-between">
+                  <div className="text-xs text-gray-400 mt-1">
+                    Rented on:{" "}
+                    {format(new Date(order?.createdAt), "dd-MM-yyyy HH:mm:ss")}
+                  </div>
+                  <div className="text-xs text-gray-400 mt-1">
+                    Renting Owner: {order?.owner?.name}
+                  </div>
                 </div>
-
                 <p>
                   Rent Period:{" "}
                   <span className="text-indigo-600 font-medium">

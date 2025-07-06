@@ -100,7 +100,7 @@ function UpdateProduct() {
     };
     const success = await updateProduct(id, finalFormData, image);
     setTimeout(() => setIsDisable(false), 2000);
-    if (success) navigate(`/product/${id}`);
+    if (success) navigate(`/rental/${id}`);
   };
 
   const categoryOptions = [

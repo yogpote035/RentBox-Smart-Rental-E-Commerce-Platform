@@ -98,13 +98,13 @@ function CreateProduct() {
 
     const id = await createProduct(finalProduct, image);
     setTimeout(() => setIsDisable(false), 2000);
-    if (id) navigate(`/product/${id}`);
+    if (id) navigate(`/rental/${id}`);
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 mt-10 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold text-center text-indigo-600 mb-6">
-        Add New Product
+    <div className="max-w-3xl mx-auto p-6 mt-1 bg-white shadow-lg rounded-lg">
+      <h2 className="text-4xl font-bold text-center text-indigo-600 mb-6">
+        Add New Rental's
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">

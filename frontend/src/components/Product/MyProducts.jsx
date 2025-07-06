@@ -17,7 +17,7 @@ function MyProducts() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
       <h2 className="text-3xl font-bold text-indigo-700 mb-6 text-center">
-        Products You've Added
+        Rental's You've Added
       </h2>
 
       {myProducts.length === 0 ? (
@@ -26,7 +26,7 @@ function MyProducts() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {myProducts.map((product) => (
             <Link
-              to={`/product/${product._id}`}
+              to={`/rental/${product._id}`}
               key={product._id}
               className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition"
             >

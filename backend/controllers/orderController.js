@@ -44,7 +44,9 @@ module.exports.getUserOrders = async (req, res) => {
 
     const orders = await OrderModel.find({ owner: userId })
       .populate("product")
+      .populate("owner")
       .sort({ createdAt: -1 });
+
     res.json(orders);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch orders" });

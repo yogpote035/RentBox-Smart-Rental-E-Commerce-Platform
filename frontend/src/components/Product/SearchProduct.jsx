@@ -33,7 +33,7 @@ function SearchProduct() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {results.map((product) => (
             <Link
-              to={`/product/${product._id}`}
+              to={`/rental/${product._id}`}
               key={product._id}
               className="bg-white shadow-lg hover:shadow-2xl border border-gray-200 hover:border-indigo-500 transition-all duration-300 rounded-xl overflow-hidden group"
             >

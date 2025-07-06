@@ -21,10 +21,10 @@ function Footer() {
           <Link to="/about-dev" className="hover:text-sky-400">
             About
           </Link>
-          <Link to="/create-product" className="hover:text-sky-400">
+          <Link to="/create-rental" className="hover:text-sky-400">
             Add Rental
           </Link>
-          <Link to="/my-products" className="hover:text-sky-400">
+          <Link to="/my-rentals" className="hover:text-sky-400">
             My Rentals
           </Link>
         </div>

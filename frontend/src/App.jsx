@@ -46,7 +46,7 @@ function App() {
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/" element={<GetAllProduct />} />
                   <Route
-                    path="/product/:id"
+                    path="/rental/:id"
                     element={
                       <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <ProtectedRoutes>
@@ -56,7 +56,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="/create-product"
+                    path="/create-rental"
                     element={
                       <ProtectedRoutes>
                         <CreateProduct />
@@ -64,7 +64,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="/update-product/:id"
+                    path="/update-rental/:id"
                     element={
                       <ProtectedRoutes>
                         <UpdateProduct />
@@ -72,7 +72,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="/my-products"
+                    path="/my-rentals"
                     element={
                       <ProtectedRoutes>
                         <MyProducts />
@@ -88,7 +88,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="/my-rentals"
+                    path="/rentals-cart"
                     element={
                       <ProtectedRoutes>
                         <MyOrder />

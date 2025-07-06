@@ -110,7 +110,7 @@ function GetOneProduct() {
   const handleDelete = async () => {
     setIsDisable(true);
     const res = await deleteProduct(id);
-    if (res) navigate("/my-products");
+    if (res) navigate("/my-rentals");
   };
 
   const isOwner = singleProduct?.owner?._id === localStorage.getItem("userId");
@@ -258,7 +258,7 @@ function GetOneProduct() {
           {isOwner && (
             <div className="mt-4 flex gap-4">
               <button
-                onClick={() => navigate(`/update-product/${id}`)}
+                onClick={() => navigate(`/update-rental/${id}`)}
                 className="bg-yellow-500 text-white px-6 py-2 rounded cursor-pointer hover:bg-yellow-600 transition"
               >
                 Update Rentals

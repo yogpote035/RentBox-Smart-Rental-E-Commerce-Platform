@@ -53,7 +53,7 @@ function MyCart() {
                 key={`fav-${product._id}`}
                 className="bg-white shadow-md border border-gray-200 rounded-lg p-4 transition-all hover:shadow-lg hover:scale-[1.02]"
               >
-                <Link to={`/product/${product._id}`} className="block">
+                <Link to={`/rental/${product._id}`} className="block">
                   <img
                     src={product.image || "/utils/fallback.png"}
                     alt={product.name}
