@@ -76,7 +76,7 @@ module.exports.getAllProducts = async (req, res) => {
     const allProducts = await ProductModel.find({}).populate(
       "owner",
       "name email"
-    );
+    ).sort({createdAt:-1});
     res.status(200).json(allProducts);
   } catch (error) {
     res.status(500).json({
