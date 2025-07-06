@@ -103,7 +103,7 @@ function MyOrder() {
                     {format(new Date(order?.createdAt), "dd-MM-yyyy HH:mm:ss")}
                   </div>
                   <div className="text-xs text-gray-400 mt-1">
-                    Renting By: {order?.owner?.name}
+                    Rented By: {order?.owner?.name}
                   </div>
                 </div>
                 <p>
