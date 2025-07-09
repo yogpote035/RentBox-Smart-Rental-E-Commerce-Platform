@@ -22,7 +22,7 @@ function SearchProduct() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
       <h2 className="text-3xl font-bold text-center mb-10 text-indigo-700">
-        Search Results for <span className="text-rose-600">"{query}"</span>
+        Search Results for <span className="text-rose-600">{query}</span>
       </h2>
 
       {results.length === 0 ? (

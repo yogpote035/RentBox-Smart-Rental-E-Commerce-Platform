@@ -73,10 +73,9 @@ module.exports.getAllProducts = async (req, res) => {
   try {
     await cleanOldBookingsFromProducts();
 
-    const allProducts = await ProductModel.find({}).populate(
-      "owner",
-      "name email"
-    ).sort({createdAt:-1});
+    const allProducts = await ProductModel.find({})
+      .populate("owner", "name email")
+      .sort({ createdAt: -1 });
     res.status(200).json(allProducts);
   } catch (error) {
     res.status(500).json({
@@ -188,13 +187,20 @@ module.exports.getMyProducts = async (req, res) => {
 
 module.exports.searchProducts = async (req, res) => {
   const { query } = req.query;
+  console.log(query);
   try {
     const products = await ProductModel.find({
-      name: { $regex: query, $options: "i" },
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { categories: { $elemMatch: { $regex: query, $options: "i" } } },
+        { "address.city": { $regex: query, $options: "i" } },
+        { "address.state": { $regex: query, $options: "i" } },
+      ],
     }).populate("owner", "name email");
 
     res.json(products);
   } catch (error) {
+    console.error("Search error:", error);
     res.status(500).json({ message: "Search failed", error: error.message });
   }
 };
@@ -234,5 +240,21 @@ module.exports.getAverageRating = async (req, res) => {
   } catch (error) {
     console.error("Error getting average rating:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports.LimitedProducts = async (request, response) => {
+  const { id, categories } = request.body;
+
+  try {
+    const limitedProducts = await ProductModel.find({
+      _id: { $ne: id },
+      categories: { $in: categories },
+    }).limit(3);
+
+    response.status(200).json(limitedProducts);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    response.status(500).json({ error: "Internal Server Error" });
   }
 };

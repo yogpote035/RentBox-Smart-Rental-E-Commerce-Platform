@@ -18,7 +18,7 @@ function GetAllProducts() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-2">
-      {/* 🔹 Category Filter Navigation */}
+      {/* Category Filter Navigation */}
       <CategoryNavbar
         selected={selectedCategory}
         onSelect={setSelectedCategory}
@@ -27,7 +27,7 @@ function GetAllProducts() {
         Explore Rental's
       </h2>
 
-      {/* 🔹 Filtered Product List */}
+      {/*  Filtered Product List */}
       {filteredProducts?.length === 0 ? (
         <p className="text-center text-gray-500 mt-8">No products found.</p>
       ) : (

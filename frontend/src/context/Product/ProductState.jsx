@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 const ProductState = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [singleProduct, setSingleProduct] = useState(null);
+  const [categoryProduct, setCategoryProduct] = useState([]);
 
   const createProduct = async (product, image) => {
     const formData = new FormData();
@@ -59,6 +60,7 @@ const ProductState = ({ children }) => {
           },
         }
       );
+
       setSingleProduct(res.data);
     } catch (error) {
       setSingleProduct(null);
@@ -132,6 +134,23 @@ const ProductState = ({ children }) => {
       return [];
     }
   };
+  const GetProductByCategoriesForOneProduct = async (id,categories) => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/product/category-product`,
+        { id,categories },
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+            userId: localStorage.getItem("userId"),
+          },
+        }
+      );
+      setCategoryProduct(res.data);
+    } catch (err) {
+      setCategoryProduct([]);
+    }
+  };
 
   return (
     <ProductContext.Provider
@@ -144,6 +163,8 @@ const ProductState = ({ children }) => {
         createProduct,
         deleteProduct,
         getMyProducts,
+        GetProductByCategoriesForOneProduct,
+        categoryProduct,
       }}
     >
       {children}

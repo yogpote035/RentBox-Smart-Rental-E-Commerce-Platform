@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import ProductContext from "../../context/Product/ProductContext";
 import CartContext from "../../context/cart/CartContext";
 import OrderContext from "../../context/orders/OrderContext";
@@ -19,8 +19,13 @@ import ConfirmDialog from "../ConfirmDialog";
 function GetOneProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getProductById, singleProduct, deleteProduct } =
-    useContext(ProductContext);
+  const {
+    getProductById,
+    singleProduct,
+    deleteProduct,
+    GetProductByCategoriesForOneProduct,
+    categoryProduct,
+  } = useContext(ProductContext);
   const { addToCart } = useContext(CartContext);
   const {
     RentNow,
@@ -68,6 +73,12 @@ function GetOneProduct() {
       checkReviewedByUser();
     }
   }, [orders]);
+
+  useEffect(() => {
+    if (singleProduct?.categories.length > 0) {
+      GetProductByCategoriesForOneProduct(id, singleProduct?.categories);
+    }
+  }, [singleProduct]);
 
   // get avg rating
   useEffect(() => {
@@ -349,6 +360,46 @@ function GetOneProduct() {
                   {format(new Date(review?.order?.to), "dd,MMM,yyyy")}
                 </p>
               </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Find in similar category */}
+      <div className="max-w-7xl mx-auto px-4 py-2">
+        <h2 className="text-4xl font-bold text-center text-indigo-700 mt-4 mb-6">
+          Other Rental's in This Category
+        </h2>
+
+        {categoryProduct?.length === 0 ? (
+          <p className="text-center text-gray-500 mt-8">No products found.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 mt-8">
+            {categoryProduct?.map((product) => (
+              <Link
+                to={`/rental/${product._id}`}
+                key={product._id}
+                className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 group"
+              >
+                <div className="relative">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-64 object-cover group-hover:scale-105 transition duration-300"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-900 truncate">
+                    {product.name}
+                  </h3>
+                  <p className="text-gray-600 text-sm mt-1 truncate">
+                    {product.description.slice(0, 60)}...
+                  </p>
+                  <div className="mt-2 text-indigo-600 font-bold text-lg">
+                    ₹ {product.price}
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
         )}
