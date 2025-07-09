@@ -53,19 +53,32 @@ exports.getReviewsForProduct = async (req, res) => {
   }
 };
 
-
-exports.hasUserReviewed = async (req, res) => {
+exports.checkReviewedBatch = async (req, res) => {
   try {
-    const { orderId } = req.params;
+    const { orderIds } = req.body;
     const userId = req.headers.userid;
 
-    const existing = await ReviewModel.findOne({
-      order: orderId,
+    if (!Array.isArray(orderIds)) {
+      return res.status(400).json({ message: "orderIds must be an array" });
+    }
+
+    const reviews = await ReviewModel.find({
+      order: { $in: orderIds },
       owner: userId,
+    }).select("order");
+
+    const reviewedMap = {};
+    orderIds.forEach((id) => {
+      reviewedMap[id] = reviews.some((r) => r.order.toString() === id);
     });
 
-    res.json({ reviewed: !!existing });
+    res.json(reviewedMap);
   } catch (error) {
-    res.status(500).json({ message: "Failed to check review", error: error.message });
+    res
+      .status(500)
+      .json({
+        message: "Failed to check reviews in batch",
+        error: error.message,
+      });
   }
 };

@@ -75,7 +75,7 @@ const OrderState = ({ children }) => {
   };
 
   const CheckAvailability = async (productId, from, to) => {
-    setIsAvailable(FaLessThanEqual);
+    setIsAvailable(FaLessThanEqual); //FaLessThanEqual [react icon]
     if (!from || !to) {
       setAvailabilityMessage("Please select both dates.");
       return setIsAvailable(false);
@@ -125,7 +125,7 @@ const OrderState = ({ children }) => {
         return;
       }
 
-      setAvailabilityMessage("✔ Product is available for selected dates. click on Check Availability Again 🔄️");
+      setAvailabilityMessage("✔ Product is available for selected dates.");
       setIsAvailable(true);
       toast.success("Available to rent");
     } catch (err) {
@@ -179,6 +179,7 @@ const OrderState = ({ children }) => {
       setReviewOrderId(null);
       setReviewMessage("");
       setReviewRating(0);
+      return true;
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to submit review.");
     }
@@ -186,29 +187,27 @@ const OrderState = ({ children }) => {
 
   const checkReviewedByUser = async () => {
     const userId = localStorage.getItem("userId");
-    const reviewStatusMap = {};
 
-    for (const order of orders) {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/review/check-reviewed/${
-            order._id
-          }`,
-          {
-            headers: {
-              userid: userId,
-              token: localStorage.getItem("token"),
-            },
-          }
-        );
-        reviewStatusMap[order._id] = res.data.reviewed; // `true` or `false`
-      } catch (error) {
-        console.error(`Error checking review for order ${order._id}:`, error);
-        reviewStatusMap[order._id] = false; // Fallback if request fails
-      }
+    if (!orders || orders.length === 0) return;
+
+    const orderIds = orders.map((order) => order._id);
+
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/review/check-reviewed-batch/`,
+        { orderIds },
+        {
+          headers: {
+            userid: userId,
+            token: localStorage.getItem("token"),
+          },
+        }
+      );
+
+      setReviewedOrders(res.data);
+    } catch (error) {
+      console.error("Error checking reviewed orders:", error);
     }
-
-    setReviewedOrders(reviewStatusMap);
   };
 
   return (
@@ -219,6 +218,7 @@ const OrderState = ({ children }) => {
         cancelOrder,
         orders,
         isAvailable,
+        setIsAvailable,
         availabilityMessage,
         CheckAvailability,
         fetchReviews,
@@ -234,6 +234,7 @@ const OrderState = ({ children }) => {
         reviewOrderId,
         checkReviewedByUser,
         reviewedOrders,
+        setReviewedOrders,
         setAvailabilityMessage,
       }}
     >

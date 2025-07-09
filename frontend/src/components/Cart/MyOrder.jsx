@@ -23,6 +23,7 @@ function MyOrder() {
     reviewOrderId,
     checkReviewedByUser,
     reviewedOrders,
+    setReviewedOrders,
   } = useContext(OrderContext);
   const [disabledButtons, setDisabledButtons] = useState({});
   const [selectedOrderId, setSelectedOrderId] = useState(null);
@@ -55,7 +56,14 @@ function MyOrder() {
     if (!reviewMessage || reviewRating === 0) {
       return toast.error("Please fill out all review fields.");
     }
-    await addReview(reviewOrderId, reviewMessage, reviewRating);
+    const success = await addReview(reviewOrderId, reviewMessage, reviewRating);
+
+    if (success) {
+      setReviewedOrders((prev) => ({
+        ...prev,
+        [reviewOrderId]: true,
+      }));
+    }
   };
 
   return (

@@ -26,14 +26,15 @@ function GetOneProduct() {
     RentNow,
     fetchMyOrders,
     isAvailable,
+    setIsAvailable,
     availabilityMessage,
     CheckAvailability,
     fetchReviews,
     reviews,
+    checkReviewedByUser,
     setAvailabilityMessage,
   } = useContext(OrderContext);
 
-  const [hasCheckedAvailability, setHasCheckedAvailability] = useState(false);
   const [hasOrdered, setHasOrdered] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isAddingToFavorite, setIsAddingToFavorite] = useState(false);
@@ -62,6 +63,12 @@ function GetOneProduct() {
     }
   }, [singleProduct]);
 
+  useEffect(() => {
+    if (orders.length > 0) {
+      checkReviewedByUser();
+    }
+  }, [orders]);
+
   // get avg rating
   useEffect(() => {
     const fetchRating = async () => {
@@ -71,9 +78,12 @@ function GetOneProduct() {
       const data = await res.json();
       setAverageRating(data.averageRating);
       setTotalReviews(data.totalReviews);
+      setAvailabilityMessage(""); // clear message when product change
     };
     fetchRating();
   }, [id]);
+
+  // try
 
   // for option only when user ordered product
   const currentUserId = localStorage.getItem("userId");
@@ -91,11 +101,6 @@ function GetOneProduct() {
 
   const handleCheckAvailability = async () => {
     await CheckAvailability(singleProduct._id, from, to);
-    if (isAvailable) {
-      setHasCheckedAvailability(true);
-    } else {
-      setHasCheckedAvailability(false);
-    }
   };
 
   const handleRentNow = async () => {
@@ -103,6 +108,7 @@ function GetOneProduct() {
       toast.warning("Check availability first");
       return;
     }
+    setIsAvailable(false);
     setIsRenting(true);
     setOpenDialog(false);
     setShowFakePayment(true); //show popup for payment
@@ -113,6 +119,7 @@ function GetOneProduct() {
       format(from, "yyyy-MM-dd"),
       format(to, "yyyy-MM-dd")
     );
+    setAvailabilityMessage("");
 
     setTimeout(async () => {
       setShowFakePayment(false); //close popup of payment
@@ -122,7 +129,6 @@ function GetOneProduct() {
         toast.success("Rent confirmed 🤝");
         await fetchMyOrders();
         await getProductById(id);
-        setAvailabilityMessage("");
 
         // set fake payment false
         setTimeout(() => {
@@ -357,7 +363,7 @@ function GetOneProduct() {
             value={from}
             onChange={(newValue) => {
               setFrom(newValue);
-              setHasCheckedAvailability(false);
+              setIsAvailable(false);
             }}
             format="dd/MM/yyyy"
             slotProps={{ textField: { fullWidth: true } }}
@@ -367,7 +373,7 @@ function GetOneProduct() {
             value={to}
             onChange={(newValue) => {
               setTo(newValue);
-              setHasCheckedAvailability(false);
+              setIsAvailable(false);
             }}
             format="dd/MM/yyyy"
             slotProps={{ textField: { fullWidth: true } }}
@@ -395,7 +401,7 @@ function GetOneProduct() {
           <Button
             onClick={handleRentNow}
             variant="contained"
-            disabled={!isAvailable || !hasCheckedAvailability || isRenting}
+            disabled={!isAvailable || isRenting}
             color="primary"
           >
             Confirm Rent
