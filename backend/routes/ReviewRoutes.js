@@ -7,7 +7,6 @@ const {
 } = require("../controllers/ReviewController");
 const { getUser } = require("../middleware/getUser");
 
-// POST: Add review
 router.post("/add", getUser, addReview);
 
 router.get("/:productId", getUser, getReviewsForProduct);
