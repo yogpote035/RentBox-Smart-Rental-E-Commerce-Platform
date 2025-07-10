@@ -3,9 +3,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 module.exports.Signup = async (request, response) => {
-  const { name, email, phone, address, password } = request.body;
-  console.log("signup request body", name, email, password, phone, address);
-  if (!name || !email || !phone || !address || !password) {
+  const { name, email, phone, password } = request.body;
+  console.log("signup request body", name, email, password, phone);
+  if (!name || !email || !phone || !password) {
     return response.status(406).json({ message: "All Fields Are Required" });
   }
 
@@ -34,7 +34,6 @@ module.exports.Signup = async (request, response) => {
       name,
       email,
       phone,
-      address,
       password: hashedPassword,
     });
     await newUser.save();
@@ -114,5 +113,31 @@ module.exports.Login = async (request, response) => {
     return response
       .status(500)
       .json({ message: `Something Went Wrong : ${error}` });
+  }
+};
+
+module.exports.getUserAddress = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req?.params?.id);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports.updateUserAddress = async (req, res) => {
+  try {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({ message: "User updated successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error updating user" });
   }
 };

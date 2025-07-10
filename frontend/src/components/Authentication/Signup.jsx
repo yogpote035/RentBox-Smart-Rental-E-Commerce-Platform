@@ -12,42 +12,19 @@ function Signup() {
     email: "",
     phone: "",
     password: "",
-    address: {
-      buildingName: "",
-      laneNo: "",
-      landmark: "",
-      city: "",
-      state: "",
-      country: "",
-      pincode: "",
-    },
   });
   const [isDisable, setIsDisable] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name in formData.address) {
-      setFormData((prev) => ({
-        ...prev,
-        address: {
-          ...prev.address,
-          [name]: value,
-        },
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
-    setIsDisable(true);
     e.preventDefault();
-    const payload = {
-      ...formData,
-      address: [formData.address],
-    };
+    setIsDisable(true);
 
-    const res = await signup(payload);
+    const res = await signup(formData);
 
     setTimeout(() => {
       setIsDisable(false);
@@ -126,93 +103,6 @@ function Signup() {
             className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
             required
           />
-        </div>
-
-        <h3 className="text-lg font-semibold text-gray-800 border-b pb-1 mt-6">
-          Address Details
-        </h3>
-
-        {/* Address Fields */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-gray-700 mb-1">Building Name</label>
-            <input
-              type="text"
-              name="buildingName"
-              value={formData.address.buildingName}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">
-              Lane No / Area Name
-            </label>
-            <input
-              type="text"
-              name="laneNo"
-              value={formData.address.laneNo}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">Landmark</label>
-            <input
-              type="text"
-              name="landmark"
-              value={formData.address.landmark}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">City</label>
-            <input
-              type="text"
-              name="city"
-              value={formData.address.city}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">State</label>
-            <input
-              type="text"
-              name="state"
-              value={formData.address.state}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">Country</label>
-            <input
-              type="text"
-              name="country"
-              value={formData.address.country}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">Pincode</label>
-            <input
-              type="number"
-              name="pincode"
-              value={formData.address.pincode}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
         </div>
 
         <button

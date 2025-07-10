@@ -20,6 +20,24 @@ const OrderState = ({ children }) => {
   //  Rent Now
   const RentNow = async (productId, quantity, from, to) => {
     try {
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+
+      //Get user and check address
+      const userRes = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/auth/${userId}`,
+        {
+          headers: { token },
+        }
+      );
+
+      const user = userRes.data;
+
+      if (!user.address || user.address.length === 0) {
+        toast.error("Please add your address before renting a product.");
+        return "add-address"; 
+      }
+
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/order`,
         { productId, quantity, from, to },
@@ -184,7 +202,7 @@ const OrderState = ({ children }) => {
       toast.error(error.response?.data?.message || "Failed to submit review.");
     }
   };
-
+  // one time call for all order id's
   const checkReviewedByUser = async () => {
     const userId = localStorage.getItem("userId");
 

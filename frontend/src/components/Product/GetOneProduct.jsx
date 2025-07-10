@@ -87,14 +87,12 @@ function GetOneProduct() {
         `${import.meta.env.VITE_BACKEND_URL}/product/average-rating/${id}`
       );
       const data = await res.json();
-      setAverageRating(data.averageRating);
+      setAverageRating(Math.floor(data.averageRating));
       setTotalReviews(data.totalReviews);
       setAvailabilityMessage(""); // clear message when product change
     };
     fetchRating();
   }, [id]);
-
-  // try
 
   // for option only when user ordered product
   const currentUserId = localStorage.getItem("userId");
@@ -122,7 +120,6 @@ function GetOneProduct() {
     setIsAvailable(false);
     setIsRenting(true);
     setOpenDialog(false);
-    setShowFakePayment(true); //show popup for payment
 
     const res = await RentNow(
       id,
@@ -130,6 +127,11 @@ function GetOneProduct() {
       format(from, "yyyy-MM-dd"),
       format(to, "yyyy-MM-dd")
     );
+    localStorage.setItem("redirect-url", `/rental/${id}`);
+    if (res === "add-address") {
+      return navigate("/add-address");
+    }
+    setShowFakePayment(true); //show popup for payment
     setAvailabilityMessage("");
 
     setTimeout(async () => {

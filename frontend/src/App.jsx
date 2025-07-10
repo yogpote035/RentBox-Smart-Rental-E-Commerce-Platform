@@ -27,6 +27,7 @@ import ChatRoom from "./components/chat/ChatRoom";
 
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import AddAddressForm from "./components/Authentication/AddAddressForm";
 
 function App() {
   const location = useLocation();
@@ -92,6 +93,14 @@ function App() {
                     element={
                       <ProtectedRoutes>
                         <MyOrder />
+                      </ProtectedRoutes>
+                    }
+                  />
+                  <Route
+                    path="/add-address"
+                    element={
+                      <ProtectedRoutes>
+                        <AddAddressForm />
                       </ProtectedRoutes>
                     }
                   />
