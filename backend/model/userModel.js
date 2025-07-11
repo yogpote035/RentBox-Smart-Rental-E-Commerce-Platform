@@ -44,6 +44,11 @@ const UserSchema = new Schema({
     required: true,
   },
   address: [addressSchema],
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
 });
 
 const UserModel = mongoose.model("UserModel", UserSchema);
