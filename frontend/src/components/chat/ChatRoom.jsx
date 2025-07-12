@@ -61,10 +61,15 @@ const ChatRoom = () => {
   return (
     <div className="h-screen w-screen flex flex-col bg-white relative overflow-hidden">
       {/* Header - Fixed */}
-      <div className="bg-indigo-600 text-white text-lg font-semibold text-center py-4 fixed top-0 w-full z-10 shadow-md">
-        {currentUserRole === "owner"
-          ? `Chat with Renter: ${chatWithUserName}`
-          : `Chat with Owner: ${chatWithUserName}`}
+      <div className="bg-indigo-600 text-white text-lg font-semibold py-4 fixed top-0 w-full z-10 shadow-md flex justify-between items-center px-4">
+        <span>
+          {currentUserRole === "owner"
+            ? `Chat with Renter: ${chatWithUserName}`
+            : `Chat with Owner: ${chatWithUserName}`}
+        </span>
+        <span className="text-sm font-normal bg-white text-indigo-700 px-3 py-1 rounded shadow">
+          You: {localStorage.getItem("username")}
+        </span>
       </div>
 
       {/* Chat Messages - Scrollable */}
