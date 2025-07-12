@@ -11,10 +11,10 @@ function Footer() {
           <p className="text-sm text-gray-300">
             © {new Date().getFullYear()} RentBox. All rights reserved.
           </p>{" "}
-          <p className="text-sm text-gray-300">
+          <p className="text-sm text-gray-300 mt-1">
             <span className="text-sm font-normal bg-white text-indigo-700 px-3 py-1 rounded shadow">
               You: {localStorage.getItem("username")}
-            </span>{" "}
+            </span>
           </p>
         </div>
 
