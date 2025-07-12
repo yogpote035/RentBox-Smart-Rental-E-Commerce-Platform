@@ -93,6 +93,11 @@ module.exports.Login = async (request, response) => {
         .status(208)
         .json({ message: "Wrong password , check your credentials" });
     }
+    if (existingUser.role === "admin") {
+      return response
+        .status(203)
+        .json({ message: "You are not General User to access this resource" });
+    }
     const data = {
       user: {
         id: existingUser.id,

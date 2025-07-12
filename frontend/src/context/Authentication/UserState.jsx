@@ -63,6 +63,13 @@ const UserState = ({ children }) => {
         setIsAuthenticated(false); // update state
         return false;
       }
+
+      // user is Admin
+      if (res.status === 203) {
+        toast.error("You are not General User to access this resource");
+        setIsAuthenticated(false); // update state
+        return false;
+      }
     } catch (err) {
       setIsAuthenticated(false);
       toast.error(err.response?.data?.message || "Login failed");
