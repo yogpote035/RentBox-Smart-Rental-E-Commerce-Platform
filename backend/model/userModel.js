@@ -49,6 +49,10 @@ const UserSchema = new Schema({
     enum: ["user", "admin"],
     default: "user",
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const UserModel = mongoose.model("UserModel", UserSchema);

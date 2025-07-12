@@ -82,6 +82,10 @@ const productSchema = new Schema({
     },
   ],
   address: [addressSchema],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const ProductModel = mongoose.model("ProductModel", productSchema);
