@@ -1,13 +1,16 @@
 import { useState, useContext } from "react";
 import UserContext from "../../context/Authentication/UserContext";
 import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function Login() {
   const context = useContext(UserContext);
   const navigate = useNavigate();
   const { login } = context;
-  const [usePhone, setUsePhone] = useState(false); // toggle state
+
+  const [usePhone, setUsePhone] = useState(false);
   const [isDisable, setIsDisable] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     phone: "",
@@ -22,8 +25,9 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
-    setIsDisable(true);
     e.preventDefault();
+    setIsDisable(true);
+
     const payload = {
       password: formData.password,
       ...(usePhone ? { phone: formData.phone } : { email: formData.email }),
@@ -34,6 +38,7 @@ function Login() {
     setTimeout(() => {
       setIsDisable(false);
     }, 3000);
+
     if (res === true) {
       navigate("/");
     }
@@ -81,28 +86,37 @@ function Login() {
             </div>
           )}
 
-          <div>
+          {/* Password with toggle */}
+          <div className="relative">
             <label className="block mb-1 text-sm font-medium text-gray-700">
               Password
             </label>
             <input
               style={{ outline: "none" }}
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter your password"
-              className="w-full px-3 py-2 border rounded-md"
+              className="w-full px-3 py-2 border rounded-md pr-10"
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute top-[38px] right-3 text-gray-600 hover:text-indigo-600"
+              tabIndex={-1}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
           </div>
 
           <button
             disabled={isDisable}
             type="submit"
             className={`w-full ${
-              isDisable ? " bg-indigo-300" : "bg-indigo-600"
-            } text-white font-semibold py-2 rounded-md hover:bg-rose-800`}
+              isDisable ? "bg-indigo-300" : "bg-indigo-600"
+            } text-white font-semibold py-2 rounded-md hover:bg-rose-800 transition-colors`}
           >
             {isDisable ? "Validating Credentials..." : "Login"}
           </button>

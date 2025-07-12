@@ -1,12 +1,13 @@
 import { useState, useContext } from "react";
 import UserContext from "../../context/Authentication/UserContext";
 import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function Signup() {
   const navigate = useNavigate();
   const context = useContext(UserContext);
-
   const { signup } = context;
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,6 +15,7 @@ function Signup() {
     password: "",
   });
   const [isDisable, setIsDisable] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -90,27 +92,38 @@ function Signup() {
           />
         </div>
 
-        {/* Password */}
-        <div>
+        {/* Password with show/hide toggle */}
+        <div className="relative">
           <label className="block font-medium text-gray-700 mb-1">
             Password
           </label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full p-2 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
             required
           />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-3 top-[38px] text-gray-600 hover:text-indigo-600"
+            tabIndex={-1}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
         </div>
 
+        {/* Submit button */}
         <button
           disabled={isDisable}
           type="submit"
-          className={`w-full ${
-            isDisable ? "bg-rose-600" : "bg-indigo-500"
-          }  text-white font-semibold py-2 rounded shadow`}
+          className={`w-full py-2 font-semibold rounded shadow ${
+            isDisable
+              ? "bg-rose-600 text-gray-200 cursor-not-allowed"
+              : "bg-indigo-500 text-white hover:bg-indigo-600"
+          }`}
         >
           {isDisable ? "Validating Credentials..." : "Signup"}
         </button>
