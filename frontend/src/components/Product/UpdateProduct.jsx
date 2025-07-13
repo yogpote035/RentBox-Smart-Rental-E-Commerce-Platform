@@ -15,7 +15,7 @@ function UpdateProduct() {
     name: "",
     description: "",
     price: "",
-    priceUnit: "",
+    priceUnit: "per day",
     categories: [],
     address: {
       buildingName: "",
@@ -127,20 +127,7 @@ function UpdateProduct() {
         <textarea name="description" value={formData.description} onChange={handleChange} required className="w-full p-3 border rounded" />
         <input type="number" name="price" value={formData.price} onChange={handleChange} required className="w-full p-3 border rounded" />
 
-        <select
-          name="priceUnit"
-          value={formData.priceUnit}
-          onChange={handleChange}
-          className="w-full p-2 border rounded mt-4"
-          required
-        >
-          <option value="" disabled>Select Price Unit</option>
-          <option value="per hour">Per Hour</option>
-          <option value="per day">Per Day</option>
-          <option value="per week">Per Week</option>
-          <option value="per month">Per Month</option>
-          <option value="per year">Per Year</option>
-        </select>
+        
 
         <h3 className="text-lg font-semibold text-gray-800">🏷️ Select Categories</h3>
         <div className="flex flex-wrap gap-2 mb-4">
