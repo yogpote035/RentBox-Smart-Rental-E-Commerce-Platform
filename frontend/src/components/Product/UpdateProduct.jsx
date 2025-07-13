@@ -15,7 +15,6 @@ function UpdateProduct() {
     name: "",
     description: "",
     price: "",
-    priceUnit: "per day",
     categories: [],
     address: {
       buildingName: "",
@@ -38,13 +37,10 @@ function UpdateProduct() {
 
   useEffect(() => {
     if (singleProduct) {
-      const [priceValue, priceUnitValue] = (singleProduct.price || "").split("/");
-
       setFormData({
         name: singleProduct.name || "",
         description: singleProduct.description || "",
-        price: priceValue || "",
-        priceUnit: priceUnitValue || "",
+        price: singleProduct.price || "",
         categories: singleProduct.categories || [],
         address: singleProduct.address?.[0] || {
           buildingName: "",
@@ -94,12 +90,10 @@ function UpdateProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsDisable(true);
-    const finalFormData = {
-      ...formData,
-      price: `${formData.price}/${formData.priceUnit}`, 
-    };
-    const success = await updateProduct(id, finalFormData, image);
+
+    const success = await updateProduct(id, formData, image);
     setTimeout(() => setIsDisable(false), 2000);
+
     if (success) navigate(`/rental/${id}`);
   };
 
@@ -126,8 +120,6 @@ function UpdateProduct() {
         <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full p-3 border rounded" />
         <textarea name="description" value={formData.description} onChange={handleChange} required className="w-full p-3 border rounded" />
         <input type="number" name="price" value={formData.price} onChange={handleChange} required className="w-full p-3 border rounded" />
-
-        
 
         <h3 className="text-lg font-semibold text-gray-800">🏷️ Select Categories</h3>
         <div className="flex flex-wrap gap-2 mb-4">

@@ -23,7 +23,6 @@ function CreateProduct() {
     name: "",
     description: "",
     price: "",
-    priceUnit: "per day",
     categories: [],
     address: {
       buildingName: "",
@@ -42,8 +41,6 @@ function CreateProduct() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // Handle nested address
     if (
       [
         "buildingName",
@@ -88,16 +85,11 @@ function CreateProduct() {
     e.preventDefault();
     setIsDisable(true);
 
-    const finalProduct = {
-      ...formData,
-      price: `${formData.priceNumber}/${formData.priceUnit}`,
-    };
-    console.log(finalProduct);
-    delete finalProduct.priceNumber;
-    delete finalProduct.priceUnit;
+    const finalProduct = { ...formData };
 
     const id = await createProduct(finalProduct, image);
     setTimeout(() => setIsDisable(false), 2000);
+
     if (id) navigate(`/rental/${id}`);
   };
 
@@ -128,55 +120,50 @@ function CreateProduct() {
           required
         />
 
-        <div className="grid grid-rows-1 gap-0">
-          <input
-            type="number"
-            name="priceNumber"
-            placeholder="Price (₹)"
-            value={formData.priceNumber}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-          
-          <br />
-          <h3 className="text-lg font-semibold text-gray-800">
-            🏷️ Select Categories
-          </h3>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {[
-              { name: "electric", icon: <FaBolt /> },
-              { name: "bike", icon: <FaBicycle /> },
-              { name: "vehicle", icon: <FaCar /> },
-              { name: "furniture", icon: <FaCouch /> },
-              { name: "books", icon: <FaBook /> },
-              { name: "tools", icon: <FaTools /> },
-              { name: "clothing", icon: <FaTshirt /> },
-              { name: "gadgets", icon: <FaMobileAlt /> },
-              { name: "sports", icon: <FaFootballBall /> },
-              { name: "property", icon: <FaHouseDamage /> },
-              { name: "other", icon: <FaQuestionCircle /> },
-            ].map(({ name, icon }) => (
-              <button
-                key={name}
-                type="button"
-                onClick={() => handleToggleCategory(name)}
-                className={`flex items-center gap-2 px-4 py-1 rounded-full border text-sm font-medium transition-all duration-200 ${
-                  formData.categories.includes(name)
-                    ? "bg-indigo-600 text-white border-indigo-600"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                }`}
-              >
-                {icon}
-                {name.charAt(0).toUpperCase() + name.slice(1)}
-              </button>
-            ))}
-          </div>
+        <input
+          type="number"
+          name="price"
+          placeholder="Price (₹)"
+          value={formData.price}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          required
+        />
+
+        <h3 className="text-lg font-semibold text-gray-800">
+          🏷️ Select Categories
+        </h3>
+        <div className="flex flex-wrap gap-2 mb-4">
+          {[
+            { name: "electric", icon: <FaBolt /> },
+            { name: "bike", icon: <FaBicycle /> },
+            { name: "vehicle", icon: <FaCar /> },
+            { name: "furniture", icon: <FaCouch /> },
+            { name: "books", icon: <FaBook /> },
+            { name: "tools", icon: <FaTools /> },
+            { name: "clothing", icon: <FaTshirt /> },
+            { name: "gadgets", icon: <FaMobileAlt /> },
+            { name: "sports", icon: <FaFootballBall /> },
+            { name: "property", icon: <FaHouseDamage /> },
+            { name: "other", icon: <FaQuestionCircle /> },
+          ].map(({ name, icon }) => (
+            <button
+              key={name}
+              type="button"
+              onClick={() => handleToggleCategory(name)}
+              className={`flex items-center gap-2 px-4 py-1 rounded-full border text-sm font-medium transition-all duration-200 ${
+                formData.categories.includes(name)
+                  ? "bg-indigo-600 text-white border-indigo-600"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+              }`}
+            >
+              {icon}
+              {name.charAt(0).toUpperCase() + name.slice(1)}
+            </button>
+          ))}
         </div>
 
-        {/* Categories */}
-
-        {/* Image */}
+        {/* Image Upload */}
         <input
           type="file"
           accept="image/*"
