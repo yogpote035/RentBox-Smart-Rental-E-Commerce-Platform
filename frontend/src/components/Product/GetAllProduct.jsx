@@ -53,7 +53,7 @@ function GetAllProducts() {
                   {product.description.slice(0, 60)}...
                 </p>
                 <div className="mt-2 text-indigo-600 font-bold text-lg">
-                  ₹ {product.price}
+                  ₹ {product.price}/per day
                 </div>
               </div>
             </Link>

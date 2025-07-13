@@ -2,14 +2,24 @@ import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ProductContext from "../../context/Product/ProductContext";
 import {
-  FaBolt, FaBicycle, FaCar, FaCouch, FaBook, FaTools,
-  FaTshirt, FaMobileAlt, FaFootballBall, FaQuestionCircle, FaHouseDamage
+  FaBolt,
+  FaBicycle,
+  FaCar,
+  FaCouch,
+  FaBook,
+  FaTools,
+  FaTshirt,
+  FaMobileAlt,
+  FaFootballBall,
+  FaQuestionCircle,
+  FaHouseDamage,
 } from "react-icons/fa";
 
 function UpdateProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getProductById, singleProduct, updateProduct } = useContext(ProductContext);
+  const { getProductById, singleProduct, updateProduct } =
+    useContext(ProductContext);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -58,7 +68,18 @@ function UpdateProduct() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (["buildingName", "laneNo", "landmark", "city", "state", "country", "pincode", "phone"].includes(name)) {
+    if (
+      [
+        "buildingName",
+        "laneNo",
+        "landmark",
+        "city",
+        "state",
+        "country",
+        "pincode",
+        "phone",
+      ].includes(name)
+    ) {
       setFormData((prev) => ({
         ...prev,
         address: {
@@ -117,11 +138,39 @@ function UpdateProduct() {
         Update Product
       </h2>
       <form onSubmit={handleSubmit} className="space-y-5">
-        <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full p-3 border rounded" />
-        <textarea name="description" value={formData.description} onChange={handleChange} required className="w-full p-3 border rounded" />
-        <input type="number" name="price" value={formData.price} onChange={handleChange} required className="w-full p-3 border rounded" />
+        <input
+          type="text"
+          placeholder="Product Name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="w-full p-3 border rounded"
+        />
+        <textarea
+          placeholder="Product Description"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          required
+          className="w-full p-3 border rounded"
+        />
+        <input
+          placeholder="Price (₹) (per day)"
+          type="number"
+          name="price"
+          value={formData.price}
+          onChange={handleChange}
+          required
+          className="w-full p-3 border mb-1 rounded"
+        />
+        <p className="text-gray-600 px-2 text-sm">
+          With Respect To: <span className="text-indigo-500">Per Day</span>
+        </p>
 
-        <h3 className="text-lg font-semibold text-gray-800">🏷️ Select Categories</h3>
+        <h3 className="text-lg font-semibold text-gray-800">
+          🏷️ Select Categories
+        </h3>
         <div className="flex flex-wrap gap-2 mb-4">
           {categoryOptions.map(({ name, icon }) => (
             <button
@@ -140,15 +189,34 @@ function UpdateProduct() {
           ))}
         </div>
 
-        <input type="file" accept="image/*" onChange={handleImageChange} className="w-full p-3 border rounded" />
+        <input
+          placeholder="Product Image"
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="w-full p-3 border rounded"
+        />
 
         <hr className="my-4" />
-        <h3 className="text-xl font-semibold text-gray-800 border-b pb-1">📍 Address Details</h3>
+        <h3 className="text-xl font-semibold text-gray-800 border-b pb-1">
+          📍 Address Details
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-          {["buildingName", "laneNo", "landmark", "city", "state", "country", "pincode", "phone"].map((field) => (
+          {[
+            "buildingName",
+            "laneNo",
+            "landmark",
+            "city",
+            "state",
+            "country",
+            "pincode",
+            "phone",
+          ].map((field) => (
             <input
               key={field}
-              type={field === "pincode" || field === "phone" ? "number" : "text"}
+              type={
+                field === "pincode" || field === "phone" ? "number" : "text"
+              }
               name={field}
               placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
               value={formData.address[field]}

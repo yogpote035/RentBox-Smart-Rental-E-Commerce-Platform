@@ -109,7 +109,7 @@ function MyOrder() {
                   </p>
                   <p>
                     <span className="font-medium">Price:</span> ₹
-                    {order?.product?.price}
+                    {order?.product?.price}/per day
                   </p>
                 </div>
                 <div className="flex justify-between">

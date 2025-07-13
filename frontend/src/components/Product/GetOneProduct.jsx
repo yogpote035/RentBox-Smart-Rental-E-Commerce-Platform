@@ -190,7 +190,7 @@ function GetOneProduct() {
               {singleProduct?.description}
             </p>
             <div className="text-xl text-indigo-600 font-semibold mb-4">
-              ₹ {singleProduct?.price}
+              ₹ {singleProduct?.price}/per day
             </div>
             <div className="text-sm text-gray-400 mb-4">
               Product ID: {singleProduct?._id}
@@ -398,7 +398,7 @@ function GetOneProduct() {
                     {product.description.slice(0, 60)}...
                   </p>
                   <div className="mt-2 text-indigo-600 font-bold text-lg">
-                    ₹ {product.price}
+                    ₹ {product.price}/per day
                   </div>
                 </div>
               </Link>

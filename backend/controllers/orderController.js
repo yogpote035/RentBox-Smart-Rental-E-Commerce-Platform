@@ -1,6 +1,6 @@
 const OrderModel = require("../model/orderModel");
 const ProductModel = require("../model/productModel");
-const { isBefore, isAfter, parseISO, format } = require("date-fns");
+const { isBefore, isAfter, format, differenceInDays } = require("date-fns");
 const PDFDocument = require("pdfkit");
 const path = require("path");
 
@@ -115,6 +115,7 @@ module.exports.checkProductAvailability = async (req, res) => {
     res.status(500).json({ message: "Error checking availability" });
   }
 };
+
 module.exports.receiptGenerate = async (req, res) => {
   try {
     const orderId = req?.query?.orderId;
@@ -123,6 +124,7 @@ module.exports.receiptGenerate = async (req, res) => {
         .status(404)
         .json({ message: "Order Id is Missing for Receipt Generation" });
     }
+
     const ReceiptOrder = await OrderModel.findById(orderId)
       .populate({
         path: "owner",
@@ -150,9 +152,6 @@ module.exports.receiptGenerate = async (req, res) => {
     const buyerAddress = buyer?.address?.[0] || {};
     const shippingAddress = product?.address?.[0] || {};
 
-    const PDFDocument = require("pdfkit");
-    const path = require("path");
-
     const doc = new PDFDocument({ margin: 50 });
 
     res.setHeader("Content-Type", "application/pdf");
@@ -168,10 +167,7 @@ module.exports.receiptGenerate = async (req, res) => {
     doc.image(logoPath, 50, 40, { height: 25, width: 80 });
 
     // Title
-    doc
-      .fontSize(20)
-      .fillColor("black")
-      .text("Tax Invoice", { align: "center" });
+    doc.fontSize(20).fillColor("black").text("Tax Invoice", { align: "center" });
 
     // Seller Info
     doc.moveDown(2);
@@ -188,20 +184,30 @@ module.exports.receiptGenerate = async (req, res) => {
       )
       .text("GSTIN: 27ABCDE1234F1Z5", 50);
 
+    // Calculate rental days (at least 1 day)
+    const rentalDays = differenceInDays(new Date(ReceiptOrder.to), new Date(ReceiptOrder.from));
+    const totalDays = rentalDays > 0 ? rentalDays : 1;
+
+    // Price is assumed number here
+    const pricePerDay = product.price;
+
+    // Calculate total price
+    const totalPrice = ReceiptOrder.quantity * pricePerDay * totalDays;
+
     // Order Summary
     const orderSummary = {
       invoiceId: `RENT-${ReceiptOrder._id.toString().slice(-6).toUpperCase()}`,
-      date: format(ReceiptOrder.createdAt, "dd-MM-yyy, hh:mm:ss a"),
+      date: format(ReceiptOrder.createdAt, "dd-MM-yyyy, hh:mm:ss a"),
       orderId: `ORD-${ReceiptOrder._id.toString().slice(-6).toUpperCase()}`,
       productId: product._id.toString(),
       productName: product.name,
       qty: ReceiptOrder.quantity,
-      price: parseFloat(product.price), // assuming format is number
+      price: pricePerDay,
       from: ReceiptOrder.from,
       to: ReceiptOrder.to,
+      totalDays,
+      totalPrice,
     };
-
-    const totalPrice = orderSummary.qty * orderSummary.price;
 
     // Order Info
     doc.moveDown(2);
@@ -231,20 +237,19 @@ module.exports.receiptGenerate = async (req, res) => {
       product: 50,
       qty: 280,
       price: 330,
-      total: 410,
+      days: 400,
+      total: 470,
     };
 
     const tableTop = doc.y;
     doc.font("Helvetica-Bold").fontSize(10);
     doc.text("Product Title", headers.product, tableTop);
     doc.text("Qty", headers.qty, tableTop);
-    doc.text("Price (Rs.)", headers.price, tableTop);
+    doc.text("Price/Day(Rs.)", headers.price, tableTop);
+    doc.text("Days", headers.days, tableTop);
     doc.text("Total (Rs.)", headers.total, tableTop);
 
-    doc
-      .moveTo(50, tableTop + 15)
-      .lineTo(500, tableTop + 15)
-      .stroke();
+    doc.moveTo(50, tableTop + 15).lineTo(530, tableTop + 15).stroke();
 
     // Product Row
     const rowY = tableTop + 20;
@@ -252,20 +257,18 @@ module.exports.receiptGenerate = async (req, res) => {
     doc.text(orderSummary.productName, headers.product, rowY);
     doc.text(orderSummary.qty.toString(), headers.qty, rowY);
     doc.text(orderSummary.price.toFixed(2), headers.price, rowY);
-    doc.text(totalPrice.toFixed(2), headers.total, rowY);
+    doc.text(orderSummary.totalDays.toString(), headers.days, rowY);
+    doc.text(orderSummary.totalPrice.toFixed(2), headers.total, rowY);
 
     // Divider
-    doc
-      .moveTo(50, rowY + 20)
-      .lineTo(500, rowY + 20)
-      .stroke();
+    doc.moveTo(50, rowY + 20).lineTo(530, rowY + 20).stroke();
 
     // Grand Total
     doc.moveDown(1.5);
     doc
       .font("Helvetica-Bold")
       .fontSize(12)
-      .text(`Grand Total Rs. ${totalPrice.toFixed(2)}`, 50, doc.y, {
+      .text(`Grand Total Rs. ${orderSummary.totalPrice.toFixed(2)}`, 50, doc.y, {
         align: "right",
       });
 
@@ -273,14 +276,14 @@ module.exports.receiptGenerate = async (req, res) => {
     doc.moveDown(2);
     doc.font("Helvetica-Bold").fontSize(11).text("Rent Period:", 50);
 
-    const dateStatus = isBefore(ReceiptOrder.to, new Date());
+    const dateStatus = isBefore(new Date(ReceiptOrder.to), new Date());
 
     doc
       .font("Helvetica")
       .fontSize(10)
       .text(
-        `${format(orderSummary.from, "dd-MM-yyyy")} to ${format(
-          orderSummary.to,
+        `${format(new Date(orderSummary.from), "dd-MM-yyyy")} to ${format(
+          new Date(orderSummary.to),
           "dd-MM-yyyy"
         )}`,
         130,
@@ -288,11 +291,7 @@ module.exports.receiptGenerate = async (req, res) => {
       )
       .moveDown(1.5)
       .font("Helvetica-Bold")
-      .text(
-        `Renting Status: ${dateStatus ? "Expired" : "Active"}`,
-        130,
-        doc.y - 15
-      );
+      .text(`Renting Status: ${dateStatus ? "Expired" : "Active"}`, 130, doc.y - 15);
 
     // Footer
     doc.moveDown(1);

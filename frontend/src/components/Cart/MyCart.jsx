@@ -64,7 +64,7 @@ function MyCart() {
                       {product.name}
                     </h3>
                     <p className="text-indigo-600 font-medium text-lg mt-1">
-                      ₹{product.price}
+                      ₹{product.price}/per day
                     </p>
                     <p className="text-sm text-gray-500 mt-1">
                       Quantity: {quantity}

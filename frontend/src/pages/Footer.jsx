@@ -11,9 +11,7 @@ function Footer() {
           <p className="text-sm text-gray-300">
             © {new Date().getFullYear()} RentBox. All rights reserved.
           </p>{" "}
-          <p className="text-sm text-gray-300 mt-1">
-            You: {localStorage.getItem("username")}
-          </p>
+          
         </div>
 
         {/* Center: Navigation Links */}

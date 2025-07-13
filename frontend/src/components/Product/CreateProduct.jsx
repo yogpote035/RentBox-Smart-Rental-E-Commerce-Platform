@@ -123,13 +123,13 @@ function CreateProduct() {
         <input
           type="number"
           name="price"
-          placeholder="Price (₹)"
+          placeholder="Price (₹) (per day)"
           value={formData.price}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border mb-1 rounded"
           required
         />
-
+        <p className="text-gray-600 px-2 text-sm">With Respect To: <span className="text-indigo-500">Per Day</span></p>
         <h3 className="text-lg font-semibold text-gray-800">
           🏷️ Select Categories
         </h3>
