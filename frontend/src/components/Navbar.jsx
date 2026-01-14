@@ -8,6 +8,15 @@ import {
   FaTimes,
   FaUserCircle,
 } from "react-icons/fa";
+import {
+  Search,
+  Plus,
+  Package,
+  LogOut,
+  Home,
+  Menu,
+  X,
+} from "lucide-react";
 
 function Navbar() {
   const { logout, isAuthenticated } = useContext(UserContext);
@@ -65,264 +74,311 @@ function Navbar() {
   const toggleUserPopup = () => setUserPopupOpen((prev) => !prev);
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50 px-4 md:px-8 py-3">
-      <div className="flex justify-between items-center max-w-7xl mx-auto">
-        <Link
-          to="/"
-          onClick={() => {
-            closeMenu();
-            setUserPopupOpen(false);
-          }}
-          className="flex items-center gap-2"
-        >
-          <i className="fa-solid fa-registered text-indigo-600 text-3xl md:hidden block" />
-          <span className="hidden md:inline text-indigo-700 text-2xl font-bold tracking-wide">
-            RENTBOX
-          </span>
-        </Link>
+    <nav className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link
+            to="/"
+            onClick={() => {
+              closeMenu();
+              setUserPopupOpen(false);
+            }}
+            className="flex items-center gap-2 group"
+          >
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
+              <i className="fa-solid fa-registered text-white text-xl" />
+            </div>
+            <span className="hidden sm:inline text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              RENTBOX
+            </span>
+          </Link>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-6">
-          {!["/login", "/signup"].includes(location.pathname) && (
-            <form
-              onSubmit={handleSearch}
-              className="flex items-center gap-2 min-w-[250px]"
-            >
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search products..."
-                className="border border-gray-300 px-3 py-1.5 rounded-md outline-none w-full focus-visible:ring-2 focus-visible:ring-indigo-500"
-                aria-label="Search products"
-              />
-              <button
-                type="submit"
-                className="bg-indigo-500 text-white px-3 py-1.5 rounded hover:bg-indigo-600 transition focus-visible:ring-2 focus-visible:ring-indigo-400"
+          {/* Desktop Menu */}
+          <div className="hidden lg:flex items-center gap-4">
+            {!["/login", "/signup"].includes(location.pathname) && (
+              <form
+                onSubmit={handleSearch}
+                className="flex items-center gap-2"
               >
-                Search
-              </button>
-            </form>
-          )}
+                <div className="relative">
+                  <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search products..."
+                    className="border border-gray-300 pl-10 pr-4 py-2 rounded-lg outline-none w-64 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                    aria-label="Search products"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg transition font-medium shadow-md hover:shadow-lg"
+                >
+                  Search
+                </button>
+              </form>
+            )}
 
-          {isAuthenticated ? (
-            <>
-              <Link
-                to="/create-rental"
-                className="text-indigo-700 hover:underline focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
-                onClick={() => setUserPopupOpen(false)}
-              >
-                Add Rental
-              </Link>
-              <Link
-                to="/my-rentals"
-                className="text-indigo-700 hover:underline focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
-                onClick={() => setUserPopupOpen(false)}
-              >
-                My Rentals
-              </Link>
-              <Link
-                to="/my-favorite"
-                className="text-indigo-700 hover:text-red-600 focus-visible:ring-2 focus-visible:ring-red-500 rounded"
-                onClick={() => setUserPopupOpen(false)}
-                aria-label="Favorites"
-              >
-                <FaHeart size={18} />
-              </Link>
-              <Link
-                to="/rentals-cart"
-                className="text-indigo-700 hover:text-green-600 focus-visible:ring-2 focus-visible:ring-green-500 rounded"
-                onClick={() => setUserPopupOpen(false)}
-                aria-label="Cart"
-              >
-                <FaShoppingCart size={18} />
-              </Link>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/create-rental"
+                  className="flex items-center gap-2 text-indigo-700 hover:text-indigo-900 font-medium px-3 py-2 rounded-lg hover:bg-indigo-50 transition"
+                  onClick={() => setUserPopupOpen(false)}
+                >
+                  <Plus size={18} />
+                  <span className="hidden xl:inline">Add Rental</span>
+                </Link>
+                <Link
+                  to="/my-rentals"
+                  className="flex items-center gap-2 text-indigo-700 hover:text-indigo-900 font-medium px-3 py-2 rounded-lg hover:bg-indigo-50 transition"
+                  onClick={() => setUserPopupOpen(false)}
+                >
+                  <Package size={18} />
+                  <span className="hidden xl:inline">My Rentals</span>
+                </Link>
+                <Link
+                  to="/my-favorite"
+                  className="text-indigo-700 hover:text-red-600 p-2 rounded-lg hover:bg-red-50 transition"
+                  onClick={() => setUserPopupOpen(false)}
+                  aria-label="Favorites"
+                  title="Favorites"
+                >
+                  <FaHeart size={20} />
+                </Link>
+                <Link
+                  to="/rentals-cart"
+                  className="text-indigo-700 hover:text-green-600 p-2 rounded-lg hover:bg-green-50 transition"
+                  onClick={() => setUserPopupOpen(false)}
+                  aria-label="Cart"
+                  title="Cart"
+                >
+                  <FaShoppingCart size={20} />
+                </Link>
 
-              {/* User Icon */}
-              <div
-                ref={userPopupRef}
-                className="relative group"
-                onMouseLeave={() => setUserPopupOpen(false)}
-              >
+                {/* User Icon */}
                 <div
+                  ref={userPopupRef}
+                  className="relative"
+                  onMouseLeave={() => setUserPopupOpen(false)}
+                >
+                  <button
+                    onClick={toggleUserPopup}
+                    className="text-indigo-700 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition"
+                    title={username}
+                    aria-haspopup="true"
+                    aria-expanded={userPopupOpen}
+                  >
+                    <FaUserCircle size={24} />
+                  </button>
+
+                  {userPopupOpen && (
+                    <div className="absolute top-full mt-2 right-0 bg-white border border-gray-200 rounded-lg shadow-xl py-1 min-w-[160px] z-50">
+                      <div className="px-4 py-2 border-b border-gray-200">
+                        <p className="text-sm text-gray-500">Signed in as</p>
+                        <p className="text-sm font-semibold text-gray-900 truncate">
+                          {username}
+                        </p>
+                      </div>
+                      <Link
+                        to="/profile"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition"
+                        onClick={() => setUserPopupOpen(false)}
+                      >
+                        View Profile
+                      </Link>
+                      <Link
+                        to="/orders"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition"
+                        onClick={() => setUserPopupOpen(false)}
+                      >
+                        My Orders
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition font-medium shadow-md hover:shadow-lg"
+                >
+                  <LogOut size={18} />
+                  <span className="hidden xl:inline">Logout</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="bg-white border border-gray-300 text-indigo-700 hover:bg-indigo-50 px-5 py-2 rounded-lg transition font-medium"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-5 py-2 rounded-lg transition font-medium shadow-md hover:shadow-lg"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Mobile Right Icons */}
+          <div className="lg:hidden flex items-center gap-2">
+            {isAuthenticated && (
+              <div ref={userPopupRef} className="relative">
+                <button
                   onClick={toggleUserPopup}
-                  className="cursor-pointer text-indigo-700 p-1 rounded focus-visible:ring-2 focus-visible:ring-indigo-500"
+                  className="text-indigo-700 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition"
                   title={username}
                   aria-haspopup="true"
                   aria-expanded={userPopupOpen}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") toggleUserPopup();
-                  }}
                 >
                   <FaUserCircle size={24} />
-                </div>
-
-                <div
-                  className={`absolute top-full mt-1 left-1/2 transform -translate-x-1/2 bg-indigo-700 text-white text-sm rounded px-3 py-1 whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:pointer-events-auto ${
-                    userPopupOpen ? "opacity-100 pointer-events-auto" : ""
-                  } z-50`}
-                  style={{ minWidth: "max-content" }}
-                >
-                  {username}
-                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-indigo-700 rotate-45" />
-                </div>
+                </button>
+                {userPopupOpen && (
+                  <div className="absolute top-full mt-2 right-0 bg-white border border-gray-200 rounded-lg shadow-xl py-1 min-w-[160px] z-50">
+                    <div className="px-4 py-2 border-b border-gray-200">
+                      <p className="text-xs text-gray-500">Signed in as</p>
+                      <p className="text-sm font-semibold text-gray-900 truncate">
+                        {username}
+                      </p>
+                    </div>
+                    <Link
+                      to="/profile"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition"
+                      onClick={() => {
+                        setUserPopupOpen(false);
+                        closeMenu();
+                      }}
+                    >
+                      View Profile
+                    </Link>
+                    <Link
+                      to="/orders"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition"
+                      onClick={() => {
+                        setUserPopupOpen(false);
+                        closeMenu();
+                      }}
+                    >
+                      My Orders
+                    </Link>
+                  </div>
+                )}
               </div>
-
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-4 py-1.5 rounded hover:bg-red-600 transition ml-4 focus-visible:ring-2 focus-visible:ring-red-500"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="bg-gray-100 text-indigo-700 px-4 py-1.5 rounded hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-indigo-500"
-              >
-                Login
-              </Link>
-              <Link
-                to="/signup"
-                className="bg-gray-100 text-indigo-700 px-4 py-1.5 rounded hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-indigo-500"
-              >
-                Signup
-              </Link>
-            </>
-          )}
-        </div>
-
-        {/* Mobile Right Icons */}
-        <div className="md:hidden flex items-center gap-3">
-          {isAuthenticated && (
-            <div ref={userPopupRef} className="relative">
-              <div
-                onClick={toggleUserPopup}
-                className="cursor-pointer text-indigo-700 p-1 rounded focus-visible:ring-2 focus-visible:ring-indigo-500"
-                title={username}
-                aria-haspopup="true"
-                aria-expanded={userPopupOpen}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") toggleUserPopup();
-                }}
-              >
-                <FaUserCircle size={24} />
-              </div>
-              {userPopupOpen && (
-                <div
-                  className="absolute top-full mt-1 left-1/2 transform -translate-x-1/2 bg-indigo-700 text-white text-sm rounded px-3 py-1 whitespace-nowrap z-50"
-                  style={{ minWidth: "max-content" }}
-                >
-                  {username}
-                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-indigo-700 rotate-45" />
-                </div>
-              )}
-            </div>
-          )}
-          <button
-            onClick={toggleMenu}
-            className="text-indigo-700 p-2 rounded focus-visible:ring-2 focus-visible:ring-indigo-500"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-          >
-            {menuOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
-          </button>
+            )}
+            <button
+              onClick={toggleMenu}
+              className="text-indigo-700 hover:text-indigo-900 p-2 rounded-lg hover:bg-indigo-50 transition"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden mt-4 px-2 space-y-3">
-          {!["/login", "/signup"].includes(location.pathname) && (
-            <form
-              onSubmit={handleSearch}
-              className="flex gap-2 px-2 pb-3 items-center"
+        <div className="lg:hidden border-t border-gray-200 bg-white">
+          <div className="px-4 py-4 space-y-3">
+            {!["/login", "/signup"].includes(location.pathname) && (
+              <form onSubmit={handleSearch} className="pb-3 border-b border-gray-200">
+                <div className="relative">
+                  <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search products..."
+                    className="w-full border border-gray-300 pl-10 pr-4 py-2.5 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                    aria-label="Search products"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full mt-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-2.5 rounded-lg transition font-medium shadow-md"
+                >
+                  Search
+                </button>
+              </form>
+            )}
+
+            <Link
+              to="/"
+              onClick={closeMenu}
+              className="flex items-center gap-3 text-gray-700 hover:text-indigo-700 hover:bg-indigo-50 font-medium px-3 py-2.5 rounded-lg transition"
             >
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search products..."
-                className="w-full border border-gray-300 px-3 py-1.5 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-                aria-label="Search products"
-              />
-              <button
-                type="submit"
-                className="bg-indigo-500 text-white px-3 py-1.5 rounded hover:bg-indigo-600 transition focus-visible:ring-2 focus-visible:ring-indigo-400"
-              >
-                Go
-              </button>
-            </form>
-          )}
+              <Home size={20} />
+              Home
+            </Link>
 
-          <Link
-            to="/"
-            onClick={closeMenu}
-            className="block text-indigo-700 font-medium focus-visible:ring-2 focus-visible:ring-indigo-500 rounded px-2 py-1"
-          >
-            Home
-          </Link>
-
-          {isAuthenticated ? (
-            <>
-              <Link
-                to="/create-rental"
-                onClick={closeMenu}
-                className="block text-indigo-700 font-medium focus-visible:ring-2 focus-visible:ring-indigo-500 rounded px-2 py-1"
-              >
-                Add Rental
-              </Link>
-              <Link
-                to="/my-rentals"
-                onClick={closeMenu}
-                className="block text-indigo-700 font-medium focus-visible:ring-2 focus-visible:ring-indigo-500 rounded px-2 py-1"
-              >
-                My Rentals
-              </Link>
-              <Link
-                to="/my-favorite"
-                onClick={closeMenu}
-                className="flex items-center gap-2 text-indigo-700 focus-visible:ring-2 focus-visible:ring-red-500 rounded px-2 py-1"
-              >
-                <FaHeart /> Favorites
-              </Link>
-              <Link
-                to="/rentals-cart"
-                onClick={closeMenu}
-                className="flex items-center gap-2 text-indigo-700 focus-visible:ring-2 focus-visible:ring-green-500 rounded px-2 py-1"
-              >
-                <FaShoppingCart /> Rentals
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition focus-visible:ring-2 focus-visible:ring-red-500"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                onClick={closeMenu}
-                className="block w-full bg-indigo-500 text-white text-center px-4 py-2 rounded hover:bg-indigo-600 focus-visible:ring-2 focus-visible:ring-indigo-400"
-              >
-                Login
-              </Link>
-              <Link
-                to="/signup"
-                onClick={closeMenu}
-                className="block w-full bg-gray-100 text-indigo-700 text-center px-4 py-2 rounded hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-indigo-400"
-              >
-                Signup
-              </Link>
-            </>
-          )}
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/create-rental"
+                  onClick={closeMenu}
+                  className="flex items-center gap-3 text-gray-700 hover:text-indigo-700 hover:bg-indigo-50 font-medium px-3 py-2.5 rounded-lg transition"
+                >
+                  <Plus size={20} />
+                  Add Rental
+                </Link>
+                <Link
+                  to="/my-rentals"
+                  onClick={closeMenu}
+                  className="flex items-center gap-3 text-gray-700 hover:text-indigo-700 hover:bg-indigo-50 font-medium px-3 py-2.5 rounded-lg transition"
+                >
+                  <Package size={20} />
+                  My Rentals
+                </Link>
+                <Link
+                  to="/my-favorite"
+                  onClick={closeMenu}
+                  className="flex items-center gap-3 text-gray-700 hover:text-red-700 hover:bg-red-50 font-medium px-3 py-2.5 rounded-lg transition"
+                >
+                  <FaHeart size={20} />
+                  Favorites
+                </Link>
+                <Link
+                  to="/rentals-cart"
+                  onClick={closeMenu}
+                  className="flex items-center gap-3 text-gray-700 hover:text-green-700 hover:bg-green-50 font-medium px-3 py-2.5 rounded-lg transition"
+                >
+                  <FaShoppingCart size={20} />
+                  Cart
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2.5 rounded-lg transition font-medium shadow-md mt-2"
+                >
+                  <LogOut size={20} />
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  onClick={closeMenu}
+                  className="block w-full bg-white border border-gray-300 text-indigo-700 hover:bg-indigo-50 text-center px-4 py-2.5 rounded-lg transition font-medium"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  onClick={closeMenu}
+                  className="block w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-center px-4 py-2.5 rounded-lg transition font-medium shadow-md"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       )}
     </nav>

@@ -118,7 +118,7 @@ function App() {
               </div>
 
               {!isChatPage && <Footer />}
-              <ToastContainer position="bottom-left" autoClose={3000} />
+              <ToastContainer position="top-right" autoClose={3000} />
             </div>
           </UserState>
         </ProductState>
