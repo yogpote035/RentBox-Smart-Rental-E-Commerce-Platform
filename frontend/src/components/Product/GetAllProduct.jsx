@@ -96,7 +96,7 @@ function GetAllProducts() {
                 key={product._id}
                 className="group"
               >
-                <div className="bg-white border border-gray-200 hover:border-indigo-300 rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                <div className="bg-white border border-gray-200 hover:border-indigo-400 hover:border-2 rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
                   {/* Image */}
                   <div className="relative overflow-hidden h-48 sm:h-56 bg-gray-100">
                     <img
