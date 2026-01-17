@@ -182,20 +182,7 @@ function Navbar() {
                           {username}
                         </p>
                       </div>
-                      <Link
-                        to="/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition"
-                        onClick={() => setUserPopupOpen(false)}
-                      >
-                        View Profile
-                      </Link>
-                      <Link
-                        to="/orders"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition"
-                        onClick={() => setUserPopupOpen(false)}
-                      >
-                        My Orders
-                      </Link>
+                      
                     </div>
                   )}
                 </div>
@@ -247,26 +234,7 @@ function Navbar() {
                         {username}
                       </p>
                     </div>
-                    <Link
-                      to="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition"
-                      onClick={() => {
-                        setUserPopupOpen(false);
-                        closeMenu();
-                      }}
-                    >
-                      View Profile
-                    </Link>
-                    <Link
-                      to="/orders"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition"
-                      onClick={() => {
-                        setUserPopupOpen(false);
-                        closeMenu();
-                      }}
-                    >
-                      My Orders
-                    </Link>
+                  
                   </div>
                 )}
               </div>
