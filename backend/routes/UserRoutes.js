@@ -7,10 +7,12 @@ const {
   Login,
   getUserAddress,
   updateUserAddress,
+  generateRefreshToken,
 } = require("../controllers/UserController");
 router.get("/:id", getUserAddress);
 router.put("/:id", updateUserAddress);
 router.post("/signup", Signup);
 router.post("/login", Login);
+router.post("/refresh-token", generateRefreshToken);
 
 module.exports = router;

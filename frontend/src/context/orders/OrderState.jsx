@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import OrderContext from "./OrderContext";
 import { format, isBefore, startOfDay } from "date-fns";
 import { FaLessThanEqual } from "react-icons/fa";
+import UserContext from "../Authentication/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const OrderState = ({ children }) => {
   const [orders, setOrders] = useState([]);
@@ -11,12 +13,14 @@ const OrderState = ({ children }) => {
   const [isAvailable, setIsAvailable] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [reviewedOrders, setReviewedOrders] = useState({});
+  const { handleUnauthorized } = useContext(UserContext);
 
   // add review
   const [reviewOrderId, setReviewOrderId] = useState(null);
   const [reviewMessage, setReviewMessage] = useState("");
   const [reviewRating, setReviewRating] = useState(0);
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const navigate = useNavigate();
   //  Rent Now
   const RentNow = async (productId, quantity, from, to) => {
     try {
@@ -28,14 +32,14 @@ const OrderState = ({ children }) => {
         `${import.meta.env.VITE_BACKEND_URL}/auth/${userId}`,
         {
           headers: { token },
-        }
+        },
       );
 
       const user = userRes.data;
 
       if (!user.address || user.address.length === 0) {
         toast.error("Please add your address before renting a product.");
-        return "add-address"; 
+        return "add-address";
       }
 
       const res = await axios.post(
@@ -46,11 +50,17 @@ const OrderState = ({ children }) => {
             userId: localStorage.getItem("userId"),
             token: localStorage.getItem("token"),
           },
-        }
+        },
       );
       toast.success("Product rented successfully!");
       return res.data;
     } catch (err) {
+      if (err.response?.status === 401) {
+        handleUnauthorized(navigate);
+        toast.error(
+          err?.response?.data?.message || "Unauthorized. Please login again.",
+        );
+      }
       toast.error(err.response?.data?.message || "Failed to rent");
     }
   };
@@ -65,10 +75,16 @@ const OrderState = ({ children }) => {
             userId: localStorage.getItem("userId"),
             token: localStorage.getItem("token"),
           },
-        }
+        },
       );
       setOrders(res.data);
     } catch (err) {
+      if (err.response?.status === 401) {
+        handleUnauthorized(navigate);
+        toast.error(
+          err?.response?.data?.message || "Unauthorized. Please login again.",
+        );
+      }
       toast.error("Failed to fetch orders");
     }
   };
@@ -83,11 +99,17 @@ const OrderState = ({ children }) => {
             userId: localStorage.getItem("userId"),
             token: localStorage.getItem("token"),
           },
-        }
+        },
       );
       setOrders((prev) => prev.filter((order) => order._id !== orderId));
       toast.success("Order cancelled successfully!");
     } catch (err) {
+      if (err.response?.status === 401) {
+        handleUnauthorized(navigate);
+        toast.error(
+          err?.response?.data?.message || "Unauthorized. Please login again.",
+        );
+      }
       toast.error("Failed to cancel order");
     }
   };
@@ -127,15 +149,15 @@ const OrderState = ({ children }) => {
             userId: localStorage.getItem("userId"),
             token: localStorage.getItem("token"),
           },
-        }
+        },
       );
       if (res.status === 208) {
         const nextDate = format(
           new Date(res?.data?.nextAvailable),
-          "dd/MM/yyyy"
+          "dd/MM/yyyy",
         );
         setAvailabilityMessage(
-          `❌ Already booked for selected dates. Available on : ${nextDate}`
+          `❌ Already booked for selected dates. Available on : ${nextDate}`,
         );
         toast.error(res?.data?.message || "Not available");
 
@@ -147,6 +169,12 @@ const OrderState = ({ children }) => {
       setIsAvailable(true);
       toast.success("Available to rent");
     } catch (err) {
+      if (err.response?.status === 401) {
+        handleUnauthorized(navigate);
+        toast.error(
+          err?.response?.data?.message || "Unauthorized. Please login again.",
+        );
+      }
       toast.error(err.response?.data?.message || "Not available");
     }
   };
@@ -163,10 +191,16 @@ const OrderState = ({ children }) => {
             token: localStorage.getItem("token"),
             userid: localStorage.getItem("userId"),
           },
-        }
+        },
       );
       setReviews(res.data);
     } catch (err) {
+      if (err.response?.status === 401) {
+        handleUnauthorized(navigate);
+        toast.error(
+          err?.response?.data?.message || "Unauthorized. Please login again.",
+        );
+      }
       console.error("Error fetching reviews:", err.message);
     }
   };
@@ -190,7 +224,7 @@ const OrderState = ({ children }) => {
             userid: localStorage.getItem("userId"),
             token: localStorage.getItem("token"),
           },
-        }
+        },
       );
       toast.success("Review submitted!");
       setShowReviewForm(false);
@@ -199,6 +233,12 @@ const OrderState = ({ children }) => {
       setReviewRating(0);
       return true;
     } catch (error) {
+      if (error.response?.status === 401) {
+        handleUnauthorized(navigate);
+        toast.error(
+          error?.response?.data?.message || "Unauthorized. Please login again.",
+        );
+      }
       toast.error(error.response?.data?.message || "Failed to submit review.");
     }
   };
@@ -219,11 +259,17 @@ const OrderState = ({ children }) => {
             userid: userId,
             token: localStorage.getItem("token"),
           },
-        }
+        },
       );
 
       setReviewedOrders(res.data);
     } catch (error) {
+      if (error.response?.status === 401) {
+        handleUnauthorized(navigate);
+        toast.error(
+          error?.response?.data?.message || "Unauthorized. Please login again.",
+        );
+      }
       console.error("Error checking reviewed orders:", error);
     }
   };

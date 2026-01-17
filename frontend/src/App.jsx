@@ -34,10 +34,10 @@ function App() {
   const isChatPage = location.pathname === "/chat";
 
   return (
-    <OrderState>
-      <CartState>
-        <ProductState>
-          <UserState>
+    <UserState>
+      <OrderState>
+        <CartState>
+          <ProductState>
             <div className="min-h-screen flex flex-col">
               {!isChatPage && <Navbar />}
 
@@ -120,10 +120,10 @@ function App() {
               {!isChatPage && <Footer />}
               <ToastContainer position="top-right" autoClose={3000} />
             </div>
-          </UserState>
-        </ProductState>
-      </CartState>
-    </OrderState>
+          </ProductState>
+        </CartState>
+      </OrderState>
+    </UserState>
   );
 }
 

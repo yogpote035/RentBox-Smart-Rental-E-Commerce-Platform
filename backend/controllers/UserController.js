@@ -43,7 +43,7 @@ module.exports.Signup = async (request, response) => {
         id: newUser.id,
       },
     };
-    const token = jwt.sign(data, process.env.secret, { expiresIn: "7d" });
+    const token = jwt.sign(data, process.env.secret, { expiresIn: "1m" });
     console.log("Token is generated and sending response to frontend");
     return response.status(200).json({
       message: "Registration is Successfully Completed",
@@ -105,7 +105,7 @@ module.exports.Login = async (request, response) => {
     };
 
     const token = jwt.sign(data, process.env.secret, {
-      expiresIn: "7d",
+      expiresIn: "1m",
     });
 
     return response.status(200).json({
@@ -144,5 +144,34 @@ module.exports.updateUserAddress = async (req, res) => {
     res.status(200).json({ message: "User updated successfully" });
   } catch (err) {
     res.status(500).json({ message: "Error updating user" });
+  }
+};
+
+
+module.exports.generateRefreshToken = async (req, res) => {
+  try {
+    const { id, token } = req.body;
+    await jwt.verify(token, process.env.secret);
+
+    const existingUser = await UserModel.findById(id);
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const data = {
+      user: {
+        id: existingUser.id,
+      },
+    };
+    const refreshToken = jwt.sign(data, process.env.secret, {
+      expiresIn: "1m",
+    });
+
+    return res.status(200).json({
+      message: "new token generated successfully",
+      refreshToken: refreshToken,
+      userId: existingUser._id,
+    });
+  } catch (err) {
+    res.status(401).json({ message: "Invalid token or unauthorized access" });
   }
 };

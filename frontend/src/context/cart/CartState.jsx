@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import CartContext from "./CartContext";
-
+import UserContext from "../Authentication/UserContext";
+import { useNavigate } from "react-router-dom";
 const CartState = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const { handleUnauthorized } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const fetchCart = async () => {
     try {
@@ -16,6 +19,12 @@ const CartState = ({ children }) => {
       });
       setCartItems(res.data.items);
     } catch (err) {
+      if (err.response?.status === 401) {
+        handleUnauthorized(navigate);
+        toast.error(
+          err?.response?.data?.message || "Unauthorized. Please login again.",
+        );
+      }
       console.error("Cart fetch failed");
     }
   };
@@ -30,12 +39,18 @@ const CartState = ({ children }) => {
             userId: localStorage.getItem("userId"),
             token: localStorage.getItem("token"),
           },
-        }
+        },
       );
       setCartItems(res.data.items);
       toast.success("Added to cart");
       return res.data;
     } catch (err) {
+      if (err.response?.status === 401) {
+        handleUnauthorized(navigate);
+        toast.error(
+          err?.response?.data?.message || "Unauthorized. Please login again.",
+        );
+      }
       toast.error(err.response?.data?.message || "Failed to add");
     }
   };
@@ -50,11 +65,17 @@ const CartState = ({ children }) => {
             userId: localStorage.getItem("userId"),
             token: localStorage.getItem("token"),
           },
-        }
+        },
       );
       setCartItems(res.data.items);
       toast.success("Removed from cart");
-    } catch {
+    } catch (err) {
+      if (err.response?.status === 401) {
+        handleUnauthorized(navigate);
+        toast.error(
+          err?.response?.data?.message || "Unauthorized. Please login again.",
+        );
+      }
       toast.error("Remove failed");
     }
   };

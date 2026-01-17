@@ -13,9 +13,8 @@ module.exports.getUser = (request, response, next) => {
     const data = jwt.verify(token, process.env.secret);
     request.user = data.user;
     next();
+
   } catch (error) {
-    return response.status(500).json({
-      message: "Internal Server Error : " + error,
-    });
+    return response.status(401).json({ message: "Invalid or expired token" });
   }
 };

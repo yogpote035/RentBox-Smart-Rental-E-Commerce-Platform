@@ -12,11 +12,23 @@ const UserState = ({ children }) => {
     setIsAuthenticated(!!token);
   }, []);
 
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    // console.log("State Update calling refresh token function");
+
+    const interval = setInterval(() => {
+      GenerateRefreshToken();
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isAuthenticated]);
   const signup = async (payload) => {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/auth/signup`,
-        payload
+        payload,
       );
       if (res.status === 200) {
         toast.success(res.data.message);
@@ -40,7 +52,7 @@ const UserState = ({ children }) => {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/auth/login`,
-        payload
+        payload,
       );
       if (res.status === 200) {
         toast.success(res.data.message);
@@ -85,8 +97,55 @@ const UserState = ({ children }) => {
     toast.warning("You Logged Out Successfully");
   };
 
+
+  const handleUnauthorized = (navigate) => {
+    localStorage.clear();
+    setIsAuthenticated(false);
+    toast.error("Session expired. Please login again.");
+    if (navigate) {
+      navigate("/login");
+    }
+  };
+
+  const GenerateRefreshToken = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const userID = localStorage.getItem("userId");
+
+      if (!token || !userID) return;
+
+      // console.log("🔄 Old token:", token);
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/auth/refresh-token`,
+        {
+          token: token,
+          id: userID,
+        },
+      );
+
+      const newToken = res?.data?.refreshToken;
+
+      if (!newToken) throw new Error("No refresh token received");
+      localStorage.setItem("token", newToken);
+      // console.log("✅ New token applied");
+      // console.log("new Token:", newToken);
+    } catch (err) {
+      console.log("❌ Refresh failed", err);
+       if (err.response?.status === 401) {
+        handleUnauthorized();
+        toast.error(
+          err?.response?.data?.message || "Unauthorized. Please login again.",
+        );
+        handleUnauthorized();
+      }
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ signup, login, logout, isAuthenticated }}>
+    <UserContext.Provider
+      value={{ handleUnauthorized, signup, login, logout, isAuthenticated }}
+    >
       {children}
     </UserContext.Provider>
   );
