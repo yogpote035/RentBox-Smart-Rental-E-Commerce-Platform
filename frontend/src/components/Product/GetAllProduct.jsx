@@ -118,7 +118,7 @@ function GetAllProducts() {
                     </h3>
                     
                     <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 leading-relaxed">
-                      {product.description}
+                      {product.description?.slice(0, 35)}{product.description?.length > 25 ? "..." : ""}
                     </p>
 
                     {/* Price */}

@@ -86,7 +86,7 @@ function Navbar() {
             }}
             className="flex items-center gap-2 group"
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow outline-none">
               <i className="fa-solid fa-registered text-white text-xl" />
             </div>
             <span className="hidden sm:inline text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
