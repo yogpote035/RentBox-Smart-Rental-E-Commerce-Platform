@@ -152,8 +152,8 @@ function Navbar() {
                   to="/rentals-cart"
                   className="text-indigo-700 hover:text-green-600 p-2 rounded-lg hover:bg-green-50 transition"
                   onClick={() => setUserPopupOpen(false)}
-                  aria-label="Cart"
-                  title="Cart"
+                  aria-label="Orders"
+                  title="Orders"
                 >
                   <FaShoppingCart size={20} />
                 </Link>
@@ -318,7 +318,7 @@ function Navbar() {
                   className="flex items-center gap-3 text-gray-700 hover:text-green-700 hover:bg-green-50 font-medium px-3 py-2.5 rounded-lg transition"
                 >
                   <FaShoppingCart size={20} />
-                  Cart
+                  Orders
                 </Link>
                 <button
                   onClick={handleLogout}

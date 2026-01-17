@@ -52,9 +52,7 @@ function MyCart() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl shadow-lg mb-4">
-            <Heart size={28} className="text-white sm:w-8 sm:h-8 fill-white" strokeWidth={2.5} />
-          </div>
+         
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3">
             <span className="bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
               My Favorites
