@@ -36,12 +36,19 @@ const UserSchema = new Schema({
   },
   phone: {
     type: Number,
-    required: true,
+    unique: true,
+  },
+  isFirebaseUser: {
+    type: Boolean,
+    default: false,
+  },
+  firebaseUid: {
+    default: null,
+    type: String,
     unique: true,
   },
   password: {
     type: String,
-    required: true,
   },
   address: [addressSchema],
   role: {

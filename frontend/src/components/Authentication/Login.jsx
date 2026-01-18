@@ -1,15 +1,17 @@
 import { useState, useContext, useEffect } from "react";
 import UserContext from "../../context/Authentication/UserContext";
-import { useNavigate ,Link} from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 
 function Login() {
   const context = useContext(UserContext);
   const navigate = useNavigate();
-  const { login } = context;
+  const { login, googleLogin } = context;
   const [usePhone, setUsePhone] = useState(false);
   const [isDisable, setIsDisable] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     phone: "",
@@ -36,6 +38,17 @@ function Login() {
     }, 3000);
     if (res === true) {
       navigate("/");
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsGoogleLoading(true);
+    try {
+      await googleLogin(navigate);
+    } catch (error) {
+      console.error("Google login failed:", error);
+    } finally {
+      setIsGoogleLoading(false);
     }
   };
 
@@ -216,6 +229,55 @@ function Login() {
                 )}
               </button>
             </form>
+
+            {/* Divider */}
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-3 bg-white text-gray-500 font-medium">Or continue with</span>
+              </div>
+            </div>
+
+            {/* Google Login Button */}
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={isGoogleLoading || isDisable}
+              className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 hover:border-gray-300 text-gray-700 font-semibold py-3.5 px-6 rounded-xl shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            >
+              {isGoogleLoading ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5 text-indigo-600"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  <span>Connecting to Google...</span>
+                </>
+              ) : (
+                <>
+                  <FcGoogle size={24} />
+                  <span>Continue with Google</span>
+                </>
+              )}
+            </button>
 
             {/* Switch login method */}
             <div className="mt-8 pt-6 border-t border-gray-200">

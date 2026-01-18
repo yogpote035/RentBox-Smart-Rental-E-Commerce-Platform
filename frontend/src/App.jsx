@@ -118,7 +118,7 @@ function App() {
               </div>
 
               {!isChatPage && <Footer />}
-              <ToastContainer position="top-right" autoClose={3000} />
+              <ToastContainer position="top-right" style={{ marginTop: "3.1rem" }} autoClose={3000} />
             </div>
           </ProductState>
         </CartState>

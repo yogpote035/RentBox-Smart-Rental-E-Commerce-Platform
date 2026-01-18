@@ -1,6 +1,7 @@
 const UserModel = require("../model/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const admin = require("../firebaseSetup/firebaseAdmin"); // firebase-admin init
 
 module.exports.Signup = async (request, response) => {
   const { name, email, phone, password } = request.body;
@@ -120,6 +121,62 @@ module.exports.Login = async (request, response) => {
       .json({ message: `Something Went Wrong : ${error}` });
   }
 };
+
+
+
+//  GOOGLE LOGIN (Firebase only for Google Auth)
+module.exports.googleLogin = async (req, res) => {
+  try {
+    console.log("Google Request");
+    const { firebaseToken } = req.body;
+
+    if (!firebaseToken)
+      return res.status(400).json({ message: "Firebase token required" });
+
+    // Verify Firebase ID Token
+    const decoded = await admin.auth().verifyIdToken(firebaseToken);
+
+    const { uid, email, name } = decoded;
+
+    let user = await UserModel.findOne({ email });
+    if (user) {
+      console.log("Google Login Request");
+    }
+
+    // Create user if first Google login
+    if (!user) {
+      user = await UserModel.create({
+        name: name || "Google User",
+        email,
+        firebaseUid: uid,
+        isFirebaseUser: true,
+        password: null,
+      });
+      console.log("Google Signup Request")
+    }
+
+    const data = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    const token = jwt.sign(data, process.env.secret, {
+      expiresIn: "1m",
+    });
+
+    res.json({
+      message: "Google login successful",
+      token,
+    });
+
+    console.log("----request completed from google signup/login----")
+  } catch (error) {
+    console.error("Google Login Error:", error);
+    res.status(401).json({ message: "Google authentication failed" });
+  }
+};
+
 
 module.exports.getUserAddress = async (req, res) => {
   try {

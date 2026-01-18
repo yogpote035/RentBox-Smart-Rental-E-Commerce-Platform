@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import UserContext from "./UserContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../../firebase";
 
 const UserState = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -89,6 +91,34 @@ const UserState = ({ children }) => {
     }
   };
 
+  const googleLogin = async (navigate) => {
+    try {
+      toast.success("Redirecting to Google Sign-In...");
+      const result = await signInWithPopup(auth, googleProvider);
+
+      // Firebase ID Token
+      const firebaseToken = await result.user.getIdToken();
+
+      // Send token to backend
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/auth/google-login`,
+        { firebaseToken },
+      );
+      localStorage.setItem("token", res.data.token);
+      toast.success("Google login successful");
+      setIsAuthenticated(true);
+      navigate("/");
+    } catch (error) {
+      console.error("Google Login Failed:", error);
+      if (error.code === "auth/popup-closed-by-user") {
+        toast.error("Popup closed before login");
+      } else if (error.code === "auth/popup-blocked") {
+        toast.error("Popup blocked. Please allow popups");
+      } else {
+        toast.error("Google login failed");
+      }
+    }
+  };
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
@@ -96,7 +126,6 @@ const UserState = ({ children }) => {
     setIsAuthenticated(false); // update state
     toast.warning("You Logged Out Successfully");
   };
-
 
   const handleUnauthorized = (navigate) => {
     localStorage.clear();
@@ -132,7 +161,7 @@ const UserState = ({ children }) => {
       // console.log("new Token:", newToken);
     } catch (err) {
       console.log("❌ Refresh failed", err);
-       if (err.response?.status === 401) {
+      if (err.response?.status === 401) {
         handleUnauthorized();
         toast.error(
           err?.response?.data?.message || "Unauthorized. Please login again.",
@@ -144,7 +173,14 @@ const UserState = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ handleUnauthorized, signup, login, logout, isAuthenticated }}
+      value={{
+        handleUnauthorized,
+        signup,
+        login,
+        googleLogin,
+        logout,
+        isAuthenticated,
+      }}
     >
       {children}
     </UserContext.Provider>

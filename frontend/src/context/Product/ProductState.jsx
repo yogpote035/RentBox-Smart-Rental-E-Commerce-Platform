@@ -10,11 +10,9 @@ const ProductState = ({ children }) => {
   const [singleProduct, setSingleProduct] = useState(null);
   const [categoryProduct, setCategoryProduct] = useState([]);
   const navigate = useNavigate();
-
+  const { handleUnauthorized } = useContext(UserContext);
   const createProduct = async (product, image) => {
     const formData = new FormData();
-    const { handleUnauthorized } = useContext(UserContext);
-
     formData.append("name", product.name);
     formData.append("description", product.description);
     formData.append("price", product.price);
