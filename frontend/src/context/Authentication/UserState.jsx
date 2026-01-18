@@ -20,7 +20,7 @@ const UserState = ({ children }) => {
 
     const interval = setInterval(() => {
       GenerateRefreshToken();
-    }, 10000);
+    }, 30000);
 
     return () => {
       clearInterval(interval);
