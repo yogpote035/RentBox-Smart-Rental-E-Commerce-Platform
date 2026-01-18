@@ -105,6 +105,7 @@ const UserState = ({ children }) => {
         { firebaseToken },
       );
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("userId", res.data.userId);
       toast.success("Google login successful");
       setIsAuthenticated(true);
       navigate("/");

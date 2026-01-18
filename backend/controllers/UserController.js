@@ -35,6 +35,8 @@ module.exports.Signup = async (request, response) => {
       name,
       email,
       phone,
+      firebaseUid: null,
+      isFirebaseUser: false,
       password: hashedPassword,
     });
     await newUser.save();
@@ -166,6 +168,7 @@ module.exports.googleLogin = async (req, res) => {
     });
 
     res.json({
+      userId: user._id,
       message: "Google login successful",
       token,
     });
