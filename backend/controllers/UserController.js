@@ -211,7 +211,7 @@ module.exports.updateUserAddress = async (req, res) => {
 module.exports.generateRefreshToken = async (req, res) => {
   try {
     const { id, token } = req.body;
-    await jwt.verify(token, process.env.secret);
+    // await jwt.verify(token, process.env.secret);
 
     const existingUser = await UserModel.findById(id);
     if (!existingUser) {
