@@ -37,7 +37,7 @@ const UserSchema = new Schema({
   phone: {
     type: Number,
     unique: true,
-    sparse: true // optional(if exists then true)
+    sparse: true // (if exists then true)
   },
   isFirebaseUser: {
     type: Boolean,
@@ -46,7 +46,7 @@ const UserSchema = new Schema({
   firebaseUid: {
     type: String,
     unique: true,
-    sparse: true // optional(if exists then true)
+    sparse: true // (if exists then true)
   },
   password: {
     type: String,
