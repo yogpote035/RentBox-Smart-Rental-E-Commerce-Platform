@@ -40,10 +40,7 @@ const UserState = ({ children }) => {
         setIsAuthenticated(true); //  update state
         return true;
       }
-      if (res.status === 208) {
-        toast.error("This Phone Or Mail User Already Exists");
-        return false;
-      }
+
     } catch (error) {
       setIsAuthenticated(false);
       toast.error(error.response?.data?.message || "Signup failed");
@@ -65,25 +62,7 @@ const UserState = ({ children }) => {
         return true;
       }
       // user found but password not match
-      if (res.status === 208) {
-        toast.error("You Enter Wrong Password");
-        setIsAuthenticated(false); // update state
-        return false;
-      }
-
-      // user Not found
-      if (res.status === 204) {
-        toast.error("User Not Found, Please Check Your Credentials");
-        setIsAuthenticated(false); // update state
-        return false;
-      }
-
-      // user is Admin
-      if (res.status === 203) {
-        toast.error("You are not General User to access this resource");
-        setIsAuthenticated(false); // update state
-        return false;
-      }
+     
     } catch (err) {
       setIsAuthenticated(false);
       toast.error(err.response?.data?.message || "Login failed");
@@ -106,6 +85,7 @@ const UserState = ({ children }) => {
       );
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.userId);
+      localStorage.setItem("username", res.data.username);
       toast.success("Google login successful");
       setIsAuthenticated(true);
       navigate("/");

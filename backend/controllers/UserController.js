@@ -7,7 +7,7 @@ module.exports.Signup = async (request, response) => {
   const { name, email, phone, password } = request.body;
   console.log("signup request body", name, email, password, phone);
   if (!name || !email || !phone || !password) {
-    return response.status(406).json({ message: "All Fields Are Required" });
+    return response.status(400).json({ message: "All Fields Are Required" });
   }
 
   const existingPhoneUser = await UserModel.findOne({
@@ -16,7 +16,7 @@ module.exports.Signup = async (request, response) => {
 
   if (existingPhoneUser) {
     return response
-      .status(208)
+      .status(409)
       .json({ message: "This Phone Number User Already Exists" });
   }
 
@@ -24,7 +24,7 @@ module.exports.Signup = async (request, response) => {
 
   if (existingEmailUser) {
     return response
-      .status(208)
+      .status(409)
       .json({ message: "This Mail User Already Exists" });
   }
   try {
@@ -55,6 +55,8 @@ module.exports.Signup = async (request, response) => {
       username: newUser.name,
     });
   } catch (error) {
+    console.log(error);
+    
     return response
       .status(500)
       .json({ message: `Something Went Wrong : ${error}` });
@@ -67,7 +69,7 @@ module.exports.Login = async (request, response) => {
   console.log("Login request body", email ? email : phone, password);
 
   if ((!email && !phone) || !password) {
-    return response.status(406).json({ message: "All Fields Are Required" });
+    return response.status(400).json({ message: "All Fields Are Required" });
   }
   try {
     let existingUser = null;
@@ -75,7 +77,7 @@ module.exports.Login = async (request, response) => {
       existingUser = await UserModel.findOne({ phone });
       if (!existingUser) {
         return response
-          .status(204)
+          .status(404)
           .json({ message: "User of This Phone Number Is Not Found" });
       }
     }
@@ -84,21 +86,24 @@ module.exports.Login = async (request, response) => {
       existingUser = await UserModel.findOne({ email });
       if (!existingUser) {
         return response
-          .status(204)
+          .status(404)
           .json({ message: "User  of This Email Is Not Found" });
       }
     }
 
+    if (existingUser.isFirebaseUser === true) {
+      return response.status(400).json({ message: "This account is linked with Google. Please login with Google." });
+    }
     let passwordCompare = await bcrypt.compare(password, existingUser.password);
 
     if (!passwordCompare) {
       return response
-        .status(208)
+        .status(401)
         .json({ message: "Wrong password , check your credentials" });
     }
     if (existingUser.role === "admin") {
       return response
-        .status(203)
+        .status(403)
         .json({ message: "You are not General User to access this resource" });
     }
     const data = {
@@ -139,6 +144,7 @@ module.exports.googleLogin = async (req, res) => {
     const decoded = await admin.auth().verifyIdToken(firebaseToken);
 
     const { uid, email, name } = decoded;
+    // console.log("Decoded Firebase Token:", decoded);
 
     let user = await UserModel.findOne({ email });
     if (user) {
@@ -171,6 +177,7 @@ module.exports.googleLogin = async (req, res) => {
       userId: user._id,
       message: "Google login successful",
       token,
+      username: user.name,
     });
 
     console.log("----request completed from google signup/login----")

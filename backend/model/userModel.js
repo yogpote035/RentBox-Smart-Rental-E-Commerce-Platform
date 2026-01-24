@@ -37,15 +37,16 @@ const UserSchema = new Schema({
   phone: {
     type: Number,
     unique: true,
+    sparse: true // optional(if exists then true)
   },
   isFirebaseUser: {
     type: Boolean,
     default: false,
   },
   firebaseUid: {
-    default: null,
     type: String,
     unique: true,
+    sparse: true // optional(if exists then true)
   },
   password: {
     type: String,
@@ -61,6 +62,7 @@ const UserSchema = new Schema({
     default: Date.now,
   },
 });
+
 
 const UserModel = mongoose.model("UserModel", UserSchema);
 module.exports = UserModel;
