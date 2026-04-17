@@ -80,7 +80,7 @@ function Footer() {
           </div>
 
           {/* Social & Contact */}
-          <div className="text-center md:text-right">
+          {/* <div className="text-center md:text-right">
             <h3 className="text-lg font-semibold mb-4 text-indigo-200">Connect With Us</h3>
             <div className="flex justify-center md:justify-end gap-3 mb-4">
               {socialLinks.map((social) => {
@@ -103,13 +103,13 @@ function Footer() {
             <p className="text-sm text-indigo-200">
               Have questions? Reach out to us!
             </p>
-          </div>
+          </div> */}
         </div>
 
         {/* Divider */}
         <div className="border-t border-indigo-700/50 pt-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-indigo-200">
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <span>Made with</span>
               <Heart size={16} className="text-red-400 fill-red-400 animate-pulse" />
               <span>by</span>
@@ -122,7 +122,7 @@ function Footer() {
                 Yogesh Pote
                 <ExternalLink size={14} />
               </a>
-            </div>
+            </div> */}
             <div className="flex items-center gap-2">
               <Code size={16} className="text-indigo-300" />
               <span>Built with MERN Stack</span>
