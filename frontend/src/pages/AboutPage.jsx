@@ -157,92 +157,14 @@ function AboutPage() {
 
         {/* Developer Section */}
         <section className="bg-white shadow-xl rounded-2xl p-6 sm:p-8">
-          <div className="flex items-center gap-3 mb-6">
-            <User size={24} className="text-indigo-600" />
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Meet the Developer
-            </h2>
-          </div>
+         
 
           <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
-            {/* Profile Image */}
-            <div className="flex-shrink-0">
-              <div className="relative">
-                <img
-                  src={profileImg}
-                  alt="Yogesh Pote"
-                  className="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-2xl object-cover shadow-xl border-4 border-indigo-200"
-                />
-                <div className="absolute -bottom-3 -right-3 w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <Code size={32} className="text-white" />
-                </div>
-              </div>
-            </div>
-
             {/* Developer Info */}
             <div className="flex-1 w-full">
-              <h3 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
-                Yogesh Pote
-              </h3>
-              <p className="text-base sm:text-lg text-gray-700 mb-4 leading-relaxed">
-                A passionate MERN Stack Developer and 3rd year B.Sc Computer Science
-                student at Modern College, Pune. I enjoy turning real-world problems
-                into clean, scalable web solutions.
-              </p>
+             
 
-              {/* Contact Info */}
-              <div className="space-y-2 mb-6">
-                <div className="flex items-center gap-2 text-gray-700">
-                  <Mail size={18} className="text-indigo-600" />
-                  <span className="text-sm sm:text-base">
-                    <strong>Email:</strong> yogpote035@gmail.com
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-700">
-                  <Phone size={18} className="text-indigo-600" />
-                  <span className="text-sm sm:text-base">
-                    <strong>Phone:</strong> 8999390368
-                  </span>
-                </div>
-              </div>
-
-              {/* Social Links */}
-              <div className="flex items-center gap-4 mb-6">
-                <a
-                  href="https://github.com/yogpote035"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center w-12 h-12 bg-gray-900 hover:bg-gray-800 text-white rounded-xl transition-all shadow-md hover:shadow-lg"
-                  title="GitHub"
-                >
-                  <FaGithub size={24} />
-                </a>
-                <a
-                  href="https://linkedin.com/in/yogesh-pote"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all shadow-md hover:shadow-lg"
-                  title="LinkedIn"
-                >
-                  <FaLinkedin size={24} />
-                </a>
-                <a
-                  href="mailto:yogpote035@gmail.com"
-                  className="flex items-center justify-center w-12 h-12 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all shadow-md hover:shadow-lg"
-                  title="Email"
-                >
-                  <FaEnvelope size={24} />
-                </a>
-                <a
-                  href="https://yogpote035.github.io/Portfolio-Website/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-5 py-3 rounded-xl transition-all shadow-md hover:shadow-lg font-medium"
-                >
-                  Portfolio
-                  <ExternalLink size={16} />
-                </a>
-              </div>
+              
 
               {/* Skills */}
               <div>
