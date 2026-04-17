@@ -95,7 +95,7 @@ function AboutPage() {
               Project Overview
             </h2>
           </div>
-          
+
           <p className="text-base sm:text-lg text-gray-700 mb-6 leading-relaxed">
             <strong className="text-indigo-600">RentBox</strong> is a MERN stack-based rental platform where
             users can list, browse, rent, and review a wide range of products
@@ -154,40 +154,7 @@ function AboutPage() {
             </div>
           </div>
         </section>
-
-        {/* Developer Section */}
-        <section className="bg-white shadow-xl rounded-2xl p-6 sm:p-8">
-         
-
-          <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
-            {/* Developer Info */}
-            <div className="flex-1 w-full">
-             
-
-              
-
-              {/* Skills */}
-              <div>
-                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200">
-                  <Sparkles size={20} className="text-indigo-600" />
-                  <h4 className="text-lg sm:text-xl font-semibold text-gray-900">
-                    Skills & Technologies
-                  </h4>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-3 py-1.5 rounded-full font-medium text-sm transition-colors border border-indigo-200"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+       
       </div>
     </div>
   );
